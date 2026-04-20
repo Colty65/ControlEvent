@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventControl v.1.0.0</title>
+  <style>
+    :root{
+      --bg:#f3f5f7;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#dbe2ea;
+      --primary:#111827;
+      --primary-2:#374151;
+      --ok-bg:#ecfdf5;
+      --ok:#047857;
+      --bad-bg:#fef2f2;
+      --bad:#b91c1c;
+      --pill:#eef2f7;
+      --shadow:0 8px 24px rgba(15,23,42,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .app{
+      max-width:980px;
+      margin:0 auto;
+      padding-bottom:110px;
+    }
+    .header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:rgba(255,255,255,.95);
+      backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--border);
+    }
+    .header-inner{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      padding:12px 16px;
+      gap:12px;
+    }
+    .brand{
+      font-weight:800;
+      letter-spacing:.03em;
+      font-size:15px;
+    }
+    .subtitle{
+      margin-top:4px;
+      text-align:center;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+    .copyright{
+      font-size:13px;
+      color:var(--muted);
+      white-space:nowrap;
+      margin-top:2px;
+    }
+    .main{padding:14px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:16px;
+      margin-bottom:14px;
+    }
+    .section-title{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .icon-badge{
+      width:34px;height:34px;border-radius:12px;background:#eef2f7;
+      display:flex;align-items:center;justify-content:center;font-size:18px;
+      flex:none;
+    }
+    .section-title h2{
+      margin:0;font-size:18px;
+    }
+    .section-title p{
+      margin:4px 0 0;color:var(--muted);font-size:13px;
+    }
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .field label{
+      display:block;
+      font-size:13px;
+      margin-bottom:6px;
+      color:#374151;
+      font-weight:600;
+    }
+    input, select, textarea, button{
+      font:inherit;
+    }
+    input, select{
+      width:100%;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      color:var(--text);
+    }
+    input[readonly]{
+      background:#f8fafc;
+    }
+    button{
+      border:0;
+      border-radius:14px;
+      padding:11px 14px;
+      background:var(--primary);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    }
+    button.secondary{background:#e5e7eb;color:#111827}
+    button.outline{background:#fff;color:#111827;border:1px solid var(--border)}
+    button.danger{background:#b91c1c}
+    button.small{padding:8px 10px;border-radius:12px;font-size:13px}
+    button:disabled{opacity:.5;cursor:not-allowed}
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .metric{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:12px;
+      background:#fff;
+    }
+    .metric .label{
+      font-size:11px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+    .metric .value{
+      margin-top:8px;
+      font-size:20px;
+      font-weight:800;
+    }
+    .metric.ok{background:var(--ok-bg);border-color:#bbf7d0;color:var(--ok)}
+    .metric.bad{background:var(--bad-bg);border-color:#fecaca;color:var(--bad)}
+    .tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      background:#fff;
+      padding:8px;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      border:1px solid var(--border);
+      margin-bottom:14px;
+    }
+    .tab{
+      background:transparent;
+      color:#111827;
+    }
+    .tab.active{
+      background:#111827;
+      color:#fff;
+    }
+    .hidden{display:none !important}
+    .form-row, .row{
+      display:grid;
+      gap:10px;
+    }
+    .row-item{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:12px;
+      background:#fff;
+    }
+    .muted{color:var(--muted)}
+    .empty{
+      border:1px dashed var(--border);
+      border-radius:18px;
+      padding:18px;
+      color:var(--muted);
+      background:#f8fafc;
+    }
+    .separator{
+      height:1px;background:var(--border);margin:16px 0;
+    }
+    .summary-card{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:12px;
+      background:#fff;
+    }
+    .summary-item{
+      display:flex;justify-content:space-between;gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:#f8fafc;
+      margin-top:8px;
+      font-size:14px;
+    }
+    .pill{
+      background:var(--pill);
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .footer{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      z-index:30;
+      background:rgba(255,255,255,.97);
+      border-top:1px solid var(--border);
+      backdrop-filter:blur(8px);
+    }
+    .footer-inner{
+      max-width:980px;
+      margin:0 auto;
+      padding:10px 14px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+    }
+    .maintenance{
+      margin-top:0;
+      border-top:1px solid var(--border);
+      background:#f8fafc;
+      padding:14px;
+    }
+    .maintenance .card{box-shadow:none}
+    .desktop-inline{
+      display:grid;
+      gap:10px;
+    }
+    .stats-pay{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .badge-active{
+      display:inline-block;
+      margin-bottom:8px;
+      background:#111827;
+      color:#fff;
+      border-radius:999px;
+      padding:5px 10px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .subgrid-3{
+      display:grid;gap:12px;
+    }
+    .hint{
+      font-size:12px;color:var(--muted);margin-top:6px;
+    }
+    @media (min-width: 760px){
+      .brand{font-size:18px}
+      .subtitle{font-size:14px}
+      .main{padding:20px}
+      .metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .form-row.asistentes{grid-template-columns:2.2fr 1fr 1.4fr auto}
+      .form-row.compras{grid-template-columns:2fr 1fr 1fr 1fr 1.4fr auto}
+      .desktop-inline.event-picker{grid-template-columns:1.3fr 1fr}
+      .stats-pay{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .maintenance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+      .footer-inner{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .row.asistente{
+        grid-template-columns:2.1fr .9fr 1.3fr auto;
+        align-items:end;
+      }
+      .row.compra{
+        grid-template-columns:1.8fr .9fr 1fr 1fr 1.2fr auto;
+        align-items:end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner app">
+      <div>
+        <div class="brand">PEÑA EL ARRASTRE</div>
+        <div class="subtitle">EventControl v.1.0.0</div>
+      </div>
+      <div class="copyright">©oltyLAB ’26</div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="main">
+      <div class="card">
+        <div class="desktop-inline event-picker">
+          <div class="field">
+            <label>Evento activo</label>
+            <select id="selectedEvent"></select>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="label">Asistentes</div>
+              <div class="value" id="metricAsistentes">0</div>
+            </div>
+            <div class="metric">
+              <div class="label">Presupuesto</div>
+              <div class="value" id="metricPresupuesto">0,00 €</div>
+            </div>
+            <div class="metric">
+              <div class="label">Compras</div>
+              <div class="value" id="metricCompras">0,00 €</div>
+            </div>
+            <div class="metric" id="saldoMetric">
+              <div class="label">Saldo</div>
+              <div class="value" id="metricSaldo">0,00 €</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabAsistentesBtn">ASISTENTES</button>
+        <button class="tab" id="tabComprasBtn">COMPRAS</button>
+      </div>
+
+      <div id="noEventMessage" class="card hidden">
+        <div class="empty">No hay eventos. Crea uno desde el botón de mantenimiento al pie.</div>
+      </div>
+
+      <div id="tabAsistentes">
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">👥</div>
+            <div>
+              <h2>Asistentes del evento</h2>
+              <p>Selecciona un socio, indica cuántas personas vienen y el estado del pago.</p>
+            </div>
+          </div>
+
+          <div class="form-row asistentes">
+            <div class="field">
+              <label>Socio</label>
+              <select id="asistenteSocio"></select>
+            </div>
+            <div class="field">
+              <label>Número</label>
+              <input id="asistenteNumero" type="number" min="0" step="1" value="1" />
+            </div>
+            <div class="field">
+              <label>Situación</label>
+              <select id="asistenteSituacion"></select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button id="btnAddAsistente">Añadir</button>
+            </div>
+          </div>
+
+          <div class="separator"></div>
+          <div id="asistentesList"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">💶</div>
+            <div>
+              <h2>Resumen de pagos</h2>
+              <p>Personas asociadas a cada forma de pago o pendiente.</p>
+            </div>
+          </div>
+          <div class="stats-pay" id="payStats"></div>
+        </div>
+      </div>
+
+      <div id="tabCompras" class="hidden">
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">🛒</div>
+            <div>
+              <h2>Compras del evento</h2>
+              <p>Añade productos, calcula importes automáticamente y controla el saldo.</p>
+            </div>
+          </div>
+
+          <div class="form-row compras">
+            <div class="field">
+              <label>Producto</label>
+              <select id="compraProducto"></select>
+            </div>
+            <div class="field">
+              <label>Unidades</label>
+              <input id="compraUnidades" type="number" min="0" step="0.01" value="1.00" />
+            </div>
+            <div class="field">
+              <label>Precio</label>
+              <input id="compraPrecio" readonly />
+            </div>
+            <div class="field">
+              <label>Importe</label>
+              <input id="compraImporte" readonly />
+            </div>
+            <div class="field">
+              <label>Tienda</label>
+              <input id="compraTienda" readonly />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button id="btnAddCompra">Añadir</button>
+            </div>
+          </div>
+
+          <div class="separator"></div>
+          <div id="comprasList"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">📊</div>
+            <div>
+              <h2>Control presupuestario</h2>
+              <p>Asistentes por precio del evento frente al total de compras.</p>
+            </div>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="label">Asistentes</div>
+              <div class="value" id="ctrlAsistentes">0</div>
+            </div>
+            <div class="metric">
+              <div class="label">Precio evento</div>
+              <div class="value" id="ctrlPrecioEvento">0,00 €</div>
+            </div>
+            <div class="metric">
+              <div class="label">Total compras</div>
+              <div class="value" id="ctrlCompras">0,00 €</div>
+            </div>
+            <div class="metric" id="ctrlSaldoBox">
+              <div class="label">Saldo</div>
+              <div class="value" id="ctrlSaldo">0,00 €</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">🧾</div>
+            <div>
+              <h2>Cálculos por agrupación</h2>
+              <p>Importes del evento por segmento, destino y tienda.</p>
+            </div>
+          </div>
+          <div class="subgrid-3">
+            <div class="summary-card">
+              <strong>Por segmento</strong>
+              <div id="summarySegmento"></div>
+            </div>
+            <div class="summary-card">
+              <strong>Por destino</strong>
+              <div id="summaryDestino"></div>
+            </div>
+            <div class="summary-card">
+              <strong>Por tienda</strong>
+              <div id="summaryTienda"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="maintenanceWrapper" class="maintenance hidden">
+        <div class="maintenance-grid">
+          <div class="card">
+            <div class="section-title">
+              <div class="icon-badge">👤</div>
+              <div>
+                <h2>SOCIOS</h2>
+                <p>Alta, edición y borrado.</p>
+              </div>
+            </div>
+            <div class="grid">
+              <div class="field">
+                <label>Nombre del socio</label>
+                <input id="newSocioNombre" />
+              </div>
+              <button id="btnAddSocio">Añadir socio</button>
+            </div>
+            <div class="separator"></div>
+            <div id="sociosList"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-title">
+              <div class="icon-badge">🎉</div>
+              <div>
+                <h2>EVENTOS</h2>
+                <p>Título y precio por persona.</p>
+              </div>
+            </div>
+            <div class="grid">
+              <div class="field">
+                <label>Título del evento</label>
+                <input id="newEventoTitulo" />
+              </div>
+              <div class="field">
+                <label>Precio por persona</label>
+                <input id="newEventoPrecio" type="number" min="0" step="0.01" value="0" />
+              </div>
+              <button id="btnAddEvento">Añadir evento</button>
+            </div>
+            <div class="separator"></div>
+            <div id="eventosList"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-title">
+              <div class="icon-badge">📦</div>
+              <div>
+                <h2>PRODUCTOS</h2>
+                <p>Catálogo de compra reutilizable.</p>
+              </div>
+            </div>
+            <div class="grid">
+              <div class="field">
+                <label>Nombre del producto</label>
+                <input id="newProductoNombre" />
+              </div>
+              <div class="field">
+                <label>Segmento</label>
+                <select id="newProductoSegmento"></select>
+              </div>
+              <div class="field">
+                <label>Destino</label>
+                <select id="newProductoDestino"></select>
+              </div>
+              <div class="field">
+                <label>Precio IVA incluido</label>
+                <input id="newProductoPrecio" type="number" min="0" step="0.01" value="0" />
+              </div>
+              <div class="field">
+                <label>Tienda</label>
+                <input id="newProductoTienda" />
+              </div>
+              <button id="btnAddProducto">Añadir producto</button>
+            </div>
+            <div class="separator"></div>
+            <div id="productosList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-inner">
+      <button id="btnExportExcel">Excel</button>
+      <button id="btnShareWhats" class="outline">WhatsApp</button>
+      <button id="btnShareEmail" class="outline">Email</button>
+      <button id="btnToggleMaintenance" class="secondary">Mantenimiento</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'eventcontrol_single_html_v1_0_0';
+    const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
+    const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
+    const DESTINO_OPTIONS = ['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
+
+    const state = loadData();
+
+    function uid(){
+      return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+    function euro(v){
+      return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(v||0));
+    }
+    function n2(v){
+      return Number(v || 0).toFixed(2);
+    }
+    function saveData(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    function loadData(){
+      const defaults = {
+        socios:[
+          {id:uid(), nombre:'Jesús y acompañante'},
+          {id:uid(), nombre:'Ana'}
+        ],
+        eventos:[
+          {id:uid(), titulo:'Comida Primavera', precio:15},
+          {id:uid(), titulo:'Cena Verano', precio:20}
+        ],
+        productos:[
+          {id:uid(), nombre:'Refresco', segmento:'BEBIDA', destino:'APERITIVO', precio:1.80, tienda:'Mercadona'},
+          {id:uid(), nombre:'Carbón', segmento:'INFRAESTRUCTURA', destino:'INFRAESTRUCTURA', precio:6.50, tienda:'Leroy Merlin'}
+        ],
+        asistentes:[],
+        compras:[],
+        selectedEventId:''
+      };
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw){
+          defaults.selectedEventId = defaults.eventos[0]?.id || '';
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+          return defaults;
+        }
+        const parsed = JSON.parse(raw);
+        return {
+          ...defaults,
+          ...parsed,
+          selectedEventId: parsed.selectedEventId || parsed.eventos?.[0]?.id || ''
+        };
+      }catch(e){
+        defaults.selectedEventId = defaults.eventos[0]?.id || '';
+        return defaults;
+      }
+    }
+    function selectedEvent(){
+      return state.eventos.find(e => e.id === state.selectedEventId) || null;
+    }
+    function eventAsistentes(){
+      return state.asistentes.filter(a => a.eventId === state.selectedEventId);
+    }
+    function asistentesEnriquecidos(){
+      return eventAsistentes().map(a => ({
+        ...a,
+        socioNombre: state.socios.find(s => s.id === a.socioId)?.nombre || 'Socio eliminado'
+      }));
+    }
+    function eventCompras(){
+      return state.compras.filter(c => c.eventId === state.selectedEventId);
+    }
+    function comprasEnriquecidas(){
+      return eventCompras().map(c => {
+        const p = state.productos.find(x => x.id === c.productoId);
+        const precio = Number(p?.precio || 0);
+        const unidades = Number(c.unidades || 0);
+        return {
+          ...c,
+          productoNombre: p?.nombre || 'Producto eliminado',
+          segmento: p?.segmento || '',
+          destino: p?.destino || '',
+          tienda: p?.tienda || '',
+          precio,
+          importe: precio * unidades
+        };
+      });
+    }
+    function totals(){
+      const asistentes = asistentesEnriquecidos().reduce((a,b)=>a + Number(b.numero || 0), 0);
+      const totalCompras = comprasEnriquecidas().reduce((a,b)=>a + Number(b.importe || 0), 0);
+      const precioEvento = Number(selectedEvent()?.precio || 0);
+      const presupuesto = asistentes * precioEvento;
+      const saldo = presupuesto - totalCompras;
+      return {asistentes, totalCompras, presupuesto, saldo, precioEvento};
+    }
+    function fillSelect(select, items, valueField, textField, placeholder){
+      select.innerHTML = '';
+      if(placeholder){
+        const op = document.createElement('option');
+        op.value = '';
+        op.textContent = placeholder;
+        select.appendChild(op);
+      }
+      items.forEach(item => {
+        const op = document.createElement('option');
+        op.value = item[valueField];
+        op.textContent = item[textField];
+        select.appendChild(op);
+      });
+    }
+    function fillStaticSelect(select, arr){
+      select.innerHTML = '';
+      arr.forEach(v => {
+        const op = document.createElement('option');
+        op.value = v;
+        op.textContent = v;
+        select.appendChild(op);
+      });
+    }
+    function setSaldoStyle(el, saldo){
+      el.classList.remove('ok','bad');
+      el.classList.add(saldo >= 0 ? 'ok' : 'bad');
+    }
+    function summaryBy(field){
+      const map = {};
+      comprasEnriquecidas().forEach(item => {
+        const key = item[field] || 'Sin dato';
+        map[key] = (map[key] || 0) + item.importe;
+      });
+      return Object.entries(map)
+        .map(([k,v]) => ({k,v}))
+        .sort((a,b)=>b.v-a.v);
+    }
+    function renderSummary(targetId, rows){
+      const wrap = document.getElementById(targetId);
+      wrap.innerHTML = '';
+      if(!rows.length){
+        wrap.innerHTML = '<div class="hint">Sin datos.</div>';
+        return;
+      }
+      rows.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'summary-item';
+        div.innerHTML = `<span>${escapeHtml(r.k)}</span><span class="pill">${euro(r.v)}</span>`;
+        wrap.appendChild(div);
+      });
+    }
+    function renderPayStats(){
+      const wrap = document.getElementById('payStats');
+      wrap.innerHTML = '';
+      PAYMENT_OPTIONS.forEach(tipo => {
+        const personas = asistentesEnriquecidos()
+          .filter(a => a.situacion === tipo)
+          .reduce((a,b)=> a + Number(b.numero || 0), 0);
+        const div = document.createElement('div');
+        div.className = 'metric';
+        div.innerHTML = `<div class="label">${escapeHtml(tipo)}</div><div class="value">${personas}</div>`;
+        wrap.appendChild(div);
+      });
+    }
+    function renderSociosList(){
+      const wrap = document.getElementById('sociosList');
+      wrap.innerHTML = '';
+      if(!state.socios.length){
+        wrap.innerHTML = '<div class="empty">No hay socios.</div>';
+        return;
+      }
+      state.socios.forEach(s => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        row.innerHTML = `
+          <div class="grid">
+            <div class="field">
+              <label>Nombre</label>
+              <input data-role="socio-nombre" data-id="${s.id}" value="${escapeAttr(s.nombre)}" />
+            </div>
+            <button class="danger small" data-role="delete-socio" data-id="${s.id}">Eliminar</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+    }
+    function renderEventosList(){
+      const wrap = document.getElementById('eventosList');
+      wrap.innerHTML = '';
+      if(!state.eventos.length){
+        wrap.innerHTML = '<div class="empty">No hay eventos.</div>';
+        return;
+      }
+      state.eventos.forEach(e => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        row.innerHTML = `
+          ${e.id === state.selectedEventId ? '<div class="badge-active">Activo</div>' : ''}
+          <div class="grid">
+            <div class="field">
+              <label>Título</label>
+              <input data-role="evento-titulo" data-id="${e.id}" value="${escapeAttr(e.titulo)}" />
+            </div>
+            <div class="field">
+              <label>Precio</label>
+              <input type="number" min="0" step="0.01" data-role="evento-precio" data-id="${e.id}" value="${Number(e.precio || 0)}" />
+            </div>
+            <button class="danger small" data-role="delete-evento" data-id="${e.id}">Eliminar</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+    }
+    function renderProductosList(){
+      const wrap = document.getElementById('productosList');
+      wrap.innerHTML = '';
+      if(!state.productos.length){
+        wrap.innerHTML = '<div class="empty">No hay productos.</div>';
+        return;
+      }
+      state.productos.forEach(p => {
+        const row = document.createElement('div');
+        row.className = 'row-item';
+        row.innerHTML = `
+          <div class="grid">
+            <div class="field">
+              <label>Nombre</label>
+              <input data-role="producto-nombre" data-id="${p.id}" value="${escapeAttr(p.nombre)}" />
+            </div>
+            <div class="field">
+              <label>Segmento</label>
+              <select data-role="producto-segmento" data-id="${p.id}">
+                ${SEGMENT_OPTIONS.map(x => `<option value="${x}" ${x===p.segmento?'selected':''}>${x}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>Destino</label>
+              <select data-role="producto-destino" data-id="${p.id}">
+                ${DESTINO_OPTIONS.map(x => `<option value="${x}" ${x===p.destino?'selected':''}>${x}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field">
+              <label>Precio</label>
+              <input type="number" min="0" step="0.01" data-role="producto-precio" data-id="${p.id}" value="${Number(p.precio || 0)}" />
+            </div>
+            <div class="field">
+              <label>Tienda</label>
+              <input data-role="producto-tienda" data-id="${p.id}" value="${escapeAttr(p.tienda || '')}" />
+            </div>
+            <button class="danger small" data-role="delete-producto" data-id="${p.id}">Eliminar</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+    }
+    function renderAsistentesList(){
+      const wrap = document.getElementById('asistentesList');
+      wrap.innerHTML = '';
+      const rows = asistentesEnriquecidos();
+      if(!rows.length){
+        wrap.innerHTML = '<div class="empty">Todavía no hay asistentes cargados para este evento.</div>';
+        return;
+      }
+      rows.forEach(a => {
+        const row = document.createElement('div');
+        row.className = 'row row-item asistente';
+        row.innerHTML = `
+          <div class="field">
+            <label>Socio</label>
+            <select data-role="asistente-socio" data-id="${a.id}">
+              ${state.socios.map(s => `<option value="${s.id}" ${s.id===a.socioId?'selected':''}>${escapeHtml(s.nombre)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>Número</label>
+            <input type="number" min="0" step="1" data-role="asistente-numero" data-id="${a.id}" value="${Number(a.numero || 0)}" />
+          </div>
+          <div class="field">
+            <label>Situación</label>
+            <select data-role="asistente-situacion" data-id="${a.id}">
+              ${PAYMENT_OPTIONS.map(x => `<option value="${x}" ${x===a.situacion?'selected':''}>${x}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="danger" data-role="delete-asistente" data-id="${a.id}">Eliminar</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+    }
+    function renderComprasList(){
+      const wrap = document.getElementById('comprasList');
+      wrap.innerHTML = '';
+      const rows = comprasEnriquecidas();
+      if(!rows.length){
+        wrap.innerHTML = '<div class="empty">Todavía no hay compras cargadas para este evento.</div>';
+        return;
+      }
+      rows.forEach(c => {
+        const row = document.createElement('div');
+        row.className = 'row row-item compra';
+        row.innerHTML = `
+          <div class="field">
+            <label>Producto</label>
+            <select data-role="compra-producto" data-id="${c.id}">
+              ${state.productos.map(p => `<option value="${p.id}" ${p.id===c.productoId?'selected':''}>${escapeHtml(p.nombre)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>Unidades</label>
+            <input type="number" min="0" step="0.01" data-role="compra-unidades" data-id="${c.id}" value="${n2(c.unidades)}" />
+          </div>
+          <div class="field">
+            <label>Precio</label>
+            <input readonly value="${euro(c.precio)}" />
+          </div>
+          <div class="field">
+            <label>Importe</label>
+            <input readonly value="${euro(c.importe)}" />
+          </div>
+          <div class="field">
+            <label>Tienda</label>
+            <input readonly value="${escapeAttr(c.tienda || '')}" />
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button class="danger" data-role="delete-compra" data-id="${c.id}">Eliminar</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+    }
+    function renderSelectors(){
+      fillSelect(document.getElementById('selectedEvent'), state.eventos, 'id', 'titulo');
+      document.getElementById('selectedEvent').value = state.selectedEventId || '';
+      fillSelect(document.getElementById('asistenteSocio'), state.socios, 'id', 'nombre');
+      const asistSel = document.getElementById('asistenteSocio');
+      if(state.socios.length && !asistSel.value) asistSel.value = state.socios[0].id;
+      fillStaticSelect(document.getElementById('asistenteSituacion'), PAYMENT_OPTIONS);
+      if(!document.getElementById('asistenteSituacion').value) document.getElementById('asistenteSituacion').value = 'Pendiente';
+
+      fillSelect(document.getElementById('compraProducto'), state.productos, 'id', 'nombre');
+      const compSel = document.getElementById('compraProducto');
+      if(state.productos.length && !compSel.value) compSel.value = state.productos[0].id;
+
+      fillStaticSelect(document.getElementById('newProductoSegmento'), SEGMENT_OPTIONS);
+      fillStaticSelect(document.getElementById('newProductoDestino'), DESTINO_OPTIONS);
+    }
+    function updateCompraPreview(){
+      const productoId = document.getElementById('compraProducto').value;
+      const unidades = Number(document.getElementById('compraUnidades').value || 0);
+      const p = state.productos.find(x => x.id === productoId);
+      const precio = Number(p?.precio || 0);
+      document.getElementById('compraPrecio').value = euro(precio);
+      document.getElementById('compraImporte').value = euro(precio * unidades);
+      document.getElementById('compraTienda').value = p?.tienda || '';
+    }
+    function renderMain(){
+      const hasEvent = !!selectedEvent();
+      document.getElementById('noEventMessage').classList.toggle('hidden', hasEvent);
+      document.getElementById('tabAsistentes').classList.toggle('hidden', !hasEvent || currentTab !== 'asistentes');
+      document.getElementById('tabCompras').classList.toggle('hidden', !hasEvent || currentTab !== 'compras');
+
+      const t = totals();
+      document.getElementById('metricAsistentes').textContent = t.asistentes;
+      document.getElementById('metricPresupuesto').textContent = euro(t.presupuesto);
+      document.getElementById('metricCompras').textContent = euro(t.totalCompras);
+      document.getElementById('metricSaldo').textContent = euro(t.saldo);
+      setSaldoStyle(document.getElementById('saldoMetric'), t.saldo);
+
+      document.getElementById('ctrlAsistentes').textContent = t.asistentes;
+      document.getElementById('ctrlPrecioEvento').textContent = euro(t.precioEvento);
+      document.getElementById('ctrlCompras').textContent = euro(t.totalCompras);
+      document.getElementById('ctrlSaldo').textContent = euro(t.saldo);
+      setSaldoStyle(document.getElementById('ctrlSaldoBox'), t.saldo);
+
+      renderAsistentesList();
+      renderComprasList();
+      renderPayStats();
+      renderSummary('summarySegmento', summaryBy('segmento'));
+      renderSummary('summaryDestino', summaryBy('destino'));
+      renderSummary('summaryTienda', summaryBy('tienda'));
+
+      renderSociosList();
+      renderEventosList();
+      renderProductosList();
+      updateCompraPreview();
+    }
+
+    function fullRender(){
+      if(!state.selectedEventId && state.eventos[0]) state.selectedEventId = state.eventos[0].id;
+      renderSelectors();
+      renderMain();
+      saveData();
+    }
+
+    function exportExcelHtml(){
+      const ev = selectedEvent();
+      if(!ev){
+        alert('No hay evento activo.');
+        return;
+      }
+      const asistentes = asistentesEnriquecidos();
+      const compras = comprasEnriquecidas();
+      const t = totals();
+
+      const html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:x="urn:schemas-microsoft-com:office:excel"
+            xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="UTF-8">
+        <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Evento</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+      </head>
+      <body>
+        <table border="1">
+          <tr><th colspan="2">RESUMEN EVENTO</th></tr>
+          <tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
+          <tr><td>Precio por persona</td><td>${n2(ev.precio)}</td></tr>
+          <tr><td>Número asistentes</td><td>${t.asistentes}</td></tr>
+          <tr><td>Presupuesto</td><td>${n2(t.presupuesto)}</td></tr>
+          <tr><td>Total compras</td><td>${n2(t.totalCompras)}</td></tr>
+          <tr><td>Saldo</td><td>${n2(t.saldo)}</td></tr>
+        </table>
+        <br>
+        <table border="1">
+          <tr><th colspan="2">ASISTENTES</th></tr>
+          <tr><th>Nombre</th><th>Número</th></tr>
+          ${asistentes.map(a => `<tr><td>${escapeHtml(a.socioNombre)}</td><td>${Number(a.numero || 0)}</td></tr>`).join('')}
+        </table>
+        <br>
+        <table border="1">
+          <tr><th colspan="7">COMPRAS</th></tr>
+          <tr><th>Producto</th><th>Unidades</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Segmento</th><th>Destino</th></tr>
+          ${compras.map(c => `<tr>
+            <td>${escapeHtml(c.productoNombre)}</td>
+            <td>${n2(c.unidades)}</td>
+            <td>${n2(c.precio)}</td>
+            <td>${n2(c.importe)}</td>
+            <td>${escapeHtml(c.tienda || '')}</td>
+            <td>${escapeHtml(c.segmento || '')}</td>
+            <td>${escapeHtml(c.destino || '')}</td>
+          </tr>`).join('')}
+        </table>
+      </body></html>`;
+
+      const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = (ev.titulo || 'evento').replace(/\s+/g,'_') + '_EventControl.xls';
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function shareWhats(){
+      const ev = selectedEvent();
+      if(!ev){
+        alert('No hay evento activo.');
+        return;
+      }
+      const t = totals();
+      const txt = `Evento: ${ev.titulo}\nAsistentes: ${t.asistentes}\nPresupuesto: ${euro(t.presupuesto)}\nCompras: ${euro(t.totalCompras)}\nSaldo: ${euro(t.saldo)}\n\nExporta el Excel desde la app para compartir el detalle.`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+    }
+    function shareEmail(){
+      const ev = selectedEvent();
+      if(!ev){
+        alert('No hay evento activo.');
+        return;
+      }
+      const t = totals();
+      const subject = encodeURIComponent('Datos del evento: ' + ev.titulo);
+      const body = encodeURIComponent(`Adjunto/exporta el Excel del evento ${ev.titulo}.\n\nAsistentes: ${t.asistentes}\nPresupuesto: ${euro(t.presupuesto)}\nCompras: ${euro(t.totalCompras)}\nSaldo: ${euro(t.saldo)}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    function escapeHtml(str){
+      return String(str ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#39;");
+    }
+    function escapeAttr(str){
+      return escapeHtml(str);
+    }
+
+    let currentTab = 'asistentes';
+
+    document.getElementById('tabAsistentesBtn').addEventListener('click', () => {
+      currentTab = 'asistentes';
+      document.getElementById('tabAsistentesBtn').classList.add('active');
+      document.getElementById('tabComprasBtn').classList.remove('active');
+      renderMain();
+    });
+    document.getElementById('tabComprasBtn').addEventListener('click', () => {
+      currentTab = 'compras';
+      document.getElementById('tabComprasBtn').classList.add('active');
+      document.getElementById('tabAsistentesBtn').classList.remove('active');
+      renderMain();
+    });
+
+    document.getElementById('selectedEvent').addEventListener('change', e => {
+      state.selectedEventId = e.target.value;
+      fullRender();
+    });
+    document.getElementById('compraProducto').addEventListener('change', updateCompraPreview);
+    document.getElementById('compraUnidades').addEventListener('input', updateCompraPreview);
+
+    document.getElementById('btnAddSocio').addEventListener('click', () => {
+      const nombre = document.getElementById('newSocioNombre').value.trim();
+      if(!nombre) return;
+      state.socios.push({id:uid(), nombre});
+      document.getElementById('newSocioNombre').value = '';
+      fullRender();
+    });
+    document.getElementById('btnAddEvento').addEventListener('click', () => {
+      const titulo = document.getElementById('newEventoTitulo').value.trim();
+      const precio = Number(document.getElementById('newEventoPrecio').value || 0);
+      if(!titulo) return;
+      const ev = {id:uid(), titulo, precio};
+      state.eventos.push(ev);
+      if(!state.selectedEventId) state.selectedEventId = ev.id;
+      document.getElementById('newEventoTitulo').value = '';
+      document.getElementById('newEventoPrecio').value = '0';
+      fullRender();
+    });
+    document.getElementById('btnAddProducto').addEventListener('click', () => {
+      const nombre = document.getElementById('newProductoNombre').value.trim();
+      if(!nombre) return;
+      state.productos.push({
+        id:uid(),
+        nombre,
+        segmento: document.getElementById('newProductoSegmento').value,
+        destino: document.getElementById('newProductoDestino').value,
+        precio: Number(document.getElementById('newProductoPrecio').value || 0),
+        tienda: document.getElementById('newProductoTienda').value.trim()
+      });
+      document.getElementById('newProductoNombre').value = '';
+      document.getElementById('newProductoPrecio').value = '0';
+      document.getElementById('newProductoTienda').value = '';
+      fullRender();
+    });
+    document.getElementById('btnAddAsistente').addEventListener('click', () => {
+      if(!state.selectedEventId) return;
+      const socioId = document.getElementById('asistenteSocio').value;
+      if(!socioId) return;
+      state.asistentes.push({
+        id:uid(),
+        eventId: state.selectedEventId,
+        socioId,
+        numero: Number(document.getElementById('asistenteNumero').value || 0),
+        situacion: document.getElementById('asistenteSituacion').value
+      });
+      document.getElementById('asistenteNumero').value = '1';
+      document.getElementById('asistenteSituacion').value = 'Pendiente';
+      fullRender();
+    });
+    document.getElementById('btnAddCompra').addEventListener('click', () => {
+      if(!state.selectedEventId) return;
+      const productoId = document.getElementById('compraProducto').value;
+      if(!productoId) return;
+      state.compras.push({
+        id:uid(),
+        eventId: state.selectedEventId,
+        productoId,
+        unidades: Number(document.getElementById('compraUnidades').value || 0)
+      });
+      document.getElementById('compraUnidades').value = '1.00';
+      fullRender();
+    });
+
+    document.getElementById('btnExportExcel').addEventListener('click', exportExcelHtml);
+    document.getElementById('btnShareWhats').addEventListener('click', shareWhats);
+    document.getElementById('btnShareEmail').addEventListener('click', shareEmail);
+    document.getElementById('btnToggleMaintenance').addEventListener('click', () => {
+      const box = document.getElementById('maintenanceWrapper');
+      box.classList.toggle('hidden');
+      document.getElementById('btnToggleMaintenance').textContent = box.classList.contains('hidden') ? 'Mantenimiento' : 'Ocultar mantenimiento';
+    });
+
+    document.body.addEventListener('input', (e) => {
+      const el = e.target;
+      const id = el.dataset.id;
+      const role = el.dataset.role;
+      if(!id || !role) return;
+
+      if(role === 'socio-nombre'){
+        const row = state.socios.find(x => x.id === id);
+        if(row) row.nombre = el.value;
+      }
+      if(role === 'evento-titulo'){
+        const row = state.eventos.find(x => x.id === id);
+        if(row) row.titulo = el.value;
+      }
+      if(role === 'evento-precio'){
+        const row = state.eventos.find(x => x.id === id);
+        if(row) row.precio = Number(el.value || 0);
+      }
+      if(role === 'producto-nombre'){
+        const row = state.productos.find(x => x.id === id);
+        if(row) row.nombre = el.value;
+      }
+      if(role === 'producto-precio'){
+        const row = state.productos.find(x => x.id === id);
+        if(row) row.precio = Number(el.value || 0);
+      }
+      if(role === 'producto-tienda'){
+        const row = state.productos.find(x => x.id === id);
+        if(row) row.tienda = el.value;
+      }
+      if(role === 'asistente-numero'){
+        const row = state.asistentes.find(x => x.id === id);
+        if(row) row.numero = Number(el.value || 0);
+      }
+      if(role === 'compra-unidades'){
+        const row = state.compras.find(x => x.id === id);
+        if(row) row.unidades = Number(el.value || 0);
+      }
+      saveData();
+      renderMain();
+    });
+
+    document.body.addEventListener('change', (e) => {
+      const el = e.target;
+      const id = el.dataset.id;
+      const role = el.dataset.role;
+      if(!id || !role) return;
+
+      if(role === 'producto-segmento'){
+        const row = state.productos.find(x => x.id === id);
+        if(row) row.segmento = el.value;
+      }
+      if(role === 'producto-destino'){
+        const row = state.productos.find(x => x.id === id);
+        if(row) row.destino = el.value;
+      }
+      if(role === 'asistente-socio'){
+        const row = state.asistentes.find(x => x.id === id);
+        if(row) row.socioId = el.value;
+      }
+      if(role === 'asistente-situacion'){
+        const row = state.asistentes.find(x => x.id === id);
+        if(row) row.situacion = el.value;
+      }
+      if(role === 'compra-producto'){
+        const row = state.compras.find(x => x.id === id);
+        if(row) row.productoId = el.value;
+      }
+      saveData();
+      renderMain();
+    });
+
+    document.body.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-role]');
+      if(!btn) return;
+      const id = btn.dataset.id;
+      const role = btn.dataset.role;
+
+      if(role === 'delete-socio'){
+        state.socios = state.socios.filter(x => x.id !== id);
+      }
+      if(role === 'delete-evento'){
+        state.eventos = state.eventos.filter(x => x.id !== id);
+        state.asistentes = state.asistentes.filter(x => x.eventId !== id);
+        state.compras = state.compras.filter(x => x.eventId !== id);
+        if(state.selectedEventId === id) state.selectedEventId = state.eventos[0]?.id || '';
+      }
+      if(role === 'delete-producto'){
+        state.productos = state.productos.filter(x => x.id !== id);
+      }
+      if(role === 'delete-asistente'){
+        state.asistentes = state.asistentes.filter(x => x.id !== id);
+      }
+      if(role === 'delete-compra'){
+        state.compras = state.compras.filter(x => x.id !== id);
+      }
+      fullRender();
+    });
+
+    fullRender();
+  </script>
+</body>
+</html>
