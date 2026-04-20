@@ -98,39 +98,48 @@
         </div>
       </div>
 
+      
       <div id="maintenanceWrapper" class="maintenance hidden">
-        <div class="maintenance-grid">
-          <div class="card">
-            <div class="section-title"><div class="icon-badge">👤</div><div><h2>SOCIOS</h2><p>Alta, modificación y borrado.</p></div></div>
-            <div class="grid"><div class="field"><label>Nombre del socio</label><input id="newSocioNombre" /></div><button type="button" id="btnAddSocio">Añadir socio</button></div>
-            <div class="separator"></div><div id="sociosList"></div>
-          </div>
-
-          <div class="card">
-            <div class="section-title"><div class="icon-badge">🎉</div><div><h2>EVENTOS</h2><p>Alta, modificación y borrado.</p></div></div>
-            <div class="grid"><div class="field"><label>Título del evento</label><input id="newEventoTitulo" /></div><div class="field"><label>Precio por persona</label><input id="newEventoPrecio" type="number" min="0" step="0.01" value="0" /></div><button type="button" id="btnAddEvento">Añadir evento</button></div>
-            <div class="separator"></div><div id="eventosList"></div>
-          </div>
-
-          <div class="card">
-            <div class="section-title"><div class="icon-badge">🏪</div><div><h2>TIENDAS</h2><p>Alta, modificación y borrado.</p></div></div>
-            <div class="grid"><div class="field"><label>Nombre de la tienda</label><input id="newTiendaNombre" /></div><button type="button" id="btnAddTienda">Añadir tienda</button></div>
-            <div class="separator"></div><div id="tiendasList"></div>
-          </div>
-
-          <div class="card">
-            <div class="section-title"><div class="icon-badge">📦</div><div><h2>PRODUCTOS</h2><p>Alta, modificación y borrado.</p></div></div>
-            <div class="grid">
-              <div class="field"><label>Nombre del producto</label><input id="newProductoNombre" /></div>
-              <div class="field"><label>Segmento</label><select id="newProductoSegmento"></select></div>
-              <div class="field"><label>Destino</label><select id="newProductoDestino"></select></div>
-              <div class="field"><label>Precio IVA incluido</label><input id="newProductoPrecio" type="number" min="0" step="0.01" value="0" /></div>
-              <div class="field"><label>Tienda</label><select id="newProductoTienda"></select></div>
-              <button type="button" id="btnAddProducto">Añadir producto</button>
-            </div>
-            <div class="separator"></div><div id="productosList"></div>
-          </div>
+        <div class="tabs" id="maintenanceTabs">
+          <button type="button" class="tab active" id="tabSociosBtn">SOCIOS</button>
+          <button type="button" class="tab" id="tabEventosBtn">EVENTOS</button>
+          <button type="button" class="tab" id="tabTiendasBtn">TIENDAS</button>
+          <button type="button" class="tab" id="tabProductosBtn">PRODUCTOS</button>
         </div>
+
+        <div id="maintSocios" class="card">
+          <div class="section-title"><div class="icon-badge">👤</div><div><h2>SOCIOS</h2><p>Alta, modificación y borrado.</p></div></div>
+          <div class="grid"><div class="field"><label>Nombre del socio</label><input id="newSocioNombre" /></div><button type="button" id="btnAddSocio">Añadir socio</button></div>
+          <div class="separator"></div><div id="sociosList"></div>
+        </div>
+
+        <div id="maintEventos" class="card hidden">
+          <div class="section-title"><div class="icon-badge">🎉</div><div><h2>EVENTOS</h2><p>Alta, modificación y borrado.</p></div></div>
+          <div class="grid"><div class="field"><label>Título del evento</label><input id="newEventoTitulo" /></div><div class="field"><label>Precio por persona</label><input id="newEventoPrecio" type="number" min="0" step="0.01" value="0" /></div><button type="button" id="btnAddEvento">Añadir evento</button></div>
+          <div class="separator"></div><div id="eventosList"></div>
+        </div>
+
+        <div id="maintTiendas" class="card hidden">
+          <div class="section-title"><div class="icon-badge">🏪</div><div><h2>TIENDAS</h2><p>Alta, modificación y borrado.</p></div></div>
+          <div class="grid"><div class="field"><label>Nombre de la tienda</label><input id="newTiendaNombre" /></div><button type="button" id="btnAddTienda">Añadir tienda</button></div>
+          <div class="separator"></div><div id="tiendasList"></div>
+        </div>
+
+        <div id="maintProductos" class="card hidden">
+          <div class="section-title"><div class="icon-badge">📦</div><div><h2>PRODUCTOS</h2><p>Alta, modificación y borrado.</p></div></div>
+          <div class="grid">
+            <div class="field"><label>Nombre del producto</label><input id="newProductoNombre" /></div>
+            <div class="field"><label>Segmento</label><select id="newProductoSegmento"></select></div>
+            <div class="field"><label>Destino</label><select id="newProductoDestino"></select></div>
+            <div class="field"><label>Precio IVA incluido</label><input id="newProductoPrecio" type="number" min="0" step="0.01" value="0" /></div>
+            <div class="field"><label>Tienda</label><select id="newProductoTienda"></select></div>
+            <button type="button" id="btnAddProducto">Añadir producto</button>
+          </div>
+          <div class="separator"></div><div id="productosList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
       </div>
     </div>
   </div>
@@ -189,6 +198,16 @@ function shareWhats(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return
 function shareEmail(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const subject=encodeURIComponent('Datos del evento: '+ev.titulo); const body=encodeURIComponent('Evento: '+ev.titulo+'\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en tu app de correo.'); window.location.href='mailto:?subject='+subject+'&body='+body}
 function escapeHtml(str){return String(str??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
 function escapeAttr(str){return escapeHtml(str)}
+let currentMaintTab='socios';
+function setMaintTab(tab){
+  currentMaintTab=tab;
+  const map={socios:'maintSocios',eventos:'maintEventos',tiendas:'maintTiendas',productos:'maintProductos'};
+  const btns={socios:'tabSociosBtn',eventos:'tabEventosBtn',tiendas:'tabTiendasBtn',productos:'tabProductosBtn'};
+  Object.keys(map).forEach(k=>{
+    document.getElementById(map[k]).classList.toggle('hidden', k!==tab);
+    document.getElementById(btns[k]).classList.toggle('active', k===tab);
+  });
+}
 
 function modifySocio(id){const row=state.socios.find(x=>x.id===id); if(row){row.nombre=document.getElementById('socio-nombre-'+id).value.trim(); fullRender()}}
 function deleteSocio(id){state.socios=state.socios.filter(x=>x.id!==id); fullRender()}
@@ -219,7 +238,11 @@ function initEvents(){
   document.getElementById('btnExportExcel').addEventListener('click',exportExcelHtml);
   document.getElementById('btnShareWhats').addEventListener('click',shareWhats);
   document.getElementById('btnShareEmail').addEventListener('click',shareEmail);
-  document.getElementById('btnToggleMaintenance').addEventListener('click',function(){const box=document.getElementById('maintenanceWrapper'); box.classList.toggle('hidden');});
+  document.getElementById('btnToggleMaintenance').addEventListener('click',function(){const box=document.getElementById('maintenanceWrapper'); box.classList.toggle('hidden'); if(!box.classList.contains('hidden')) setMaintTab(currentMaintTab);});
+  document.getElementById('tabSociosBtn').addEventListener('click',function(){setMaintTab('socios')});
+  document.getElementById('tabEventosBtn').addEventListener('click',function(){setMaintTab('eventos')});
+  document.getElementById('tabTiendasBtn').addEventListener('click',function(){setMaintTab('tiendas')});
+  document.getElementById('tabProductosBtn').addEventListener('click',function(){setMaintTab('productos')});
 }
 
 initEvents();
