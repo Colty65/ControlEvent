@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v1.4</title>
+  <title>ControlEvent v2.0</title>
   <style>
     :root{--bg:#f3f5f7;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe2ea;--primary:#111827;--ok-bg:#ecfdf5;--ok:#047857;--bad-bg:#fef2f2;--bad:#b91c1c;--warn-bg:#fff7ed;--warn:#c2410c;--pill:#eef2f7;--shadow:0 8px 24px rgba(15,23,42,.08)}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -27,7 +27,7 @@
     <div class="header-inner app">
       <div><div class="brand">PEÑA EL ARRASTRE</div><div class="subtitle">©oltyLAB ‘26</div></div>
       <div class="centerhead"><div class="event-active-label">Evento:</div><div class="event-active-name" id="activeEventName">Sin evento</div></div>
-      <div class="appname">ControlEvent v1.4</div>
+      <div class="appname">ControlEvent v2.0</div>
     </div>
   </div>
 
@@ -44,6 +44,10 @@
 
       <div id="tabAsistentes">
         <div class="card">
+          <div class="section-title"><div class="icon-badge">💶</div><div><h2>Resumen de pagos</h2><p>Personas asociadas a cada forma de pago o pendiente.</p></div></div>
+          <div class="stats-pay" id="payStats"></div>
+        </div>
+        <div class="card">
           <div class="section-title"><div class="icon-badge">👥</div><div><h2>Asistentes del evento</h2><p>Se puede modificar el socio, el número de asistentes y la situación del pago.</p></div></div>
           <div class="form-row asistentes">
             <div class="field"><label>Socio</label><select id="asistenteSocio"></select></div>
@@ -53,27 +57,9 @@
           </div>
           <div class="separator"></div><div id="asistentesList"></div>
         </div>
-        <div class="card">
-          <div class="section-title"><div class="icon-badge">💶</div><div><h2>Resumen de pagos</h2><p>Personas asociadas a cada forma de pago o pendiente.</p></div></div>
-          <div class="stats-pay" id="payStats"></div>
-        </div>
       </div>
 
       <div id="tabCompras" class="hidden">
-        <div class="card">
-          <div class="section-title"><div class="icon-badge">🛒</div><div><h2>Compras del evento</h2><p>Se puede modificar producto, unidades y ticket con botón explícito Modificar.</p></div></div>
-          <div class="form-row compras">
-            <div class="field"><label>Producto</label><select id="compraProducto"></select></div>
-            <div class="field"><label>Unidades</label><input id="compraUnidades" type="number" min="0" step="0.01" value="1.00" /></div>
-            <div class="field"><label>Precio</label><input id="compraPrecio" readonly /></div>
-            <div class="field"><label>Importe</label><input id="compraImporte" readonly /></div>
-            <div class="field"><label>Tienda</label><input id="compraTienda" readonly /></div>
-            <div class="field"><label>Ticket</label><input id="compraTicket" placeholder="Nº ticket/factura" /></div>
-            <div class="field"><label>&nbsp;</label><button type="button" id="btnAddCompra">Añadir</button></div>
-          </div>
-          <div class="separator"></div><div id="comprasList"></div>
-        </div>
-
         <div class="card">
           <div class="section-title"><div class="icon-badge">📊</div><div><h2>Control presupuestario</h2><p>Incluye compras realizadas y compras pendientes según el dato TICKET.</p></div></div>
           <div class="metrics">
@@ -96,9 +82,22 @@
             <div class="summary-card"><strong>Por tienda</strong><div id="summaryTienda"></div></div>
           </div>
         </div>
+
+        <div class="card">
+          <div class="section-title"><div class="icon-badge">🛒</div><div><h2>Compras del evento</h2><p>Se puede modificar producto, unidades y ticket con botón explícito Modificar.</p></div></div>
+          <div class="form-row compras">
+            <div class="field"><label>Producto</label><select id="compraProducto"></select></div>
+            <div class="field"><label>Unidades</label><input id="compraUnidades" type="number" min="0" step="0.01" value="1.00" /></div>
+            <div class="field"><label>Precio</label><input id="compraPrecio" readonly /></div>
+            <div class="field"><label>Importe</label><input id="compraImporte" readonly /></div>
+            <div class="field"><label>Tienda</label><input id="compraTienda" readonly /></div>
+            <div class="field"><label>Ticket</label><input id="compraTicket" placeholder="Nº ticket/factura" /></div>
+            <div class="field"><label>&nbsp;</label><button type="button" id="btnAddCompra">Añadir</button></div>
+          </div>
+          <div class="separator"></div><div id="comprasList"></div>
+        </div>
       </div>
 
-      
       <div id="maintenanceWrapper" class="maintenance hidden">
         <div class="tabs" id="maintenanceTabs">
           <button type="button" class="tab active" id="tabSociosBtn">SOCIOS</button>
@@ -193,7 +192,7 @@ function renderSelectors(){fillSelect(document.getElementById('selectedEvent'),s
 function updateCompraPreview(){const productoId=document.getElementById('compraProducto').value; const unidades=Number(document.getElementById('compraUnidades').value||0); const p=state.productos.find(x=>x.id===productoId); const precio=Number(p?.precio||0); document.getElementById('compraPrecio').value=euro(precio); document.getElementById('compraImporte').value=euro(precio*unidades); document.getElementById('compraTienda').value=tiendaNombreById(p?.tiendaId||'')}
 function renderMain(){const hasEvent=!!selectedEvent(); document.getElementById('activeEventName').textContent=selectedEvent()?.titulo||'Sin evento'; document.getElementById('noEventMessage').classList.toggle('hidden',hasEvent); document.getElementById('tabAsistentes').classList.toggle('hidden',!hasEvent||currentTab!=='asistentes'); document.getElementById('tabCompras').classList.toggle('hidden',!hasEvent||currentTab!=='compras'); const t=totals(); document.getElementById('ctrlAsistentes').textContent=t.asistentes; document.getElementById('ctrlPrecioEvento').textContent=euro(t.precioEvento); document.getElementById('ctrlPresupuesto').textContent=euro(t.presupuesto); document.getElementById('ctrlIngresado').textContent=euro(t.ingresado); document.getElementById('ctrlPendiente').textContent=euro(t.pendiente); document.getElementById('ctrlComprado').textContent=euro(t.comprado); document.getElementById('ctrlPdteCompra').textContent=euro(t.pdteCompra); document.getElementById('ctrlSaldo').textContent=euro(t.saldo); setSaldoStyle(document.getElementById('ctrlSaldoBox'),t.saldo); renderAsistentesList(); renderComprasList(); renderPayStats(); renderSummary('summarySegmento',summaryBy('segmento')); renderSummary('summaryDestino',summaryBy('destino')); renderSummary('summaryTienda',summaryBy('tienda')); renderSociosList(); renderEventosList(); renderTiendasList(); renderProductosList(); updateCompraPreview()}
 function fullRender(){if(!state.selectedEventId&&state.eventos[0])state.selectedEventId=state.eventos[0].id; renderSelectors(); renderMain(); saveData()}
-function exportExcelHtml(){const ev=selectedEvent(); if(!ev){alert('No hay evento activo.'); return} const asistentes=asistentesEnriquecidos(); const t=totals(); const fecha=nowString(); const compras=comprasEnriquecidas(); const seg=summaryBy('segmento'); const des=summaryBy('destino'); const tie=summaryBy('tienda'); const css='<style>table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}th,td{border:1px solid #dbe2ea;padding:6px 8px}th{background:#111827;color:#ffffff}.title{background:#111827;color:#ffffff;font-weight:bold}.warn{background:#fff7ed;color:#c2410c;font-weight:bold}.ok{background:#ecfdf5;color:#047857;font-weight:bold}.bad{background:#fef2f2;color:#b91c1c;font-weight:bold}</style>'; const saldoClass=t.saldo>=0?'ok':'bad'; const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8">'+css+'</head><body><table><tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr><tr><td>Evento</td><td>'+escapeHtml(ev.titulo)+'</td></tr><tr><td>Precio por persona</td><td>'+n2(t.precioEvento)+'</td></tr><tr><td>Nº asistentes</td><td>'+t.asistentes+'</td></tr><tr><td>Presupuesto</td><td>'+n2(t.presupuesto)+'</td></tr><tr><td>Ingresado</td><td>'+n2(t.ingresado)+'</td></tr><tr><td>Pendiente</td><td class="warn">'+n2(t.pendiente)+'</td></tr><tr><td>Compras realizadas</td><td>'+n2(t.comprado)+'</td></tr><tr><td>Compras pendientes</td><td class="warn">'+n2(t.pdteCompra)+'</td></tr><tr><td>Saldo</td><td class="'+saldoClass+'">'+n2(t.saldo)+'</td></tr><tr><td>Fecha y hora emisión</td><td>'+escapeHtml(fecha)+'</td></tr></table><br><table><tr><th class="title" colspan="2">ASISTENTES</th></tr><tr><th>Nombre</th><th>Número</th></tr>'+asistentes.map(a=>'<tr><td>'+escapeHtml(a.socioNombre)+'</td><td>'+Number(a.numero||0)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="6">COMPRAS</th></tr><tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>Precio</th><th>Importe</th><th>Tienda</th></tr>'+compras.map(c=>'<tr><td>'+escapeHtml(c.productoNombre)+'</td><td>'+escapeHtml(c.segmento||'')+'</td><td>'+escapeHtml(c.destino||'')+'</td><td>'+n2(c.precio)+'</td><td>'+n2(c.importe)+'</td><td>'+escapeHtml(c.tienda||'')+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr><tr><th>Segmento</th><th>Importe</th></tr>'+seg.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr><tr><th>Destino</th><th>Importe</th></tr>'+des.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA</th></tr><tr><th>Tienda</th><th>Importe</th></tr>'+tie.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table></body></html>'; const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8;'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=(ev.titulo||'evento').replace(/\s+/g,'_')+'_ControlEvent.xls'; link.click(); URL.revokeObjectURL(link.href)}
+function exportExcelHtml(){const ev=selectedEvent(); if(!ev){alert('No hay evento activo.'); return} const asistentes=asistentesEnriquecidos(); const t=totals(); const fecha=nowString(); const compras=comprasEnriquecidas(); const seg=summaryBy('segmento'); const des=summaryBy('destino'); const tie=summaryBy('tienda'); const css='<style>table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}th,td{border:1px solid #dbe2ea;padding:6px 8px}th{background:#111827;color:#ffffff}.title{background:#111827;color:#ffffff;font-weight:bold}.warn{background:#fff7ed;color:#c2410c;font-weight:bold}.ok{background:#ecfdf5;color:#047857;font-weight:bold}.bad{background:#fef2f2;color:#b91c1c;font-weight:bold}</style>'; const saldoClass=t.saldo>=0?'ok':'bad'; const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8">'+css+'</head><body><table><tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr><tr><td>Evento</td><td>'+escapeHtml(ev.titulo)+'</td></tr><tr><td>Precio por persona</td><td>'+n2(t.precioEvento)+'</td></tr><tr><td>Nº asistentes</td><td>'+t.asistentes+'</td></tr><tr><td>Presupuesto</td><td>'+n2(t.presupuesto)+'</td></tr><tr><td>Ingresado</td><td>'+n2(t.ingresado)+'</td></tr><tr><td>Pendiente</td><td class="warn">'+n2(t.pendiente)+'</td></tr><tr><td>Compras realizadas</td><td>'+n2(t.comprado)+'</td></tr><tr><td>Compras pendientes</td><td class="warn">'+n2(t.pdteCompra)+'</td></tr><tr><td>Saldo</td><td class="'+saldoClass+'">'+n2(t.saldo)+'</td></tr><tr><td>Fecha y hora emisión</td><td>'+escapeHtml(fecha)+'</td></tr></table><br><table><tr><th class="title" colspan="2">ASISTENTES</th></tr><tr><th>Nombre</th><th>Número</th></tr>'+asistentes.map(a=>'<tr><td>'+escapeHtml(a.socioNombre)+'</td><td>'+Number(a.numero||0)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="8">COMPRAS</th></tr><tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>TICKET</th></tr>'+compras.map(c=>'<tr><td>'+escapeHtml(c.productoNombre)+'</td><td>'+escapeHtml(c.segmento||'')+'</td><td>'+escapeHtml(c.destino||'')+'</td><td>'+n2(c.unidades)+'</td><td>'+n2(c.precio)+'</td><td>'+n2(c.importe)+'</td><td>'+escapeHtml(c.tienda||'')+'</td><td>'+escapeHtml(c.ticket||'')+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr><tr><th>Segmento</th><th>Importe</th></tr>'+seg.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr><tr><th>Destino</th><th>Importe</th></tr>'+des.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA</th></tr><tr><th>Tienda</th><th>Importe</th></tr>'+tie.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table></body></html>'; const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8;'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=(ev.titulo||'evento').replace(/\s+/g,'_')+'_ControlEvent.xls'; link.click(); URL.revokeObjectURL(link.href)}
 function shareWhats(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const txt='Evento: '+ev.titulo+'\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en WhatsApp.'; window.location.href='https://wa.me/?text='+encodeURIComponent(txt)}
 function shareEmail(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const subject=encodeURIComponent('Datos del evento: '+ev.titulo); const body=encodeURIComponent('Evento: '+ev.titulo+'\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en tu app de correo.'); window.location.href='mailto:?subject='+subject+'&body='+body}
 function escapeHtml(str){return String(str??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
