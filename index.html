@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v2.0</title>
+  <title>ControlEvent v2.1</title>
   <style>
     :root{--bg:#f3f5f7;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe2ea;--primary:#111827;--ok-bg:#ecfdf5;--ok:#047857;--bad-bg:#fef2f2;--bad:#b91c1c;--warn-bg:#fff7ed;--warn:#c2410c;--pill:#eef2f7;--shadow:0 8px 24px rgba(15,23,42,.08)}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
     .app{max-width:1280px;margin:0 auto;padding-bottom:110px}.header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-    .header-inner{display:grid;grid-template-columns:1fr 1.4fr 1fr;align-items:center;padding:12px 16px;gap:12px}.brand{font-weight:800;letter-spacing:.03em;font-size:16px}.subtitle{margin-top:4px;font-size:13px;color:var(--muted);font-weight:600}.centerhead{text-align:center}.event-active-label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}.event-active-name{margin-top:4px;font-size:15px;font-weight:800}.appname{font-size:14px;color:#111827;font-weight:800;white-space:nowrap;text-align:right}
+    .header-inner{display:grid;grid-template-columns:1fr 1.6fr 1fr;align-items:center;padding:12px 16px;gap:12px}
+    .brand{font-weight:800;letter-spacing:.03em;font-size:16px}.subtitle{margin-top:4px;font-size:13px;color:var(--muted);font-weight:600}.centerhead{display:flex;align-items:center;gap:8px;justify-content:center}.event-active-label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}.appname{font-size:14px;color:#111827;font-weight:800;white-space:nowrap;text-align:right}
     .main{padding:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}.section-title{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}.icon-badge{width:34px;height:34px;border-radius:12px;background:#eef2f7;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}.section-title h2{margin:0;font-size:18px}.section-title p{margin:4px 0 0;color:var(--muted);font-size:13px}
     .field label{display:block;font-size:13px;margin-bottom:6px;color:#374151;font-weight:600} input,select,button{font:inherit} input,select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text)} input[readonly]{background:#f8fafc}
     button{border:0;border-radius:14px;padding:11px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer} button.secondary{background:#e5e7eb;color:#111827} button.outline{background:#fff;color:#111827;border:1px solid var(--border)} button.danger{background:#b91c1c} button.small{padding:8px 10px;border-radius:12px;font-size:13px} button.modify{background:#0f766e}
@@ -16,28 +17,28 @@
     .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fff;padding:8px;border-radius:18px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px}.tab{background:transparent;color:#111827}.tab.active{background:#111827;color:#fff}.hidden{display:none !important}.empty{border:1px dashed var(--border);border-radius:18px;padding:18px;color:var(--muted);background:#f8fafc}.separator{height:1px;background:var(--border);margin:16px 0}
     .summary-card{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}.summary-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:#f8fafc;margin-top:8px;font-size:14px}.pill{background:var(--pill);border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700}
     .footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);border-top:1px solid var(--border);backdrop-filter:blur(8px)}.footer-inner{max-width:1280px;margin:0 auto;padding:10px 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-    .maintenance{border-top:1px solid var(--border);background:#f8fafc;padding:14px}.maintenance .card{box-shadow:none}.grid,.row,.form-row,.subgrid-3,.stats-pay,.maintenance-grid{display:grid;gap:10px}.badge-active{display:inline-block;margin-bottom:8px;background:#111827;color:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}.hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .maintenance{border-top:1px solid var(--border);background:#f8fafc;padding:14px}.grid,.row,.form-row,.subgrid-3,.stats-pay{display:grid;gap:10px}.badge-active{display:inline-block;margin-bottom:8px;background:#111827;color:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}.hint{font-size:12px;color:var(--muted);margin-top:6px}
     .itemcard{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rowline{display:grid;gap:10px}
-    .gear{font-size:20px;line-height:1}
-    @media (min-width:760px){.brand{font-size:18px}.subtitle,.appname{font-size:14px}.event-active-name{font-size:17px}.main{padding:20px}.metrics{grid-template-columns:repeat(8,minmax(0,1fr))}.stats-pay{grid-template-columns:repeat(4,minmax(0,1fr))}.form-row.asistentes{grid-template-columns:2.1fr .8fr 1.3fr auto}.form-row.compras{grid-template-columns:1.7fr .9fr 1fr 1fr 1.1fr 1fr auto}.row.asistente{grid-template-columns:2.1fr .8fr 1.3fr auto;align-items:end}.maintenance-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.actions{grid-template-columns:auto auto}.rowline.socio,.rowline.tienda{grid-template-columns:1fr auto auto;align-items:end}.rowline.evento{grid-template-columns:1fr 140px auto auto;align-items:end}.rowline.producto{grid-template-columns:1.2fr 1fr 1fr 120px 1fr auto auto;align-items:end}.rowline.compra-edit{grid-template-columns:1.5fr .8fr 1fr auto auto;align-items:end}}
+    .gear{font-size:26px;line-height:1}.iconbtn{font-size:22px;display:flex;align-items:center;justify-content:center}
+    #tabAsistentesBtn,#tabComprasBtn{font-size:24px;display:flex;align-items:center;justify-content:center}
+    #maintenanceTabs .tab{display:flex;align-items:center;justify-content:center;gap:6px}
+    @media (min-width:760px){.brand{font-size:18px}.subtitle,.appname{font-size:14px}.main{padding:20px}.metrics{grid-template-columns:repeat(8,minmax(0,1fr))}.stats-pay{grid-template-columns:repeat(4,minmax(0,1fr))}.form-row.asistentes{grid-template-columns:2.1fr .8fr 1.3fr auto}.form-row.compras{grid-template-columns:1.7fr .9fr 1fr 1fr 1.1fr 1fr auto}.row.asistente{grid-template-columns:2.1fr .8fr 1.3fr auto;align-items:end}.subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.actions{grid-template-columns:auto auto}.rowline.socio,.rowline.tienda{grid-template-columns:1fr auto auto;align-items:end}.rowline.evento{grid-template-columns:1fr 140px auto auto;align-items:end}.rowline.producto{grid-template-columns:1.2fr 1fr 1fr 120px 1fr auto auto;align-items:end}.rowline.compra-edit{grid-template-columns:1.5fr .8fr 1fr auto auto;align-items:end}}
   </style>
 </head>
 <body>
   <div class="header">
     <div class="header-inner app">
       <div><div class="brand">PEÑA EL ARRASTRE</div><div class="subtitle">©oltyLAB ‘26</div></div>
-      <div class="centerhead"><div class="event-active-label">Evento:</div><div class="event-active-name" id="activeEventName">Sin evento</div></div>
-      <div class="appname">ControlEvent v2.0</div>
+      <div class="centerhead"><div class="event-active-label">Evento:</div><select id="selectedEvent" style="max-width:340px;"></select></div>
+      <div class="appname">ControlEvent v2.1</div>
     </div>
   </div>
 
   <div class="app">
     <div class="main">
-      <div class="card"><div class="field"><label>Seleccionar evento</label><select id="selectedEvent"></select></div></div>
-
       <div class="tabs">
-        <button type="button" class="tab active" id="tabAsistentesBtn">ASISTENTES</button>
-        <button type="button" class="tab" id="tabComprasBtn">COMPRAS</button>
+        <button type="button" class="tab active" id="tabAsistentesBtn" title="Asistentes">👥</button>
+        <button type="button" class="tab" id="tabComprasBtn" title="Compras">🛒</button>
       </div>
 
       <div id="noEventMessage" class="card hidden"><div class="empty">No hay eventos. Crea uno desde el botón de mantenimiento al pie.</div></div>
@@ -75,11 +76,11 @@
         </div>
 
         <div class="card">
-          <div class="section-title"><div class="icon-badge">🧾</div><div><h2>Cálculos por agrupación</h2><p>Importes del evento por segmento, destino y tienda.</p></div></div>
+          <div class="section-title"><div class="icon-badge">🧾</div><div><h2>Cálculos por agrupación</h2><p>Importes del evento por segmento, destino y tienda+tícket.</p></div></div>
           <div class="subgrid-3">
             <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
             <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
-            <div class="summary-card"><strong>Por tienda</strong><div id="summaryTienda"></div></div>
+            <div class="summary-card"><strong>Por tienda y ticket</strong><div id="summaryTienda"></div></div>
           </div>
         </div>
 
@@ -100,10 +101,10 @@
 
       <div id="maintenanceWrapper" class="maintenance hidden">
         <div class="tabs" id="maintenanceTabs">
-          <button type="button" class="tab active" id="tabSociosBtn">SOCIOS</button>
-          <button type="button" class="tab" id="tabEventosBtn">EVENTOS</button>
-          <button type="button" class="tab" id="tabTiendasBtn">TIENDAS</button>
-          <button type="button" class="tab" id="tabProductosBtn">PRODUCTOS</button>
+          <button type="button" class="tab active" id="tabSociosBtn">👤 <span style="font-size:12px;font-weight:600;">socios</span></button>
+          <button type="button" class="tab" id="tabEventosBtn">🎉 <span style="font-size:12px;font-weight:600;">eventos</span></button>
+          <button type="button" class="tab" id="tabTiendasBtn">🏪 <span style="font-size:12px;font-weight:600;">tiendas</span></button>
+          <button type="button" class="tab" id="tabProductosBtn">📦 <span style="font-size:12px;font-weight:600;">productos</span></button>
         </div>
 
         <div id="maintSocios" class="card">
@@ -139,23 +140,20 @@
       </div>
     </div>
   </div>
-      </div>
-    </div>
-  </div>
 
   <div class="footer"><div class="footer-inner">
-    <button type="button" id="btnExportExcel">Excel</button>
-    <button type="button" id="btnShareWhats" class="outline">WhatsApp</button>
-    <button type="button" id="btnShareEmail" class="outline">Email</button>
-    <button type="button" id="btnToggleMaintenance" class="secondary" title="Mantenimiento"><span class="gear">⚙️</span></button>
+    <button type="button" id="btnExportExcel" class="iconbtn" title="Excel">📗</button>
+    <button type="button" id="btnShareWhats" class="outline iconbtn" title="WhatsApp">🟢</button>
+    <button type="button" id="btnShareEmail" class="outline iconbtn" title="Gmail">✉️</button>
+    <button type="button" id="btnToggleMaintenance" class="secondary iconbtn" title="Mantenimiento"><span class="gear">⚙️</span></button>
   </div></div>
 
 <script>
-const STORAGE_KEY='controlevent_single_html_v1_4';
+const STORAGE_KEY='controlevent_single_html_v2_1';
 const PAYMENT_OPTIONS=['Efectivo','Bizum','ING. RURAL','Pendiente'];
 const SEGMENT_OPTIONS=['COMIDA','BEBIDA','INFRAESTRUCTURA'];
 const DESTINO_OPTIONS=['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
-const state=loadData(); let currentTab='asistentes';
+const state=loadData(); let currentTab='asistentes'; let currentMaintTab='socios';
 function uid(){return 'id-'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
 function euro(v){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(v||0))}
 function n2(v){return Number(v||0).toFixed(2)}
@@ -168,8 +166,8 @@ function loadData(){
     const parsed=JSON.parse(raw); const merged={...defaults,...parsed,selectedEventId:parsed.selectedEventId||parsed.eventos?.[0]?.id||''}; merged.tiendas=parsed.tiendas||defaults.tiendas; merged.productos=(parsed.productos||defaults.productos).map(p=>({...p,tiendaId:p.tiendaId||''})); return merged
   }catch(e){defaults.selectedEventId=defaults.eventos[0]?.id||''; return defaults}
 }
-function selectedEvent(){return state.eventos.find(e=>e.id===state.selectedEventId)||null}
 function tiendaNombreById(id){return state.tiendas.find(t=>t.id===id)?.nombre||''}
+function selectedEvent(){return state.eventos.find(e=>e.id===state.selectedEventId)||null}
 function eventAsistentes(){return state.asistentes.filter(a=>a.eventId===state.selectedEventId)}
 function asistentesEnriquecidos(){return eventAsistentes().map(a=>({...a,socioNombre:state.socios.find(s=>s.id===a.socioId)?.nombre||'Socio eliminado'}))}
 function eventCompras(){return state.compras.filter(c=>c.eventId===state.selectedEventId)}
@@ -179,9 +177,9 @@ function fillSelect(select,items,valueField,textField){select.innerHTML=''; item
 function fillStaticSelect(select,arr){select.innerHTML=''; arr.forEach(v=>{const op=document.createElement('option'); op.value=v; op.textContent=v; select.appendChild(op)})}
 function setSaldoStyle(el,saldo){el.classList.remove('ok','bad'); el.classList.add(saldo>=0?'ok':'bad')}
 function summaryBy(field){const map={}; comprasEnriquecidas().forEach(item=>{const key=item[field]||'Sin dato'; map[key]=(map[key]||0)+item.importe}); return Object.entries(map).map(([k,v])=>({k,v})).sort((a,b)=>b.v-a.v)}
-function renderSummary(targetId,rows){const wrap=document.getElementById(targetId); wrap.innerHTML=''; if(!rows.length){wrap.innerHTML='<div class="hint">Sin datos.</div>'; return} rows.forEach(r=>{const div=document.createElement('div'); div.className='summary-item'; div.innerHTML='<span>'+escapeHtml(r.k)+'</span><span class="pill">'+euro(r.v)+'</span>'; wrap.appendChild(div)})}
+function summaryByStoreTicket(){const map={}; comprasEnriquecidas().forEach(item=>{const ticket=String(item.ticket||'').trim(); const key=ticket?((item.tienda||'Sin tienda')+' | '+ticket):((item.tienda||'Sin tienda')+' | Pdte.Compra'); map[key]=(map[key]||0)+item.importe}); return Object.entries(map).map(([k,v])=>({k,v,pending:k.endsWith('Pdte.Compra')})).sort((a,b)=>b.v-a.v)}
+function renderSummary(targetId,rows){const wrap=document.getElementById(targetId); wrap.innerHTML=''; if(!rows.length){wrap.innerHTML='<div class="hint">Sin datos.</div>'; return} rows.forEach(r=>{const div=document.createElement('div'); div.className='summary-item'; if(r.pending){div.style.color='#b91c1c'} div.innerHTML='<span>'+escapeHtml(r.k)+'</span><span class="pill"'+(r.pending?' style="background:#fef2f2;color:#b91c1c"':'')+'>'+euro(r.v)+'</span>'; wrap.appendChild(div)})}
 function renderPayStats(){const wrap=document.getElementById('payStats'); wrap.innerHTML=''; PAYMENT_OPTIONS.forEach(tipo=>{const personas=asistentesEnriquecidos().filter(a=>a.situacion===tipo).reduce((a,b)=>a+Number(b.numero||0),0); const div=document.createElement('div'); div.className='metric'; div.innerHTML='<div class="label">'+escapeHtml(tipo)+'</div><div class="value">'+personas+'</div>'; wrap.appendChild(div)})}
-
 function renderSociosList(){const wrap=document.getElementById('sociosList'); wrap.innerHTML=''; if(!state.socios.length){wrap.innerHTML='<div class="empty">No hay socios.</div>'; return} state.socios.forEach(s=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline socio"><div class="field"><label>Nombre</label><input id="socio-nombre-'+s.id+'" value="'+escapeAttr(s.nombre)+'" /></div><button type="button" class="modify small" onclick="modifySocio(\''+s.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteSocio(\''+s.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
 function renderEventosList(){const wrap=document.getElementById('eventosList'); wrap.innerHTML=''; if(!state.eventos.length){wrap.innerHTML='<div class="empty">No hay eventos.</div>'; return} state.eventos.forEach(e=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML=(e.id===state.selectedEventId?'<div class="badge-active">Activo</div>':'')+'<div class="rowline evento"><div class="field"><label>Título</label><input id="evento-titulo-'+e.id+'" value="'+escapeAttr(e.titulo)+'" /></div><div class="field"><label>Precio</label><input id="evento-precio-'+e.id+'" type="number" min="0" step="0.01" value="'+Number(e.precio||0)+'" /></div><button type="button" class="modify small" onclick="modifyEvento(\''+e.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteEvento(\''+e.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
 function renderTiendasList(){const wrap=document.getElementById('tiendasList'); wrap.innerHTML=''; if(!state.tiendas.length){wrap.innerHTML='<div class="empty">No hay tiendas.</div>'; return} state.tiendas.forEach(t=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline tienda"><div class="field"><label>Nombre</label><input id="tienda-nombre-'+t.id+'" value="'+escapeAttr(t.nombre)+'" /></div><button type="button" class="modify small" onclick="modifyTienda(\''+t.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteTienda(\''+t.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
@@ -190,24 +188,14 @@ function renderAsistentesList(){const wrap=document.getElementById('asistentesLi
 function renderComprasList(){const wrap=document.getElementById('comprasList'); wrap.innerHTML=''; const rows=comprasEnriquecidas(); if(!rows.length){wrap.innerHTML='<div class="empty">Todavía no hay compras cargadas para este evento.</div>'; return} rows.forEach(c=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline compra-edit"><div class="field"><label>Producto</label><select id="compra-producto-'+c.id+'">'+state.productos.map(p=>'<option value="'+p.id+'" '+(p.id===c.productoId?'selected':'')+'>'+escapeHtml(p.nombre)+'</option>').join('')+'</select></div><div class="field"><label>Unidades</label><input id="compra-unidades-'+c.id+'" type="number" min="0" step="0.01" value="'+n2(c.unidades)+'" /></div><div class="field"><label>Ticket</label><input id="compra-ticket-'+c.id+'" value="'+escapeAttr(c.ticket||'')+'" /></div><button type="button" class="modify small" onclick="modifyCompra(\''+c.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteCompra(\''+c.id+'\')">Eliminar</button></div><div class="hint">Precio: '+euro(c.precio)+' · Importe: '+euro(c.importe)+' · Tienda: '+escapeHtml(c.tienda||'')+'</div>'; wrap.appendChild(row)})}
 function renderSelectors(){fillSelect(document.getElementById('selectedEvent'),state.eventos,'id','titulo'); document.getElementById('selectedEvent').value=state.selectedEventId||''; fillSelect(document.getElementById('asistenteSocio'),state.socios,'id','nombre'); if(state.socios.length&&!document.getElementById('asistenteSocio').value)document.getElementById('asistenteSocio').value=state.socios[0].id; fillStaticSelect(document.getElementById('asistenteSituacion'),PAYMENT_OPTIONS); document.getElementById('asistenteSituacion').value='Pendiente'; fillSelect(document.getElementById('compraProducto'),state.productos,'id','nombre'); if(state.productos.length&&!document.getElementById('compraProducto').value)document.getElementById('compraProducto').value=state.productos[0].id; fillStaticSelect(document.getElementById('newProductoSegmento'),SEGMENT_OPTIONS); fillStaticSelect(document.getElementById('newProductoDestino'),DESTINO_OPTIONS); fillSelect(document.getElementById('newProductoTienda'),state.tiendas,'id','nombre')}
 function updateCompraPreview(){const productoId=document.getElementById('compraProducto').value; const unidades=Number(document.getElementById('compraUnidades').value||0); const p=state.productos.find(x=>x.id===productoId); const precio=Number(p?.precio||0); document.getElementById('compraPrecio').value=euro(precio); document.getElementById('compraImporte').value=euro(precio*unidades); document.getElementById('compraTienda').value=tiendaNombreById(p?.tiendaId||'')}
-function renderMain(){const hasEvent=!!selectedEvent(); document.getElementById('activeEventName').textContent=selectedEvent()?.titulo||'Sin evento'; document.getElementById('noEventMessage').classList.toggle('hidden',hasEvent); document.getElementById('tabAsistentes').classList.toggle('hidden',!hasEvent||currentTab!=='asistentes'); document.getElementById('tabCompras').classList.toggle('hidden',!hasEvent||currentTab!=='compras'); const t=totals(); document.getElementById('ctrlAsistentes').textContent=t.asistentes; document.getElementById('ctrlPrecioEvento').textContent=euro(t.precioEvento); document.getElementById('ctrlPresupuesto').textContent=euro(t.presupuesto); document.getElementById('ctrlIngresado').textContent=euro(t.ingresado); document.getElementById('ctrlPendiente').textContent=euro(t.pendiente); document.getElementById('ctrlComprado').textContent=euro(t.comprado); document.getElementById('ctrlPdteCompra').textContent=euro(t.pdteCompra); document.getElementById('ctrlSaldo').textContent=euro(t.saldo); setSaldoStyle(document.getElementById('ctrlSaldoBox'),t.saldo); renderAsistentesList(); renderComprasList(); renderPayStats(); renderSummary('summarySegmento',summaryBy('segmento')); renderSummary('summaryDestino',summaryBy('destino')); renderSummary('summaryTienda',summaryBy('tienda')); renderSociosList(); renderEventosList(); renderTiendasList(); renderProductosList(); updateCompraPreview()}
+function setMaintTab(tab){currentMaintTab=tab; const map={socios:'maintSocios',eventos:'maintEventos',tiendas:'maintTiendas',productos:'maintProductos'}; const btns={socios:'tabSociosBtn',eventos:'tabEventosBtn',tiendas:'tabTiendasBtn',productos:'tabProductosBtn'}; Object.keys(map).forEach(k=>{document.getElementById(map[k]).classList.toggle('hidden',k!==tab); document.getElementById(btns[k]).classList.toggle('active',k===tab)})}
+function renderMain(){const hasEvent=!!selectedEvent(); document.getElementById('noEventMessage').classList.toggle('hidden',hasEvent); document.getElementById('tabAsistentes').classList.toggle('hidden',!hasEvent||currentTab!=='asistentes'); document.getElementById('tabCompras').classList.toggle('hidden',!hasEvent||currentTab!=='compras'); const t=totals(); document.getElementById('ctrlAsistentes').textContent=t.asistentes; document.getElementById('ctrlPrecioEvento').textContent=euro(t.precioEvento); document.getElementById('ctrlPresupuesto').textContent=euro(t.presupuesto); document.getElementById('ctrlIngresado').textContent=euro(t.ingresado); document.getElementById('ctrlPendiente').textContent=euro(t.pendiente); document.getElementById('ctrlComprado').textContent=euro(t.comprado); document.getElementById('ctrlPdteCompra').textContent=euro(t.pdteCompra); document.getElementById('ctrlSaldo').textContent=euro(t.saldo); setSaldoStyle(document.getElementById('ctrlSaldoBox'),t.saldo); renderAsistentesList(); renderComprasList(); renderPayStats(); renderSummary('summarySegmento',summaryBy('segmento')); renderSummary('summaryDestino',summaryBy('destino')); renderSummary('summaryTienda',summaryByStoreTicket()); renderSociosList(); renderEventosList(); renderTiendasList(); renderProductosList(); updateCompraPreview()}
 function fullRender(){if(!state.selectedEventId&&state.eventos[0])state.selectedEventId=state.eventos[0].id; renderSelectors(); renderMain(); saveData()}
-function exportExcelHtml(){const ev=selectedEvent(); if(!ev){alert('No hay evento activo.'); return} const asistentes=asistentesEnriquecidos(); const t=totals(); const fecha=nowString(); const compras=comprasEnriquecidas(); const seg=summaryBy('segmento'); const des=summaryBy('destino'); const tie=summaryBy('tienda'); const css='<style>table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}th,td{border:1px solid #dbe2ea;padding:6px 8px}th{background:#111827;color:#ffffff}.title{background:#111827;color:#ffffff;font-weight:bold}.warn{background:#fff7ed;color:#c2410c;font-weight:bold}.ok{background:#ecfdf5;color:#047857;font-weight:bold}.bad{background:#fef2f2;color:#b91c1c;font-weight:bold}</style>'; const saldoClass=t.saldo>=0?'ok':'bad'; const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8">'+css+'</head><body><table><tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr><tr><td>Evento</td><td>'+escapeHtml(ev.titulo)+'</td></tr><tr><td>Precio por persona</td><td>'+n2(t.precioEvento)+'</td></tr><tr><td>Nº asistentes</td><td>'+t.asistentes+'</td></tr><tr><td>Presupuesto</td><td>'+n2(t.presupuesto)+'</td></tr><tr><td>Ingresado</td><td>'+n2(t.ingresado)+'</td></tr><tr><td>Pendiente</td><td class="warn">'+n2(t.pendiente)+'</td></tr><tr><td>Compras realizadas</td><td>'+n2(t.comprado)+'</td></tr><tr><td>Compras pendientes</td><td class="warn">'+n2(t.pdteCompra)+'</td></tr><tr><td>Saldo</td><td class="'+saldoClass+'">'+n2(t.saldo)+'</td></tr><tr><td>Fecha y hora emisión</td><td>'+escapeHtml(fecha)+'</td></tr></table><br><table><tr><th class="title" colspan="2">ASISTENTES</th></tr><tr><th>Nombre</th><th>Número</th></tr>'+asistentes.map(a=>'<tr><td>'+escapeHtml(a.socioNombre)+'</td><td>'+Number(a.numero||0)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="8">COMPRAS</th></tr><tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>TICKET</th></tr>'+compras.map(c=>'<tr><td>'+escapeHtml(c.productoNombre)+'</td><td>'+escapeHtml(c.segmento||'')+'</td><td>'+escapeHtml(c.destino||'')+'</td><td>'+n2(c.unidades)+'</td><td>'+n2(c.precio)+'</td><td>'+n2(c.importe)+'</td><td>'+escapeHtml(c.tienda||'')+'</td><td>'+escapeHtml(c.ticket||'')+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr><tr><th>Segmento</th><th>Importe</th></tr>'+seg.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr><tr><th>Destino</th><th>Importe</th></tr>'+des.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA</th></tr><tr><th>Tienda</th><th>Importe</th></tr>'+tie.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table></body></html>'; const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8;'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=(ev.titulo||'evento').replace(/\s+/g,'_')+'_ControlEvent.xls'; link.click(); URL.revokeObjectURL(link.href)}
+function exportExcelHtml(){const ev=selectedEvent(); if(!ev){alert('No hay evento activo.'); return} const asistentes=asistentesEnriquecidos(); const t=totals(); const fecha=nowString(); const compras=comprasEnriquecidas(); const seg=summaryBy('segmento'); const des=summaryBy('destino'); const tie=summaryByStoreTicket(); const css='<style>table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}th,td{border:1px solid #dbe2ea;padding:6px 8px}th{background:#111827;color:#ffffff}.title{background:#111827;color:#ffffff;font-weight:bold}.warn{background:#fff7ed;color:#c2410c;font-weight:bold}.ok{background:#ecfdf5;color:#047857;font-weight:bold}.bad{background:#fef2f2;color:#b91c1c;font-weight:bold}</style>'; const saldoClass=t.saldo>=0?'ok':'bad'; const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8">'+css+'</head><body><table><tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr><tr><td>Evento</td><td>'+escapeHtml(ev.titulo)+'</td></tr><tr><td>Precio por persona</td><td>'+n2(t.precioEvento)+'</td></tr><tr><td>Nº asistentes</td><td>'+t.asistentes+'</td></tr><tr><td>Presupuesto</td><td>'+n2(t.presupuesto)+'</td></tr><tr><td>Ingresado</td><td>'+n2(t.ingresado)+'</td></tr><tr><td>Pendiente</td><td class="warn">'+n2(t.pendiente)+'</td></tr><tr><td>Compras realizadas</td><td>'+n2(t.comprado)+'</td></tr><tr><td>Compras pendientes</td><td class="warn">'+n2(t.pdteCompra)+'</td></tr><tr><td>Saldo</td><td class="'+saldoClass+'">'+n2(t.saldo)+'</td></tr><tr><td>Fecha y hora emisión</td><td>'+escapeHtml(fecha)+'</td></tr></table><br><table><tr><th class="title" colspan="2">ASISTENTES</th></tr><tr><th>Nombre</th><th>Número</th></tr>'+asistentes.map(a=>'<tr><td>'+escapeHtml(a.socioNombre)+'</td><td>'+Number(a.numero||0)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="8">COMPRAS</th></tr><tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>TICKET</th></tr>'+compras.map(c=>'<tr><td>'+escapeHtml(c.productoNombre)+'</td><td>'+escapeHtml(c.segmento||'')+'</td><td>'+escapeHtml(c.destino||'')+'</td><td>'+n2(c.unidades)+'</td><td>'+n2(c.precio)+'</td><td>'+n2(c.importe)+'</td><td>'+escapeHtml(c.tienda||'')+'</td><td>'+escapeHtml(c.ticket||'')+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr><tr><th>Segmento</th><th>Importe</th></tr>'+seg.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr><tr><th>Destino</th><th>Importe</th></tr>'+des.map(r=>'<tr><td>'+escapeHtml(r.k)+'</td><td>'+n2(r.v)+'</td></tr>').join('')+'</table><br><table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET</th></tr><tr><th>Tienda y ticket</th><th>Importe</th></tr>'+tie.map(r=>'<tr><td'+(r.pending?' class="bad"':'')+'>'+escapeHtml(r.k)+'</td><td'+(r.pending?' class="bad"':'')+'>'+n2(r.v)+'</td></tr>').join('')+'</table></body></html>'; const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8;'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=(ev.titulo||'evento').replace(/\s+/g,'_')+'_ControlEvent.xls'; link.click(); URL.revokeObjectURL(link.href)}
 function shareWhats(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const txt='Evento: '+ev.titulo+'\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en WhatsApp.'; window.location.href='https://wa.me/?text='+encodeURIComponent(txt)}
 function shareEmail(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const subject=encodeURIComponent('Datos del evento: '+ev.titulo); const body=encodeURIComponent('Evento: '+ev.titulo+'\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en tu app de correo.'); window.location.href='mailto:?subject='+subject+'&body='+body}
 function escapeHtml(str){return String(str??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
 function escapeAttr(str){return escapeHtml(str)}
-let currentMaintTab='socios';
-function setMaintTab(tab){
-  currentMaintTab=tab;
-  const map={socios:'maintSocios',eventos:'maintEventos',tiendas:'maintTiendas',productos:'maintProductos'};
-  const btns={socios:'tabSociosBtn',eventos:'tabEventosBtn',tiendas:'tabTiendasBtn',productos:'tabProductosBtn'};
-  Object.keys(map).forEach(k=>{
-    document.getElementById(map[k]).classList.toggle('hidden', k!==tab);
-    document.getElementById(btns[k]).classList.toggle('active', k===tab);
-  });
-}
-
 function modifySocio(id){const row=state.socios.find(x=>x.id===id); if(row){row.nombre=document.getElementById('socio-nombre-'+id).value.trim(); fullRender()}}
 function deleteSocio(id){state.socios=state.socios.filter(x=>x.id!==id); fullRender()}
 function modifyEvento(id){const row=state.eventos.find(x=>x.id===id); if(row){row.titulo=document.getElementById('evento-titulo-'+id).value.trim(); row.precio=Number(document.getElementById('evento-precio-'+id).value||0); fullRender()}}
@@ -221,7 +209,6 @@ function modifyAsistente(id){const row=state.asistentes.find(x=>x.id===id); if(r
 function deleteAsistente(id){state.asistentes=state.asistentes.filter(x=>x.id!==id); fullRender()}
 function modifyCompra(id){const row=state.compras.find(x=>x.id===id); if(row){row.productoId=document.getElementById('compra-producto-'+id).value; row.unidades=Number(document.getElementById('compra-unidades-'+id).value||0); row.ticket=document.getElementById('compra-ticket-'+id).value.trim(); fullRender()}}
 function deleteCompra(id){state.compras=state.compras.filter(x=>x.id!==id); fullRender()}
-
 function initEvents(){
   document.getElementById('tabAsistentesBtn').addEventListener('click',function(){currentTab='asistentes'; this.classList.add('active'); document.getElementById('tabComprasBtn').classList.remove('active'); renderMain()});
   document.getElementById('tabComprasBtn').addEventListener('click',function(){currentTab='compras'; this.classList.add('active'); document.getElementById('tabAsistentesBtn').classList.remove('active'); renderMain()});
@@ -237,15 +224,13 @@ function initEvents(){
   document.getElementById('btnExportExcel').addEventListener('click',exportExcelHtml);
   document.getElementById('btnShareWhats').addEventListener('click',shareWhats);
   document.getElementById('btnShareEmail').addEventListener('click',shareEmail);
-  document.getElementById('btnToggleMaintenance').addEventListener('click',function(){const box=document.getElementById('maintenanceWrapper'); box.classList.toggle('hidden'); if(!box.classList.contains('hidden')) setMaintTab(currentMaintTab);});
+  document.getElementById('btnToggleMaintenance').addEventListener('click',function(){const box=document.getElementById('maintenanceWrapper'); box.classList.toggle('hidden'); if(!box.classList.contains('hidden')) setMaintTab(currentMaintTab)});
   document.getElementById('tabSociosBtn').addEventListener('click',function(){setMaintTab('socios')});
   document.getElementById('tabEventosBtn').addEventListener('click',function(){setMaintTab('eventos')});
   document.getElementById('tabTiendasBtn').addEventListener('click',function(){setMaintTab('tiendas')});
   document.getElementById('tabProductosBtn').addEventListener('click',function(){setMaintTab('productos')});
 }
-
-initEvents();
-fullRender();
+initEvents(); fullRender();
 </script>
 </body>
 </html>
