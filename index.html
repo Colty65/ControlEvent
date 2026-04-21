@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v4.2.1</title>
+  <title>ControlEvent v4.2.2</title>
   <style>
     :root{--bg:#f3f5f7;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe2ea;--primary:#111827;--ok-bg:#ecfdf5;--ok:#047857;--bad-bg:#fef2f2;--bad:#b91c1c;--warn-bg:#fff7ed;--warn:#c2410c;--pill:#eef2f7;--shadow:0 8px 24px rgba(15,23,42,.08)}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -29,7 +29,7 @@
     <div class="header-inner app">
       <div><div class="brand">PEÑA EL ARRASTRE</div><div class="subtitle">©oltyLAB ‘26</div></div>
       <div class="centerhead"><div class="event-active-label">Evento:</div><select id="selectedEvent" style="max-width:240px;"></select><div class="event-dates" id="eventDates">(del --/--/-- al --/--/--)</div></div>
-      <div class="appname" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;"><span>ControlEvent v4.2.1</span><button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación" style="display:inline-flex;align-items:center;justify-content:center;">⏻</button></div>
+      <div class="appname" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;"><span>ControlEvent v4.2.2</span><button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación" style="display:inline-flex;align-items:center;justify-content:center;">⏻</button></div>
     </div>
   </div>
 
@@ -158,7 +158,7 @@ const STORAGE_KEY='controlevent_single_html_v2_2';
 const PAYMENT_OPTIONS=['Efectivo','Bizum','ING. RURAL','Pendiente'];
 const SEGMENT_OPTIONS=['COMIDA','BEBIDA','INFRAESTRUCTURA'];
 const DESTINO_OPTIONS=['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
-const state=loadData(); let currentTab='asistentes'; let currentMaintTab='socios'; let comprasSort='tienda'; let productosSort='nombre'; let comprasSort='tienda'; let productosSort='nombre';
+const state=loadData(); let currentTab='asistentes'; let currentMaintTab='socios'; let comprasSort='tienda'; let productosSort='nombre';
 function uid(){return 'id-'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
 function euro(v){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(v||0))}
 function n2(v){return Number(v||0).toFixed(2)}
@@ -302,7 +302,6 @@ function applyEventLock(isLocked){
     power.style.opacity='1';
   }
 }
-}}
 function updateCompraPreview(){const productoId=document.getElementById('compraProducto').value; const unidades=Number(document.getElementById('compraUnidades').value||0); const p=state.productos.find(x=>x.id===productoId); const precio=Number(p?.precio||0); document.getElementById('compraPrecio').value=euro(precio); document.getElementById('compraImporte').value=euro(precio*unidades); document.getElementById('compraTienda').value=tiendaNombreById(p?.tiendaId||'')}
 function setMaintTab(tab){currentMaintTab=tab; const map={socios:'maintSocios',eventos:'maintEventos',tiendas:'maintTiendas',productos:'maintProductos'}; const btns={socios:'tabSociosBtn',eventos:'tabEventosBtn',tiendas:'tabTiendasBtn',productos:'tabProductosBtn'}; Object.keys(map).forEach(k=>{document.getElementById(map[k]).classList.toggle('hidden',k!==tab); document.getElementById(btns[k]).classList.toggle('active',k===tab)})}
 function renderMain(){const hasEvent=!!selectedEvent(); document.getElementById('noEventMessage').classList.toggle('hidden',hasEvent); updateHeaderEventDates(); document.getElementById('tabAsistentes').classList.toggle('hidden',!hasEvent||currentTab!=='asistentes'); document.getElementById('tabCompras').classList.toggle('hidden',!hasEvent||currentTab!=='compras'); const t=totals(); document.getElementById('ctrlAsistentes').textContent=t.asistentes; document.getElementById('ctrlPrecioEvento').textContent=euro(t.precioEvento); document.getElementById('ctrlPresupuesto').textContent=euro(t.presupuesto); document.getElementById('ctrlIngresado').textContent=euro(t.ingresado); document.getElementById('ctrlPendiente').textContent=euro(t.pendiente); document.getElementById('ctrlComprado').textContent=euro(t.comprado); document.getElementById('ctrlPdteCompra').textContent=euro(t.pdteCompra); document.getElementById('ctrlSaldo').textContent=euro(t.saldo); setSaldoStyle(document.getElementById('ctrlSaldoBox'),t.saldo); renderAsistentesList(); renderComprasList(); renderPayStats(); renderSummary('summarySegmento',summaryBy('segmento')); renderSummary('summaryDestino',summaryBy('destino')); renderSummary('summaryTienda',summaryByStoreTicketSorted()); renderSociosList(); renderEventosList(); renderTiendasList(); renderProductosList(); updateCompraPreview()}
