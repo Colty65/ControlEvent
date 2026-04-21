@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v4.2</title>
+  <title>ControlEvent v4.2.1</title>
   <style>
     :root{--bg:#f3f5f7;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe2ea;--primary:#111827;--ok-bg:#ecfdf5;--ok:#047857;--bad-bg:#fef2f2;--bad:#b91c1c;--warn-bg:#fff7ed;--warn:#c2410c;--pill:#eef2f7;--shadow:0 8px 24px rgba(15,23,42,.08)}
     *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -29,7 +29,7 @@
     <div class="header-inner app">
       <div><div class="brand">PEÑA EL ARRASTRE</div><div class="subtitle">©oltyLAB ‘26</div></div>
       <div class="centerhead"><div class="event-active-label">Evento:</div><select id="selectedEvent" style="max-width:240px;"></select><div class="event-dates" id="eventDates">(del --/--/-- al --/--/--)</div></div>
-      <div class="appname" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;"><span>ControlEvent v4.2</span><button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación" style="display:inline-flex;align-items:center;justify-content:center;">⏻</button></div>
+      <div class="appname" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;"><span>ControlEvent v4.2.1</span><button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación" style="display:inline-flex;align-items:center;justify-content:center;">⏻</button></div>
     </div>
   </div>
 
@@ -273,11 +273,35 @@ function renderComprasList(){const wrap=document.getElementById('comprasList'); 
   wrap.appendChild(hdr);
   rows.forEach(c=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline compra-edit"><div class="field"><label>Producto</label><select id="compra-producto-'+c.id+'">'+state.productos.map(p=>'<option value="'+p.id+'" '+(p.id===c.productoId?'selected':'')+'>'+escapeHtml(p.nombre)+'</option>').join('')+'</select></div><div class="field"><label>Unidades</label><input id="compra-unidades-'+c.id+'" type="number" min="0" step="0.01" value="'+n2(c.unidades)+'" /></div><div class="field"><label>Ticket</label><input id="compra-ticket-'+c.id+'" value="'+escapeAttr(c.ticket||'')+'" /></div><button type="button" class="modify small" onclick="modifyCompra(\''+c.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteCompra(\''+c.id+'\')">Eliminar</button></div><div class="hint">Precio: '+euro(c.precio)+' · Importe: '+euro(c.importe)+' · Tienda: '+escapeHtml(c.tienda||'')+'</div>'; wrap.appendChild(row)})}
 function renderSelectors(){fillSelect(document.getElementById('selectedEvent'),state.eventos,'id','titulo'); document.getElementById('selectedEvent').value=state.selectedEventId||''; fillSelect(document.getElementById('asistenteSocio'),state.socios,'id','nombre'); if(state.socios.length&&!document.getElementById('asistenteSocio').value)document.getElementById('asistenteSocio').value=state.socios[0].id; fillStaticSelect(document.getElementById('asistenteSituacion'),PAYMENT_OPTIONS); document.getElementById('asistenteSituacion').value='Pendiente'; fillSelect(document.getElementById('compraProducto'),state.productos,'id','nombre'); if(state.productos.length&&!document.getElementById('compraProducto').value)document.getElementById('compraProducto').value=state.productos[0].id; fillStaticSelect(document.getElementById('newProductoSegmento'),SEGMENT_OPTIONS); fillStaticSelect(document.getElementById('newProductoDestino'),DESTINO_OPTIONS); fillSelect(document.getElementById('newProductoTienda'),state.tiendas,'id','nombre')}
-function updateHeaderEventDates(){const ev=selectedEvent(); document.getElementById('eventDates').textContent='(del '+(ev?.fechaIni||'--/--/--')+' al '+(ev?.fechaFin||'--/--/--')+')'; const statusEl=document.getElementById('eventStatus'); const power=document.getElementById('btnTogglePower'); const fin=(ev?.situacion||'En curso')==='Finalizado'; statusEl.textContent=ev?.situacion||'En curso'; statusEl.className='status-pill '+(fin?'status-finalizado':'status-curso'); power.className='powerbtn '+(fin?'off':'on'); applyEventLock(fin)}
+function updateHeaderEventDates(){
+  const ev=selectedEvent();
+  const datesEl=document.getElementById('eventDates');
+  const statusEl=document.getElementById('eventStatus');
+  const power=document.getElementById('btnTogglePower');
+  if(datesEl){ datesEl.textContent='(del '+(ev?.fechaIni||'--/--/--')+' al '+(ev?.fechaFin||'--/--/--')+')'; }
+  const fin=(ev?.situacion||'En curso')==='Finalizado';
+  if(statusEl){
+    statusEl.textContent=ev?.situacion||'En curso';
+    statusEl.className='status-pill '+(fin?'status-finalizado':'status-curso');
+  }
+  if(power){
+    power.className='powerbtn '+(fin?'off':'on');
+    power.disabled=false;
+    power.style.pointerEvents='auto';
+    power.style.opacity='1';
+  }
+  applyEventLock(fin);
+}
 function applyEventLock(isLocked){
   document.querySelectorAll('.app-lockable').forEach(el=>el.classList.toggle('locked',isLocked));
-  const p=document.getElementById('btnTogglePower');
-  if(p){p.classList.remove('locked'); p.disabled=false; p.style.pointerEvents='auto'; p.style.opacity='1';}
+  const power=document.getElementById('btnTogglePower');
+  if(power){
+    power.classList.remove('locked');
+    power.disabled=false;
+    power.style.pointerEvents='auto';
+    power.style.opacity='1';
+  }
+}
 }}
 function updateCompraPreview(){const productoId=document.getElementById('compraProducto').value; const unidades=Number(document.getElementById('compraUnidades').value||0); const p=state.productos.find(x=>x.id===productoId); const precio=Number(p?.precio||0); document.getElementById('compraPrecio').value=euro(precio); document.getElementById('compraImporte').value=euro(precio*unidades); document.getElementById('compraTienda').value=tiendaNombreById(p?.tiendaId||'')}
 function setMaintTab(tab){currentMaintTab=tab; const map={socios:'maintSocios',eventos:'maintEventos',tiendas:'maintTiendas',productos:'maintProductos'}; const btns={socios:'tabSociosBtn',eventos:'tabEventosBtn',tiendas:'tabTiendasBtn',productos:'tabProductosBtn'}; Object.keys(map).forEach(k=>{document.getElementById(map[k]).classList.toggle('hidden',k!==tab); document.getElementById(btns[k]).classList.toggle('active',k===tab)})}
@@ -306,27 +330,129 @@ function deleteCompra(id){state.compras=state.compras.filter(x=>x.id!==id); full
 function setComprasSort(sort){comprasSort=sort; renderMain()}
 function setProductosSort(sort){productosSort=sort; renderMain()}
 function initEvents(){
-  document.getElementById('tabAsistentesBtn').addEventListener('click',function(){currentTab='asistentes'; this.classList.add('active'); document.getElementById('tabComprasBtn').classList.remove('active'); renderMain()});
-  document.getElementById('tabComprasBtn').addEventListener('click',function(){currentTab='compras'; this.classList.add('active'); document.getElementById('tabAsistentesBtn').classList.remove('active'); renderMain()});
-  document.getElementById('selectedEvent').addEventListener('change',function(e){state.selectedEventId=e.target.value; fullRender()});
-  document.getElementById('compraProducto').addEventListener('change',updateCompraPreview);
-  document.getElementById('compraUnidades').addEventListener('input',updateCompraPreview);
-  document.getElementById('btnAddSocio').addEventListener('click',function(){const nombre=document.getElementById('newSocioNombre').value.trim(); if(!nombre)return; state.socios.push({id:uid(),nombre}); document.getElementById('newSocioNombre').value=''; fullRender()});
-  document.getElementById('btnAddEvento').addEventListener('click',function(){const titulo=document.getElementById('newEventoTitulo').value.trim(); const precio=Number(document.getElementById('newEventoPrecio').value||0); if(!titulo)return; const ev={id:uid(),titulo,precio,fechaIni:document.getElementById('newEventoFechaIni').value.trim(),fechaFin:document.getElementById('newEventoFechaFin').value.trim(),situacion:'En curso'}; state.eventos.push(ev); if(!state.selectedEventId)state.selectedEventId=ev.id; document.getElementById('newEventoTitulo').value=''; document.getElementById('newEventoPrecio').value='0'; document.getElementById('newEventoFechaIni').value=''; document.getElementById('newEventoFechaFin').value=''; fullRender()});
-  document.getElementById('btnAddTienda').addEventListener('click',function(){const nombre=document.getElementById('newTiendaNombre').value.trim(); if(!nombre)return; state.tiendas.push({id:uid(),nombre}); document.getElementById('newTiendaNombre').value=''; fullRender()});
-  document.getElementById('btnAddProducto').addEventListener('click',function(){const nombre=document.getElementById('newProductoNombre').value.trim(); if(!nombre)return; state.productos.push({id:uid(),nombre,segmento:document.getElementById('newProductoSegmento').value,destino:document.getElementById('newProductoDestino').value,precio:Number(document.getElementById('newProductoPrecio').value||0),tiendaId:document.getElementById('newProductoTienda').value||''}); document.getElementById('newProductoNombre').value=''; document.getElementById('newProductoPrecio').value='0'; fullRender()});
-  document.getElementById('btnAddAsistente').addEventListener('click',function(){if(!state.selectedEventId)return; const socioId=document.getElementById('asistenteSocio').value; if(!socioId)return; state.asistentes.push({id:uid(),eventId:state.selectedEventId,socioId,numero:Number(document.getElementById('asistenteNumero').value||0),situacion:document.getElementById('asistenteSituacion').value}); document.getElementById('asistenteNumero').value='1'; document.getElementById('asistenteSituacion').value='Pendiente'; fullRender()});
-  document.getElementById('btnAddCompra').addEventListener('click',function(){if(!state.selectedEventId)return; const productoId=document.getElementById('compraProducto').value; if(!productoId)return; state.compras.push({id:uid(),eventId:state.selectedEventId,productoId,unidades:Number(document.getElementById('compraUnidades').value||0),ticket:document.getElementById('compraTicket').value.trim()}); document.getElementById('compraUnidades').value='1.00'; document.getElementById('compraTicket').value=''; fullRender()});
-  document.getElementById('btnExportExcel').addEventListener('click',exportExcelHtml);
-  document.getElementById('btnShareWhats').addEventListener('click',shareWhats);
-  document.getElementById('btnShareEmail').addEventListener('click',shareEmail);
-  document.getElementById('btnToggleMaintenance').addEventListener('click',function(){const box=document.getElementById('maintenanceWrapper'); box.classList.toggle('hidden'); if(!box.classList.contains('hidden')) setMaintTab(currentMaintTab)}); document.getElementById('btnTogglePower').addEventListener('click',function(){const ev=selectedEvent(); if(!ev)return; ev.situacion=(ev.situacion==='Finalizado'?'En curso':'Finalizado'); fullRender();});
-  document.getElementById('tabSociosBtn').addEventListener('click',function(){setMaintTab('socios')});
-  document.getElementById('tabEventosBtn').addEventListener('click',function(){setMaintTab('eventos')});
-  document.getElementById('tabTiendasBtn').addEventListener('click',function(){setMaintTab('tiendas')});
-  document.getElementById('tabProductosBtn').addEventListener('click',function(){setMaintTab('productos')});
+  document.getElementById('tabAsistentesBtn')?.addEventListener('click',function(){
+    currentTab='asistentes';
+    this.classList.add('active');
+    document.getElementById('tabComprasBtn')?.classList.remove('active');
+    renderMain();
+  });
+  document.getElementById('tabComprasBtn')?.addEventListener('click',function(){
+    currentTab='compras';
+    this.classList.add('active');
+    document.getElementById('tabAsistentesBtn')?.classList.remove('active');
+    renderMain();
+  });
+  document.getElementById('selectedEvent')?.addEventListener('change',function(e){
+    state.selectedEventId=e.target.value;
+    fullRender();
+  });
+  document.getElementById('compraProducto')?.addEventListener('change',updateCompraPreview);
+  document.getElementById('compraUnidades')?.addEventListener('input',updateCompraPreview);
+
+  document.getElementById('btnAddSocio')?.addEventListener('click',function(){
+    const nombre=document.getElementById('newSocioNombre').value.trim();
+    if(!nombre)return;
+    state.socios.push({id:uid(),nombre});
+    document.getElementById('newSocioNombre').value='';
+    fullRender();
+  });
+
+  document.getElementById('btnAddEvento')?.addEventListener('click',function(){
+    const titulo=document.getElementById('newEventoTitulo').value.trim();
+    const precio=Number(document.getElementById('newEventoPrecio').value||0);
+    if(!titulo)return;
+    const ev={id:uid(),titulo,precio,fechaIni:document.getElementById('newEventoFechaIni').value.trim(),fechaFin:document.getElementById('newEventoFechaFin').value.trim(),situacion:'En curso'};
+    state.eventos.push(ev);
+    if(!state.selectedEventId)state.selectedEventId=ev.id;
+    document.getElementById('newEventoTitulo').value='';
+    document.getElementById('newEventoPrecio').value='0';
+    document.getElementById('newEventoFechaIni').value='';
+    document.getElementById('newEventoFechaFin').value='';
+    fullRender();
+  });
+
+  document.getElementById('btnAddTienda')?.addEventListener('click',function(){
+    const nombre=document.getElementById('newTiendaNombre').value.trim();
+    if(!nombre)return;
+    state.tiendas.push({id:uid(),nombre});
+    document.getElementById('newTiendaNombre').value='';
+    fullRender();
+  });
+
+  document.getElementById('btnAddProducto')?.addEventListener('click',function(){
+    const nombre=document.getElementById('newProductoNombre').value.trim();
+    if(!nombre)return;
+    state.productos.push({
+      id:uid(),
+      nombre,
+      segmento:document.getElementById('newProductoSegmento').value,
+      destino:document.getElementById('newProductoDestino').value,
+      precio:Number(document.getElementById('newProductoPrecio').value||0),
+      tiendaId:document.getElementById('newProductoTienda').value||''
+    });
+    document.getElementById('newProductoNombre').value='';
+    document.getElementById('newProductoPrecio').value='0';
+    fullRender();
+  });
+
+  document.getElementById('btnAddAsistente')?.addEventListener('click',function(){
+    if(!state.selectedEventId)return;
+    const socioId=document.getElementById('asistenteSocio').value;
+    if(!socioId)return;
+    state.asistentes.push({
+      id:uid(),
+      eventId:state.selectedEventId,
+      socioId,
+      numero:Number(document.getElementById('asistenteNumero').value||0),
+      situacion:document.getElementById('asistenteSituacion').value
+    });
+    document.getElementById('asistenteNumero').value='1';
+    document.getElementById('asistenteSituacion').value='Pendiente';
+    fullRender();
+  });
+
+  document.getElementById('btnAddCompra')?.addEventListener('click',function(){
+    if(!state.selectedEventId)return;
+    const productoId=document.getElementById('compraProducto').value;
+    if(!productoId)return;
+    state.compras.push({
+      id:uid(),
+      eventId:state.selectedEventId,
+      productoId,
+      unidades:Number(document.getElementById('compraUnidades').value||0),
+      ticket:document.getElementById('compraTicket').value.trim()
+    });
+    document.getElementById('compraUnidades').value='1.00';
+    document.getElementById('compraTicket').value='';
+    fullRender();
+  });
+
+  document.getElementById('btnExportExcel')?.addEventListener('click',exportExcelHtml);
+  document.getElementById('btnShareWhats')?.addEventListener('click',shareWhats);
+  document.getElementById('btnShareEmail')?.addEventListener('click',shareEmail);
+
+  document.getElementById('btnToggleMaintenance')?.addEventListener('click',function(){
+    const ev=selectedEvent();
+    if((ev?.situacion||'En curso')==='Finalizado') return;
+    const box=document.getElementById('maintenanceWrapper');
+    box.classList.toggle('hidden');
+    if(!box.classList.contains('hidden')) setMaintTab(currentMaintTab);
+  });
+
+  document.getElementById('btnTogglePower')?.addEventListener('click',function(){
+    const ev=selectedEvent();
+    if(!ev)return;
+    ev.situacion=(ev.situacion==='Finalizado'?'En curso':'Finalizado');
+    fullRender();
+  });
+
+  document.getElementById('tabSociosBtn')?.addEventListener('click',function(){setMaintTab('socios')});
+  document.getElementById('tabEventosBtn')?.addEventListener('click',function(){setMaintTab('eventos')});
+  document.getElementById('tabTiendasBtn')?.addEventListener('click',function(){setMaintTab('tiendas')});
+  document.getElementById('tabProductosBtn')?.addEventListener('click',function(){setMaintTab('productos')});
 }
-initEvents(); fullRender();
+initEvents();
+fullRender();
   </script>
 </body>
 </html>
