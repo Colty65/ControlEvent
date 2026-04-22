@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.1</title>
+  <title>ControlEvent v6.2</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -107,7 +107,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.1</span>
+          <span>ControlEvent v6.2</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -147,7 +147,7 @@
           <div class="section-title">
             <div class="icon-badge">🤝</div>
             <div>
-              <h2>Personas colaboradoras</h2>
+              <h2>Ingresos de socios y Donantes (personas, empresas, asociaciones, etc)</h2>
               <p>Socios y donantes con su forma de ingreso e importe donado.</p>
             </div>
           </div>
@@ -165,7 +165,7 @@
               <select id="collabSituacion"></select>
             </div>
             <div class="field">
-              <label>Importe voluntario</label>
+              <label>Importe voluntario (€)</label>
               <input id="collabImporte" type="number" min="0" step="0.01" value="0.00" />
             </div>
             <div class="field">
@@ -340,7 +340,7 @@
   </div>
 
 <script>
-const STORAGE_KEY = 'controlevent_v6_1';
+const STORAGE_KEY = 'controlevent_v6_2';
 const PERSONA_RANGOS = ['SOCIO','DONANTE'];
 const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
 const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
@@ -350,6 +350,7 @@ const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS', ...Arr
 
 let currentMainTab = 'ingresos';
 let currentMaintTab = 'personas';
+let currentProductSort = 'nombre';
 function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'].includes(String(v||'')); }
 
 const state = loadState();
@@ -462,7 +463,7 @@ function ingresoSummary(){
     const subset = rows.filter(r => r.situacion === tipo);
     return {
       tipo,
-      personas: subset.length,
+      personas: subset.reduce((a,b)=>a+Number(b.numero||0),0),
       importe: subset.reduce((a,b) => a + b.total, 0)
     };
   });
@@ -481,8 +482,8 @@ function budgetSummary(){
   const sociosRows = rows.filter(r => r.persona?.rango === 'SOCIO');
   const donantesRows = rows.filter(r => r.persona?.rango === 'DONANTE');
 
-  const sociosCount = state.personas.filter(p => p.rango === 'SOCIO').length;
-  const donantesCount = state.personas.filter(p => p.rango === 'DONANTE').length;
+  const sociosCount = sociosRows.reduce((a,b) => a + Number(b.numero || 0), 0);
+  const donantesCount = donantesRows.reduce((a,b) => a + Number(b.numero || 0), 0);
 
   const sociosImporte = sociosRows.reduce((a,b) => a + b.total, 0);
   const sociosIngresado = sociosRows.filter(r => r.situacion !== 'Pendiente').reduce((a,b) => a + b.total, 0);
@@ -494,15 +495,16 @@ function budgetSummary(){
 
   const totalComprometido = sociosImporte + donantesImporte;
   const comprasValorTotal = compras.reduce((a,b) => a + b.valor, 0);
-  const comprasResueltas = compras.filter(c => String(c.ticketDonacion || '').trim() !== '').reduce((a,b) => a + b.valor, 0);
+  const comprasResueltas = compras.filter(c => String(c.ticketDonacion || '').trim() !== '' && !isDonationTicket(c.ticketDonacion)).reduce((a,b) => a + b.valor, 0);
   const comprasPendientes = compras.filter(c => String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
+  const valorDonado = compras.filter(c => isDonationTicket(c.ticketDonacion)).reduce((a,b) => a + b.valor, 0);
   const gastoOperativo = compras.reduce((a,b) => a + b.importe, 0);
   const saldoOperativo = totalComprometido - gastoOperativo;
 
   return {
     socios: {count:sociosCount, importe:sociosImporte, ingresado:sociosIngresado, pendiente:sociosPendiente, saldo:totalComprometido},
     donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente},
-    compras: {total:comprasValorTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, gastoOperativo, saldoOperativo}
+    compras: {total:comprasValorTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, valorDonado, gastoOperativo, saldoOperativo}
   };
 }
 
@@ -512,8 +514,8 @@ function summaryBySegmento(){
     const comprado = compras.filter(c => (c.producto?.segmento || '') === seg && String(c.ticketDonacion || '').trim() !== '').reduce((a,b) => a + b.valor, 0);
     const pdte = compras.filter(c => (c.producto?.segmento || '') === seg && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
     return [
-      {k: `${seg} Comprado`, v: comprado, pending:false},
-      {k: `${seg} Pdte.Compra`, v: pdte, pending:true},
+      {k: `${seg} Comprado o donado`, v: comprado, pending:false, donated:false},
+      {k: `${seg} Pdte.Compra o donación`, v: pdte, pending:true, donated:false},
     ];
   });
 }
@@ -524,8 +526,8 @@ function summaryByDestino(){
     const comprado = compras.filter(c => (c.producto?.destino || '') === dest && String(c.ticketDonacion || '').trim() !== '').reduce((a,b) => a + b.valor, 0);
     const pdte = compras.filter(c => (c.producto?.destino || '') === dest && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
     return [
-      {k: `${dest} Comprado`, v: comprado, pending:false},
-      {k: `${dest} Pdte.Compra`, v: pdte, pending:true},
+      {k: `${dest} Comprado o donado`, v: comprado, pending:false, donated:false},
+      {k: `${dest} Pdte.Compra o donación`, v: pdte, pending:true, donated:false},
     ];
   });
 }
@@ -538,11 +540,14 @@ function summaryByTiendaTicket(){
     if(String(c.ticketDonacion || '').trim() === ''){
       pending[key] = (pending[key] || 0) + c.valor;
     } else {
-      filled[key] = (filled[key] || 0) + c.valor;
+      const donated = isDonationTicket(c.ticketDonacion);
+      if(!filled[key]) filled[key] = {v:0, donated:donated};
+      filled[key].v += c.valor;
+      filled[key].donated = filled[key].donated || donated;
     }
   });
-  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:false}));
-  const b = Object.entries(pending).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:true}));
+  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,obj])=>({k,v:obj.v,pending:false,donated:obj.donated}));
+  const b = Object.entries(pending).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:true,donated:false}));
   return a.concat(b);
 }
 
@@ -557,7 +562,7 @@ function renderSummaryList(targetId, rows){
     const div = document.createElement('div');
     div.className = 'summary-item';
     if(r.pending) div.classList.add('red-row');
-    div.innerHTML = `<span>${escapeHtml(r.k)}</span><span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : ''}>${money(r.v)}</span>`;
+    div.innerHTML = `<span>${escapeHtml(r.k)}</span><span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : (r.donated ? ' style="text-decoration:line-through"' : '')}>${money(r.v)}</span>`;
     wrap.appendChild(div);
   });
 }
@@ -657,7 +662,7 @@ function renderColabs(){
           <input class="soft-readonly" readonly value="${money(r.base)}" />
         </div>
         <div class="field">
-          <label>Importe voluntario</label>
+          <label>Importe voluntario (€)</label>
           <input type="number" min="0" step="0.01" value="${Number(r.importe||0)}" data-action="edit-collab-importe" data-id="${r.id}" />
         </div>
         <div style="display:flex;gap:8px;align-items:end">
@@ -684,6 +689,7 @@ function renderBudget(){
     {label:'Importe donantes', value:money(b.donantes.importe)},
     {label:'Ingresado donantes', value:money(b.donantes.ingresado)},
     {label:'Pendiente donantes', value:money(b.donantes.pendiente), cls:'warn'},
+    {label:'Valor estimado del producto donado', value:money(b.compras.valorDonado)},
     {label:'Comprado', value:money(b.compras.resueltas), cls:'ok'},
     {label:'Pdte. compra', value:money(b.compras.pendientes), cls:'warn'},
     {label:'Saldo operativo', value:money(b.compras.saldoOperativo), cls:b.compras.saldoOperativo>=0?'ok':'bad'}
@@ -856,9 +862,15 @@ function renderTiendas(){
 function renderProductos(){
   document.getElementById('newProductoSegmento').innerHTML = SEGMENT_OPTIONS.map(v => `<option value="${v}">${v}</option>`).join('');
   document.getElementById('newProductoDestino').innerHTML = DESTINO_OPTIONS.map(v => `<option value="${v}">${v}</option>`).join('');
-  document.getElementById('newProductoTienda').innerHTML = state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}">${escapeHtml(t.nombre)}</option>`).join('');
+  document.getElementById('newProductoTienda').innerHTML = '<option value="">-- sin decidir --</option>' + state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}">${escapeHtml(t.nombre)}</option>`).join('');
   const wrap = document.getElementById('productosList');
-  const list = state.productos.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es'));
+  const getters = {
+    nombre: p => p.nombre || '',
+    segmento: p => p.segmento || '',
+    destino: p => p.destino || '',
+    tienda: p => tiendaById(p.tiendaId)?.nombre || ''
+  };
+  const list = state.productos.slice().sort((a,b)=>getters[currentProductSort](a).localeCompare(getters[currentProductSort](b),'es'));
   if(!list.length){
     wrap.innerHTML = '<div class="empty">No hay productos.</div>';
     return;
@@ -866,7 +878,7 @@ function renderProductos(){
   wrap.innerHTML = '';
   const hdr = document.createElement('div');
   hdr.className = 'hint';
-  hdr.innerHTML = 'Orden alfabético por nombre.';
+  hdr.innerHTML = 'Ordenar por: <a href="#" class="link-sort" data-sort-producto="nombre">Nombre</a> · <a href="#" class="link-sort" data-sort-producto="segmento">Segmento</a> · <a href="#" class="link-sort" data-sort-producto="destino">Destino</a> · <a href="#" class="link-sort" data-sort-producto="tienda">Tienda</a>';
   wrap.appendChild(hdr);
   list.forEach(p => {
     const row = document.createElement('div');
@@ -877,7 +889,7 @@ function renderProductos(){
         <div class="field"><label>Segmento</label><select data-action="edit-producto-segmento" data-id="${p.id}">${SEGMENT_OPTIONS.map(v => `<option value="${v}" ${v===p.segmento?'selected':''}>${v}</option>`).join('')}</select></div>
         <div class="field"><label>Destino</label><select data-action="edit-producto-destino" data-id="${p.id}">${DESTINO_OPTIONS.map(v => `<option value="${v}" ${v===p.destino?'selected':''}>${v}</option>`).join('')}</select></div>
         <div class="field"><label>Precio</label><input type="number" min="0" step="0.01" value="${Number(p.precio||0)}" data-action="edit-producto-precio" data-id="${p.id}" /></div>
-        <div class="field"><label>Tienda</label><select data-action="edit-producto-tienda" data-id="${p.id}">${state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}" ${t.id===p.tiendaId?'selected':''}>${escapeHtml(t.nombre)}</option>`).join('')}</select></div>
+        <div class="field"><label>Tienda</label><select data-action="edit-producto-tienda" data-id="${p.id}"><option value="" ${!p.tiendaId?'selected':''}>-- sin decidir --</option>${state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}" ${t.id===p.tiendaId?'selected':''}>${escapeHtml(t.nombre)}</option>`).join('')}</select></div>
         <button type="button" class="modify small" data-action="save-producto" data-id="${p.id}">Modificar</button>
         <button type="button" class="danger small" data-action="delete-producto" data-id="${p.id}">Eliminar</button>
       </div>
@@ -1179,7 +1191,7 @@ function exportExcel(){
 
   function cellText(v, cls=''){ return `<td${cls ? ` class="${cls}"` : ''}>${escapeHtml(String(v))}</td>`; }
   function cellNum(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'0,00';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
-  function cellMoney(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))} €</td>`; }
+  function cellMoney(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
 
   const html = `
   <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -1191,7 +1203,7 @@ function exportExcel(){
       th{background:#111827;color:#ffffff}
       .title{background:#111827;color:#ffffff;font-weight:bold}
       .ok{background:#ecfdf5;color:#047857;font-weight:bold}
-      .bad{background:#fef2f2;color:#b91c1c;font-weight:bold}
+      .bad{background:#fef2f2;color:#b91c1c;font-weight:bold}.donado{text-decoration:line-through}
       .warn{background:#fff7ed;color:#c2410c;font-weight:bold}
     </style>
   </head>
@@ -1206,13 +1218,14 @@ function exportExcel(){
       <tr><td>Ingresado total</td>${cellMoney(budget.socios.ingresado + budget.donantes.ingresado)}</tr>
       <tr><td>Pendiente total</td>${cellMoney(budget.socios.pendiente + budget.donantes.pendiente, 'warn')}</tr>
       
+      <tr><td>Valor estimado producto donado</td>${cellMoney(budget.compras.valorDonado)}</tr>
       <tr><td>Saldo operativo</td>${cellMoney(budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad')}</tr>
       <tr><td>Fecha y hora emisión</td><td>${escapeHtml(new Date().toLocaleString('es-ES'))}</td></tr>
     </table>
     <br>
     <table>
-      <tr><th class="title" colspan="6">PERSONAS COLABORADORAS</th></tr>
-      <tr><th>Colaborador/a</th><th>Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
+      <tr><th class="title" colspan="6">INGRESOS DE SOCIOS Y DONANTES</th></tr>
+      <tr><th>Colaborador/a</th><th>Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario (€)</th><th>Total compromiso</th></tr>
       ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero)}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
     </table>
     <br>
@@ -1237,7 +1250,7 @@ function exportExcel(){
     <table>
       <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
       <tr><th>Tienda y ticket/donado</th><th>Importe</th></tr>
-      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v)}</tr>`).join('')}
+      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}</tr>`).join('')}
     </table>
   </body>
   </html>`;
