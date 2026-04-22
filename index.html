@@ -1,512 +1,1207 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v5.0</title>
+  <title>ControlEvent v6.0</title>
   <style>
-    :root{--bg:#f3f5f7;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#dbe2ea;--primary:#111827;--ok-bg:#ecfdf5;--ok:#047857;--bad-bg:#fef2f2;--bad:#b91c1c;--warn-bg:#fff7ed;--warn:#c2410c;--pill:#eef2f7;--shadow:0 8px 24px rgba(15,23,42,.08)}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    .app{max-width:1280px;margin:0 auto;padding-bottom:110px}.header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
-    .header-inner{display:grid;grid-template-columns:1fr 1.9fr 1fr;align-items:center;padding:12px 16px;gap:12px}.brand{font-weight:800;letter-spacing:.03em;font-size:16px}.subtitle{margin-top:4px;font-size:13px;color:var(--muted);font-weight:600}.centerhead{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}.event-active-label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}.event-dates{font-size:12px;color:var(--muted);font-weight:700;white-space:nowrap}.status-pill{display:inline-flex;align-items:center;justify-content:center;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:800}.status-curso{background:#ecfdf5;color:#047857}.status-finalizado{background:#fef2f2;color:#b91c1c}.powerbtn{background:#fff;border:1px solid var(--border);padding:8px 10px;border-radius:12px;color:#111827;font-size:22px;position:relative;z-index:9999}.powerbtn.on{color:#047857}.powerbtn.off{color:#b91c1c}.locked{opacity:.55;pointer-events:none;user-select:none}.appname{font-size:14px;color:#111827;font-weight:800;white-space:nowrap;text-align:right}
-    .main{padding:14px}.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}.section-title{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}.icon-badge{width:34px;height:34px;border-radius:12px;background:#eef2f7;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}.section-title h2{margin:0;font-size:18px}.section-title p{margin:4px 0 0;color:var(--muted);font-size:13px}
-    .field label{display:block;font-size:13px;margin-bottom:6px;color:#374151;font-weight:600} input,select,button{font:inherit} input,select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text)} input[readonly]{background:#f8fafc}
-    button{border:0;border-radius:14px;padding:11px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer} button.secondary{background:#e5e7eb;color:#111827} button.outline{background:#fff;color:#111827;border:1px solid var(--border)} button.danger{background:#b91c1c} button.small{padding:8px 10px;border-radius:12px;font-size:13px} button.modify{background:#0f766e}
-    .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}.metric .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.metric .value{margin-top:8px;font-size:18px;font-weight:800}.metric.ok{background:var(--ok-bg);border-color:#bbf7d0;color:var(--ok)} .metric.bad{background:var(--bad-bg);border-color:#fecaca;color:var(--bad)} .metric.warn{background:var(--warn-bg);border-color:#fed7aa;color:var(--warn)}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fff;padding:8px;border-radius:18px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px}.tab{background:#fff;color:#111827;border:1px solid var(--border)}.tab.active{background:#111827;color:#fff;border-color:#111827}.tab.active .tabicon{filter:brightness(1.2)}
-    .hidden{display:none !important}.empty{border:1px dashed var(--border);border-radius:18px;padding:18px;color:var(--muted);background:#f8fafc}.separator{height:1px;background:var(--border);margin:16px 0}
-    .summary-card{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}.summary-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:#f8fafc;margin-top:8px;font-size:14px}.pill{background:var(--pill);border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700}
-    .footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);border-top:1px solid var(--border);backdrop-filter:blur(8px)}.footer-inner{max-width:1280px;margin:0 auto;padding:10px 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-    .maintenance{border-top:1px solid var(--border);background:#f8fafc;padding:14px}.grid,.row,.form-row,.subgrid-3,.stats-pay{display:grid;gap:10px}.badge-active{display:inline-block;margin-bottom:8px;background:#111827;color:#fff;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700}.hint{font-size:12px;color:var(--muted);margin-top:6px}
-    .itemcard{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}.ticket-thumb{max-width:56px;max-height:56px;border:1px solid var(--border);border-radius:8px;display:block}.ticket-upload{font-size:12px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rowline{display:grid;gap:10px}
-    .gear{font-size:32px;line-height:1}.iconbtn{font-size:34px;display:flex;align-items:center;justify-content:center;line-height:1}.tabicon{font-size:24px;line-height:1}.footerimg{width:34px;height:34px;object-fit:contain;display:block}.tablabel-btn{background:none;border:0;padding:0;color:inherit;font-weight:700;cursor:pointer}
-    #maintenanceTabs .tab{display:flex;align-items:center;justify-content:center;gap:6px} #tabAsistentesBtn,#tabComprasBtn{display:flex;align-items:center;justify-content:center}
-    @media (min-width:760px){.brand{font-size:18px}.subtitle,.appname{font-size:14px}.main{padding:20px}.metrics{grid-template-columns:repeat(8,minmax(0,1fr))}.stats-pay{grid-template-columns:repeat(4,minmax(0,1fr))}.form-row.asistentes{grid-template-columns:2.1fr .8fr 1.3fr auto}.form-row.compras{grid-template-columns:1.7fr .9fr 1fr 1fr 1.1fr 1fr auto}.row.asistente{grid-template-columns:2.1fr .8fr 1.3fr auto;align-items:end}.subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.actions{grid-template-columns:auto auto}.rowline.socio,.rowline.tienda{grid-template-columns:1fr auto auto;align-items:end}.rowline.evento{grid-template-columns:1fr 140px 140px 140px auto auto;align-items:end}.rowline.producto{grid-template-columns:1.2fr 1fr 1fr 120px 1fr auto auto;align-items:end}.rowline.compra-edit{grid-template-columns:1.5fr .8fr 1fr auto auto;align-items:end}}
+    :root{
+      --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
+      --primary:#111827; --soft:#eef2f7; --ok:#047857; --ok-bg:#ecfdf5; --bad:#b91c1c;
+      --bad-bg:#fef2f2; --warn:#c2410c; --warn-bg:#fff7ed; --shadow:0 8px 24px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .app{max-width:1280px;margin:0 auto;padding-bottom:110px}
+    .header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .header-inner{display:grid;grid-template-columns:1fr 2fr 1fr;gap:12px;align-items:center;padding:12px 16px}
+    .brand{font-weight:800;letter-spacing:.03em;font-size:16px}
+    .subtitle{margin-top:4px;color:var(--muted);font-size:13px;font-weight:600}
+    .centerhead{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+    .event-label{font-size:12px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+    .event-dates{font-size:12px;color:var(--muted);font-weight:700}
+    .status-pill{display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:800}
+    .status-curso{background:var(--ok-bg);color:var(--ok)}
+    .status-finalizado{background:var(--bad-bg);color:var(--bad)}
+    .powerbtn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px;font-size:22px;line-height:1;cursor:pointer}
+    .powerbtn.on{color:var(--ok)}
+    .powerbtn.off{color:var(--bad)}
+    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}
+    .main{padding:14px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+    .section-title{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
+    .icon-badge{width:34px;height:34px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;flex:none;font-size:18px}
+    .section-title h2{margin:0;font-size:18px}
+    .section-title p{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .field label{display:block;margin-bottom:6px;color:#374151;font-size:13px;font-weight:700}
+    input,select,button{font:inherit}
+    input,select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text)}
+    input[readonly]{background:#f8fafc}
+    button{border:0;border-radius:14px;padding:11px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}
+    button.secondary{background:#e5e7eb;color:#111827}
+    button.outline{background:#fff;color:#111827;border:1px solid var(--border)}
+    button.danger{background:#b91c1c}
+    button.modify{background:#0f766e}
+    button.small{padding:8px 10px;border-radius:12px;font-size:13px}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fff;padding:8px;border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:14px}
+    .tab{background:#fff;color:#111827;border:1px solid var(--border)}
+    .tab.active{background:#111827;color:#fff;border-color:#111827}
+    .hidden{display:none !important}
+    .collapsed-body.hidden{display:none !important}
+    .empty{border:1px dashed var(--border);border-radius:18px;padding:18px;background:#f8fafc;color:var(--muted)}
+    .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .metric{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}
+    .metric .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .metric .value{margin-top:8px;font-size:18px;font-weight:800}
+    .metric.ok{background:var(--ok-bg);border-color:#bbf7d0;color:var(--ok)}
+    .metric.bad{background:var(--bad-bg);border-color:#fecaca;color:var(--bad)}
+    .metric.warn{background:var(--warn-bg);border-color:#fed7aa;color:var(--warn)}
+    .separator{height:1px;background:var(--border);margin:16px 0}
+    .hint{font-size:12px;color:var(--muted)}
+    .itemcard{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff;margin-top:10px}
+    .rowline{display:grid;gap:10px}
+    .subgrid-3{display:grid;gap:10px}
+    .summary-card{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}
+    .summary-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:#f8fafc;margin-top:8px;font-size:14px}
+    .pill{background:var(--soft);border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);border-top:1px solid var(--border);backdrop-filter:blur(8px)}
+    .footer-inner{max-width:1280px;margin:0 auto;padding:10px 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .iconbtn{font-size:32px;display:flex;align-items:center;justify-content:center;line-height:1}
+    .locked{opacity:.55;pointer-events:none;user-select:none}
+    .maintenance-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;background:#fff;padding:8px;border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:14px}
+    .link-sort{color:#111827;font-weight:700;text-decoration:none}
+    .link-sort:hover{text-decoration:underline}
+    .red-row{color:var(--bad)}
+    .footer button:disabled,.tab:disabled,.powerbtn:disabled{cursor:not-allowed;opacity:.65}
+    @media (min-width:760px){
+      .brand{font-size:18px}
+      .main{padding:20px}
+      .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+      .subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .footer-inner{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .row-collab-form{display:grid;grid-template-columns:2fr .9fr 1.1fr 1fr auto;gap:10px;align-items:end}
+      .row-purchase-form{display:grid;grid-template-columns:1.6fr .9fr 1.2fr 1.4fr auto;gap:10px;align-items:end}
+      .rowline.persona{grid-template-columns:1.5fr 1fr auto auto;align-items:end}
+      .rowline.evento{grid-template-columns:1.4fr .8fr .9fr .9fr 1fr auto auto;align-items:end}
+      .rowline.tienda{grid-template-columns:1fr auto auto;align-items:end}
+      .rowline.producto{grid-template-columns:1.3fr 1fr 1fr .8fr 1fr auto auto;align-items:end}
+      .rowline.collab{grid-template-columns:1.5fr .7fr 1fr .9fr auto auto;align-items:end}
+      .rowline.compra{grid-template-columns:1.4fr .8fr 1.2fr 1.3fr auto auto;align-items:end}
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="header-inner app">
-      <div><div class="brand">PEÑA EL ARRASTRE</div><div class="subtitle">©oltyLAB ‘26</div></div>
-      <div class="centerhead"><div class="event-active-label">Evento:</div><select id="selectedEvent" style="max-width:240px;"></select><div class="event-dates" id="eventDates">(del --/--/-- al --/--/--)</div></div>
-      <div class="appname" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;"><span>ControlEvent v5.0</span><button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación" style="display:inline-flex;align-items:center;justify-content:center;">⏻</button></div>
+      <div>
+        <div class="brand">PEÑA EL ARRASTRE</div>
+        <div class="subtitle">©oltyLAB ‘26</div>
+      </div>
+      <div class="centerhead">
+        <div class="event-label">Evento:</div>
+        <select id="selectedEvent" style="max-width:280px;"></select>
+        <div class="event-dates" id="eventDates">(del --/--/-- al --/--/--)</div>
+        <div id="eventStatus" class="status-pill status-curso">En curso</div>
+      </div>
+      <div class="appname">
+        <span>ControlEvent v6.0</span>
+        <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
+      </div>
     </div>
   </div>
 
   <div class="app">
     <div class="main">
-      <div class="tabs app-lockable">
-        <button type="button" class="tab active" id="tabAsistentesBtn" title="Asistentes"><span class="tabicon">👥</span></button>
-        <button type="button" class="tab" id="tabComprasBtn" title="Compras"><span class="tabicon">🛒</span></button>
+      <div class="tabs app-lockable" id="mainTabs">
+        <button type="button" class="tab active" id="tabIngresosBtn">Colaboradores económicos</button>
+        <button type="button" class="tab" id="tabComprasBtn">Compras y donaciones de producto</button>
       </div>
 
-      <div id="noEventMessage" class="card hidden"><div class="empty">No hay eventos. Crea uno desde el botón de mantenimiento al pie.</div></div>
+      <div id="noEventMessage" class="card hidden">
+        <div class="empty">No hay eventos. Crea uno desde mantenimiento.</div>
+      </div>
 
-      <div id="tabAsistentes" class="app-lockable">
+      <div id="tabIngresos" class="app-lockable">
         <div class="card">
-          <div class="section-title"><div class="icon-badge">💶</div><div><h2>Resumen de pagos</h2><p>Personas asociadas a cada forma de pago o pendiente.</p></div></div>
-          <div class="stats-pay" id="payStats"></div>
-        </div>
-        <div class="card">
-          <div class="section-title"><div class="icon-badge">👥</div><div><h2>Asistentes del evento</h2><p>Se puede modificar el socio, el número de asistentes y la situación del pago.</p></div></div>
-          <div class="form-row asistentes">
-            <div class="field"><label>Socio</label><select id="asistenteSocio"></select></div>
-            <div class="field"><label>Número</label><input id="asistenteNumero" type="number" min="0" step="1" value="1" /></div>
-            <div class="field"><label>Situación</label><select id="asistenteSituacion"></select></div>
-            <div class="field"><label>&nbsp;</label><button type="button" id="btnAddAsistente">Añadir</button></div>
+          <div class="toggle-row">
+            <div class="section-title" style="margin:0">
+              <div class="icon-badge">💶</div>
+              <div>
+                <h2>Resumen de Ingresos</h2>
+                <p>Desplegar o plegar el resumen por forma de ingreso.</p>
+              </div>
+            </div>
+            <button type="button" class="outline" id="toggleIngresosSummary">💰</button>
           </div>
-          <div class="separator"></div><div id="asistentesList"></div>
+          <div id="ingresosSummaryBody" class="collapsed-body hidden">
+            <div class="metrics" id="ingresosSummaryGrid"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">🤝</div>
+            <div>
+              <h2>Personas colaboradoras</h2>
+              <p>Socios y donantes con su forma de ingreso e importe donado.</p>
+            </div>
+          </div>
+          <div class="row-collab-form">
+            <div class="field">
+              <label>Colaborador/a</label>
+              <select id="collabPersona"></select>
+            </div>
+            <div class="field">
+              <label>Número</label>
+              <input id="collabNumero" type="number" min="0" step="1" value="1" />
+            </div>
+            <div class="field">
+              <label>Situación</label>
+              <select id="collabSituacion"></select>
+            </div>
+            <div class="field">
+              <label>Importe</label>
+              <input id="collabImporte" type="number" min="0" step="0.01" value="0.00" />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="btnAddColab">Añadir</button>
+            </div>
+          </div>
+          <div class="separator"></div>
+          <div id="collabList"></div>
         </div>
       </div>
 
       <div id="tabCompras" class="hidden app-lockable">
         <div class="card">
-          <div class="section-title"><div class="icon-badge">📊</div><div><h2>Control presupuestario</h2><p>Incluye compras realizadas y compras pendientes según el dato TICKET.</p></div></div>
-          <div class="metrics">
-            <div class="metric"><div class="label">Asistentes</div><div class="value" id="ctrlAsistentes">0</div></div>
-            <div class="metric"><div class="label">Precio</div><div class="value" id="ctrlPrecioEvento">0,00 €</div></div>
-            <div class="metric"><div class="label">Presupuesto</div><div class="value" id="ctrlPresupuesto">0,00 €</div></div>
-            <div class="metric"><div class="label">Ingresado</div><div class="value" id="ctrlIngresado">0,00 €</div></div>
-            <div class="metric warn"><div class="label">Pendiente</div><div class="value" id="ctrlPendiente">0,00 €</div></div>
-            <div class="metric"><div class="label">Comprado</div><div class="value" id="ctrlComprado">0,00 €</div></div>
-            <div class="metric warn"><div class="label">Pdte. compra</div><div class="value" id="ctrlPdteCompra">0,00 €</div></div>
-            <div class="metric" id="ctrlSaldoBox"><div class="label">Saldo</div><div class="value" id="ctrlSaldo">0,00 €</div></div>
+          <div class="toggle-row">
+            <div class="section-title" style="margin:0">
+              <div class="icon-badge">📊</div>
+              <div>
+                <h2>Control presupuestario y cálculos por agrupación</h2>
+                <p>Desplegar o plegar la información económica del evento.</p>
+              </div>
+            </div>
+            <button type="button" class="outline" id="toggleComprasSummary">📈</button>
+          </div>
+          <div id="comprasSummaryBody" class="collapsed-body hidden">
+            <div class="card" style="box-shadow:none;margin:12px 0 0 0">
+              <div class="section-title">
+                <div class="icon-badge">👥</div>
+                <div>
+                  <h2>Control presupuestario</h2>
+                  <p>Resumen por socios, donantes y compras del evento.</p>
+                </div>
+              </div>
+              <div class="metrics" id="budgetMetricsGrid"></div>
+            </div>
+
+            <div class="card" style="box-shadow:none;margin:12px 0 0 0">
+              <div class="section-title">
+                <div class="icon-badge">🧾</div>
+                <div>
+                  <h2>Cálculos por agrupación</h2>
+                  <p>Importes por segmento, destino y por tienda y ticket/donado.</p>
+                </div>
+              </div>
+              <div class="subgrid-3">
+                <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
+                <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
+                <div class="summary-card"><strong>Por tienda y ticket/donado</strong><div id="summaryTiendaTicket"></div></div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="section-title"><div class="icon-badge">🧾</div><div><h2>Cálculos por agrupación</h2><p>Importes del evento por segmento, destino y tienda+tícket.</p></div></div>
-          <div class="subgrid-3">
-            <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
-            <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
-            <div class="summary-card"><strong>Por tienda y ticket</strong><div id="summaryTienda"></div></div>
+          <div class="section-title">
+            <div class="icon-badge">🛒</div>
+            <div>
+              <h2>Compras y donaciones del evento</h2>
+              <p>Compras normales y productos donados, con responsable opcional.</p>
+            </div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="section-title"><div class="icon-badge">🛒</div><div><h2>Compras del evento</h2><p>Se puede modificar producto, unidades y ticket con botón explícito Modificar.</p></div></div>
-          <div class="form-row compras">
-            <div class="field"><label>Producto</label><select id="compraProducto"></select></div>
-            <div class="field"><label>Unidades</label><input id="compraUnidades" type="number" min="0" step="0.01" value="1.00" /></div>
-            <div class="field"><label>Precio</label><input id="compraPrecio" readonly /></div>
-            <div class="field"><label>Importe</label><input id="compraImporte" readonly /></div>
-            <div class="field"><label>Tienda</label><input id="compraTienda" readonly /></div>
-            <div class="field"><label>Ticket</label><input id="compraTicket" placeholder="Nº ticket/factura" /></div>
-            <div class="field"><label>&nbsp;</label><button type="button" id="btnAddCompra">Añadir</button></div>
+          <div class="row-purchase-form">
+            <div class="field">
+              <label>Producto</label>
+              <select id="buyProducto"></select>
+            </div>
+            <div class="field">
+              <label>Unidades</label>
+              <input id="buyUnidades" type="number" min="0" step="0.01" value="1.00" />
+            </div>
+            <div class="field">
+              <label>Ticket/Donación</label>
+              <select id="buyTicket"></select>
+            </div>
+            <div class="field">
+              <label>Responsable</label>
+              <select id="buyResponsable"></select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="btnAddCompra">Añadir</button>
+            </div>
           </div>
-          <div class="separator"></div><div id="comprasList"></div>
+          <div class="separator"></div>
+          <div id="comprasList"></div>
         </div>
       </div>
 
-      <div id="maintenanceWrapper" class="maintenance hidden app-lockable">
-        <div class="tabs" id="maintenanceTabs">
-          <button type="button" class="tab active" id="tabSociosBtn"><span class="tabicon">👤</span> <span style="font-size:12px;font-weight:600;">socios</span></button>
-          <button type="button" class="tab" id="tabEventosBtn"><span class="tabicon">🎉</span> <span style="font-size:12px;font-weight:600;">eventos</span></button>
-          <button type="button" class="tab" id="tabTiendasBtn"><span class="tabicon">🏪</span> <span style="font-size:12px;font-weight:600;">tiendas</span></button>
-          <button type="button" class="tab" id="tabProductosBtn"><span class="tabicon">📦</span> <span style="font-size:12px;font-weight:600;">productos</span></button>
+      <div id="maintenanceWrapper" class="app-lockable hidden">
+        <div class="maintenance-tabs">
+          <button type="button" class="tab active" id="mtPersonasBtn">👤 personas</button>
+          <button type="button" class="tab" id="mtEventosBtn">🎉 eventos</button>
+          <button type="button" class="tab" id="mtTiendasBtn">🏪 tiendas</button>
+          <button type="button" class="tab" id="mtProductosBtn">📦 productos</button>
         </div>
 
-        <div id="maintSocios" class="card">
-          <div class="section-title"><div class="icon-badge">👤</div><div><h2>SOCIOS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="grid"><div class="field"><label>Nombre del socio</label><input id="newSocioNombre" /></div><button type="button" id="btnAddSocio">Añadir socio</button></div>
-          <div class="separator"></div><div id="sociosList"></div>
+        <div id="mtPersonas" class="card">
+          <div class="section-title"><div class="icon-badge">👤</div><div><h2>PERSONAS</h2><p>Alta, modificación y borrado.</p></div></div>
+          <div class="rowline persona">
+            <div class="field"><label>Nombre</label><input id="newPersonaNombre" /></div>
+            <div class="field"><label>Rango</label><select id="newPersonaRango"></select></div>
+            <button type="button" id="btnAddPersona">Añadir</button>
+            <div></div>
+          </div>
+          <div class="separator"></div>
+          <div id="personasList"></div>
         </div>
 
-        <div id="maintEventos" class="card hidden">
+        <div id="mtEventos" class="card hidden">
           <div class="section-title"><div class="icon-badge">🎉</div><div><h2>EVENTOS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="grid">
-            <div class="field"><label>Título del evento</label><input id="newEventoTitulo" /></div>
-            <div class="field"><label>Precio por persona</label><input id="newEventoPrecio" type="number" min="0" step="0.01" value="0" /></div>
+          <div class="rowline evento">
+            <div class="field"><label>Título</label><input id="newEventoTitulo" /></div>
+            <div class="field"><label>Precio</label><input id="newEventoPrecio" type="number" min="0" step="0.01" value="0.00" /></div>
             <div class="field"><label>Fecha ini</label><input id="newEventoFechaIni" placeholder="DD/MM/AA" /></div>
             <div class="field"><label>Fecha fin</label><input id="newEventoFechaFin" placeholder="DD/MM/AA" /></div>
-            <button type="button" id="btnAddEvento">Añadir evento</button>
+            <div class="field"><label>Situación</label><select id="newEventoSituacion"></select></div>
+            <button type="button" id="btnAddEvento">Añadir</button>
+            <div></div>
           </div>
-          <div class="separator"></div><div id="eventosList"></div>
+          <div class="separator"></div>
+          <div id="eventosList"></div>
         </div>
 
-        <div id="maintTiendas" class="card hidden">
+        <div id="mtTiendas" class="card hidden">
           <div class="section-title"><div class="icon-badge">🏪</div><div><h2>TIENDAS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="grid"><div class="field"><label>Nombre de la tienda</label><input id="newTiendaNombre" /></div><button type="button" id="btnAddTienda">Añadir tienda</button></div>
-          <div class="separator"></div><div id="tiendasList"></div>
+          <div class="rowline tienda">
+            <div class="field"><label>Nombre</label><input id="newTiendaNombre" /></div>
+            <button type="button" id="btnAddTienda">Añadir</button>
+            <div></div>
+          </div>
+          <div class="separator"></div>
+          <div id="tiendasList"></div>
         </div>
 
-        <div id="maintProductos" class="card hidden">
+        <div id="mtProductos" class="card hidden">
           <div class="section-title"><div class="icon-badge">📦</div><div><h2>PRODUCTOS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="grid">
-            <div class="field"><label>Nombre del producto</label><input id="newProductoNombre" /></div>
+          <div class="rowline producto">
+            <div class="field"><label>Nombre</label><input id="newProductoNombre" /></div>
             <div class="field"><label>Segmento</label><select id="newProductoSegmento"></select></div>
             <div class="field"><label>Destino</label><select id="newProductoDestino"></select></div>
-            <div class="field"><label>Precio IVA incluido</label><input id="newProductoPrecio" type="number" min="0" step="0.01" value="0" /></div>
+            <div class="field"><label>Precio</label><input id="newProductoPrecio" type="number" min="0" step="0.01" value="0.00" /></div>
             <div class="field"><label>Tienda</label><select id="newProductoTienda"></select></div>
-            <button type="button" id="btnAddProducto">Añadir producto</button>
+            <button type="button" id="btnAddProducto">Añadir</button>
+            <div></div>
           </div>
-          <div class="separator"></div><div id="productosList"></div>
+          <div class="separator"></div>
+          <div id="productosList"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="footer"><div class="footer-inner"><div id="footerLockables" style="display:contents">
-    <button type="button" id="btnExportExcel" class="iconbtn outline" title="Excel"><img class="footerimg" src="data:image/jpeg;base64,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" alt="Excel"></button>
-    <button type="button" id="btnShareWhats" class="outline iconbtn app-lockable" title="WhatsApp"><img class="footerimg" src="data:image/jpeg;base64,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" alt="WhatsApp"></button>
-    <button type="button" id="btnShareEmail" class="outline iconbtn app-lockable" title="Gmail"><img class="footerimg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAABLFBMVEX////rQjVDhfU0qFNfYmjEIR/8vQPLzM5UV17///0sePDp6uv19vZfY2cyqFFPU1dVWFsioEb5//ra3d6Nj5HoOzNbXmSEhoo+qlve6/qnqqz/vQCwsrRMUFWanJ7CHhg7gvZ7p/D5wRhaXGTBAADEFBJ6fH6/wcPjPzTrOivqRDO2uLns7u+anKDIysttb3Hg8eTls7PPZWPGLjP86772zmH4ykn84J3//vD04eDBKiL7tgDiqK3EPjvLaGP62YbtzM38wkHajYfgIRHxsqrhKx/odXLslpTmXlb88e3oJQDslImbPm/jRTz53NzWuhh7ZK6ntS1ae9dvrUM5ifOdTHFyYrHb2OfpWUnobGD0xr7uqZ5TsWrL3ved0ql0oPOZtvEAbO8AlzJ8wYrtDcy+AAAIJklEQVR4nO2ai5faxhWHxWMXyWJWsxYWiVbCa4OReRg1tuvEdZO43W7SbVq7TpO2cd/t//8/9N4R6L2LQIB99vy+cxKDEGL0ce+dO8NqGgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANxCjA89AHBIPnv67NnTzzZ7z/OfP3z44vMv9jOgD87LX4weHd1/NHr2svp7vnjx6vj4+OzV8fNbmT8vR/ePFPdHv6z6nufHMc/3ObYPxZcUJJGUo9FX1b70r18lTo5vYfq8Hh0lPDp6s/4dV79KKzn+fP9jPDS/fnSUlnLxm3VveH1JhSTl5MUhRnlYvso4uf/44pub8+fbi3vHGR5u86kfd2HOO2lMHt+QP1e/vZzWctK17Y5td2sOes8UnDSm1+fP68lk2tjeyaInfEtaumWJ3mIXg0/jCTGIHrmEXedSTwtOGo2Ln8rP/e5i2tjeiWtJR4g2I9qOtJ7sNFo8S7RlXz20HMfq1LlWMU6IyeOS/o3yRr24nZOFlCwkcqKQVlBn4Dno6kL4c36ot4XcvZNG43eF/HnPebO1k4HFGhzdl2EY6r6uosXq1Rl5FouN+yY/lO22Xs/JqNSJyp/07PDdRSNSknNyVsnJWLIRqx+oL1IzZ6FypI/rDD2FofXoExyhnkjKolpOHvx+VOqkMflDav7h+WapJOPk7Oxtq8KHjB0SYPX5WzSWou0xhbhfa+gpDKM79n0RGac0qunk/I+rBU/WCYVKnD/vLyfJ4YyTd6efrP+MAUdJoXq4Vr1KmMc0lw8oTurlzoPz8++fjUqdNC6X/RvlTaPMydnDP7VO1jvpWFw77FyjZmizzn56N71uPXnQbDZ/iPMn66Qxmb5J5puIadKznb09aVVxwhOOn1eyR3YQJyQlzp+cE84f6tPSB5L+5OzdSevkZL0Tj+cB94Dt/G6cNJvL/Ck4aUwu80fuJXlTyQkXExHX1rV0PNfrJO2cPXPdma1l39+lk1xvYRbfrT5wR07Of/hxVOqkyL0kb1oVcqfD6b22k5+H43FI/7pSOo6j66s2nVYC9NQSQSrOFmM+6FArHM7ig12+QNTR78oJwfmz3omqJ2dn71qRkvVOBtTQy7XDMH3RtjRT6NzrEtKhedUUTtT6ilR71x1bjjqH/5NiFStdSxUtpr6TlZLm+fdfjqrFCefNirVO6Jac9f2qycuVOfddkiKFF0RCo6f0rz7k5kZQRYpOdNTygE4bDtvRfKZgJ9bO44T4cTSt4uTtSauyExqrkLObz1FO6AbHFA+DIPD6/ES6Ib0zdIPAbbOVqG/v8rqmLUOv0wl6qp+Xq89pr5zUn4vTTpp/LlTUIpfvWq3qTkx2sn7lbvr85Tth1InaOt0tiZBe9GqPHjtRifEsR8hleZqHfE50POWk9non6+T8L3+d3Gxkcu/N6ckGTmwea2aCWPSy9CMnKiW6y/klkPx0pUTTQjV3RSLGfqKYji+LVdrJTnOneefTXNNaCJKfru7WdOKpSSNBJYXKHe51l9MLO3GSFeKMSou1mqDj9s/gtwnd3rmTZs5JdnGT4+Jvmnb3dJPcKXHiCJHaRonuhJ2kHGhjOkO301eJq2kGWl0O1UJqn3FCX8HVdfmjWn1tszjhQpGtJ54l9QiaOxIndCOpVeKAKsVQi7crun58xww1coOBG9hqpnfcvJPd1hPlJL/oS/JGvbiZE74bJzPvmItOTCCXUaT6k9SaaCA4bOKn3VScdAfSklHPJl2qvvIQTgy1qZY3MqW8oWw3NnTCZfD6/sSmOPe5TnA4+akUozhx+qVOAm7ZoqaNZ6p2iZM95I6h8ic3K/NPHDzEjZ1wFlzbx3o0focfsBOripNATVDSd0Kh+0O1r1t0IvaQO8y3mfy5+CZelm3opEOhLK/bjaYSGQWRaVVzQjnGPW6gRjOfidI42Us9MThU0vMPzzcrNnSiqe368pd4Uop8cY3N5M4w7yS6Y6qpyqKh0LR+ST3ZyZ5SaZzwZtIkyZuETZ3w/snQLX2J7qgdtR353HlScBLFCdeSMHWF0hq7j3oSvxjNP7wFaST7F5s5ofdxAbDKdgsCPW7Zed6pUGP5zjOz2KFqbIr3l9Noqzq1pbNhnBiazWsZv7j5anO5XHanFesJ37lM6V3oh3dC80/jTe5mNs0d3hmiiuJ7uaOB3xa8m6+uXrXGcmQleThXPxsdNncI40rLHdrYiaH1dOon5Djdzpp9XvXzfpoKQXbiV6gn1PMLOV8OaB71KIeOkxI2jxMqpupnPyucmVFUBGOfN470uJkr9CfXOAnY5PIXrRk9dj5EnBTZxonm+ryjKBzLkvw/x1E/eQ/i19fXWHXHhsZbJkKK3pM+/ygf0rxTcLLjPaV9xQkV1LYerYZF9LcF5Cf9A2ahP7muj+3yXhP1KI5yY3KOudkz9rXeuYntnPAeQfz3J2o/NdOymL50Mk50R6ad+ENnuZXUpbSLFju6MLUnumO5uTNohVjvh+hDxQnTGYSW71tEOMj1K1135rmpP9LpeJ6X+v2iS0+9lTK7Ly26TsgT2YKOd3JnpM/dikM6Yea2bc+3HGvmKvP9/aXg4XInhVH5V8F9X6SU2nHy94/8Dzu34B936sXJ6T8PM86D8q/znJN1IUlOEimnn9y6KOGg+Pf5nZj/VHHy39OE/909zDAPjGF8mpBf3JSd/7MENnILAwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8V/wcszOH6TD6DOQAAAABJRU5ErkJggg==" alt="Gmail"></button>
-    <button type="button" id="btnToggleMaintenance" class="secondary iconbtn" title="Mantenimiento"><img class="footerimg" src="data:image/png;base64,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" alt="Mantenimiento"></button>
-  </div></div></div>
+  <div class="footer">
+    <div class="footer-inner">
+      <button type="button" id="btnExportExcel" class="iconbtn outline app-lockable" title="Excel">📊</button>
+      <button type="button" id="btnShareWhats" class="iconbtn outline app-lockable" title="WhatsApp">🟢</button>
+      <button type="button" id="btnShareEmail" class="iconbtn outline app-lockable" title="Gmail">📧</button>
+      <button type="button" id="btnToggleMaintenance" class="iconbtn secondary app-lockable" title="Mantenimiento">⚙️</button>
+    </div>
+  </div>
 
-  <script>
-const STORAGE_KEY='controlevent_single_html_v2_2';
-const PAYMENT_OPTIONS=['Efectivo','Bizum','ING. RURAL','Pendiente'];
-const SEGMENT_OPTIONS=['COMIDA','BEBIDA','INFRAESTRUCTURA'];
-const DESTINO_OPTIONS=['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
-const state=loadData(); let currentTab='asistentes'; let currentMaintTab='socios'; let comprasSort='tienda'; let productosSort='nombre';
-function uid(){return 'id-'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function euro(v){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(v||0))}
-function n2(v){return Number(v||0).toFixed(2)}
-function n2es(v){return Number(v||0).toFixed(2).replace('.',',')}
-function nowString(){return new Date().toLocaleString('es-ES')}
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-function loadData(){
-  const defaults={socios:[{id:uid(),nombre:'Jesús y acompañante'},{id:uid(),nombre:'Ana'}],eventos:[{id:uid(),titulo:'Comida Primavera',precio:15,fechaIni:'01/05/25',fechaFin:'02/05/25',situacion:'En curso'},{id:uid(),titulo:'Cena Verano',precio:20,fechaIni:'15/08/25',fechaFin:'16/08/25',situacion:'En curso'}],tiendas:[{id:uid(),nombre:'Mercadona'},{id:uid(),nombre:'Leroy Merlin'}],productos:[{id:uid(),nombre:'Refresco',segmento:'BEBIDA',destino:'APERITIVO',precio:1.80,tiendaId:''},{id:uid(),nombre:'Carbón',segmento:'INFRAESTRUCTURA',destino:'INFRAESTRUCTURA',precio:6.50,tiendaId:''}],asistentes:[],compras:[],ticketImages:{},selectedEventId:''};
-  defaults.productos[0].tiendaId=defaults.tiendas[0].id; defaults.productos[1].tiendaId=defaults.tiendas[1].id;
+<script>
+const STORAGE_KEY = 'controlevent_v6_0';
+const PERSONA_RANGOS = ['SOCIO','DONANTE'];
+const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
+const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
+const DESTINO_OPTIONS = ['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
+const EVENT_SITUATIONS = ['En curso','Finalizado'];
+const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS', ...Array.from({length:30}, (_,i)=>'TK'+String(i+1).padStart(2,'0'))];
+
+let currentMainTab = 'ingresos';
+let currentMaintTab = 'personas';
+
+const state = loadState();
+
+function uid(){ return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+function money(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(n||0)); }
+function numberEs(n){ return new Intl.NumberFormat('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}).format(Number(n||0)); }
+function escapeHtml(s){ return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+
+function loadState(){
+  const defaults = {
+    personas: [
+      {id:uid(), nombre:'Jesús y acompañante', rango:'SOCIO'},
+      {id:uid(), nombre:'Ana', rango:'SOCIO'},
+      {id:uid(), nombre:'Fundación amiga', rango:'DONANTE'}
+    ],
+    eventos: [
+      {id:uid(), titulo:'Comida Primavera', precio:15, fechaIni:'01/05/25', fechaFin:'02/05/25', situacion:'En curso'},
+      {id:uid(), titulo:'Cena Verano', precio:20, fechaIni:'15/08/25', fechaFin:'16/08/25', situacion:'En curso'}
+    ],
+    tiendas: [
+      {id:uid(), nombre:'Leroy Merlin'},
+      {id:uid(), nombre:'Mercadona'}
+    ],
+    productos: [],
+    colaboradores: [],
+    compras: [],
+    selectedEventId: ''
+  };
+  defaults.productos = [
+    {id:uid(), nombre:'Refresco', segmento:'BEBIDA', destino:'APERITIVO', precio:1.8, tiendaId:defaults.tiendas[1].id},
+    {id:uid(), nombre:'Carbón', segmento:'INFRAESTRUCTURA', destino:'INFRAESTRUCTURA', precio:6.5, tiendaId:defaults.tiendas[0].id}
+  ];
+  defaults.selectedEventId = defaults.eventos[0].id;
   try{
-    const raw=localStorage.getItem(STORAGE_KEY);
-    if(!raw){defaults.selectedEventId=defaults.eventos[0]?.id||''; localStorage.setItem(STORAGE_KEY,JSON.stringify(defaults)); return defaults}
-    const parsed=JSON.parse(raw);
-    const merged={...defaults,...parsed,selectedEventId:parsed.selectedEventId||parsed.eventos?.[0]?.id||''};
-    merged.tiendas=parsed.tiendas||defaults.tiendas;
-    merged.productos=(parsed.productos||defaults.productos).map(p=>({...p,tiendaId:p.tiendaId||''}));
-    merged.eventos=(parsed.eventos||defaults.eventos).map(e=>({...e,fechaIni:e.fechaIni||'',fechaFin:e.fechaFin||'',situacion:e.situacion||'En curso'})); merged.ticketImages=parsed.ticketImages||{};
-    return merged
-  }catch(e){defaults.selectedEventId=defaults.eventos[0]?.id||''; return defaults}
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+      return defaults;
+    }
+    const parsed = JSON.parse(raw);
+    return {
+      ...defaults,
+      ...parsed,
+      personas: (parsed.personas || defaults.personas).map(p => ({...p, rango:p.rango || 'SOCIO'})),
+      eventos: (parsed.eventos || defaults.eventos).map(e => ({...e, fechaIni:e.fechaIni || '', fechaFin:e.fechaFin || '', situacion:e.situacion || 'En curso'})),
+      tiendas: parsed.tiendas || defaults.tiendas,
+      productos: (parsed.productos || defaults.productos).map(p => ({...p, tiendaId:p.tiendaId || ''})),
+      colaboradores: (parsed.colaboradores || []).map(c => ({...c, numero:Number(c.numero||0), importe:Number(c.importe||0)})),
+      compras: (parsed.compras || []).map(c => ({...c, unidades:Number(c.unidades||0), responsableId:c.responsableId || ''})),
+      selectedEventId: parsed.selectedEventId || defaults.selectedEventId
+    };
+  } catch(e){
+    return defaults;
+  }
 }
-function tiendaNombreById(id){return state.tiendas.find(t=>t.id===id)?.nombre||''}
-function selectedEvent(){return state.eventos.find(e=>e.id===state.selectedEventId)||null}
-function eventAsistentes(){return state.asistentes.filter(a=>a.eventId===state.selectedEventId)}
-function asistentesEnriquecidos(){return eventAsistentes().map(a=>({...a,socioNombre:state.socios.find(s=>s.id===a.socioId)?.nombre||'Socio eliminado'}))}
-function eventCompras(){return state.compras.filter(c=>c.eventId===state.selectedEventId)}
-function comprasEnriquecidas(){return eventCompras().map(c=>{const p=state.productos.find(x=>x.id===c.productoId); const precio=Number(p?.precio||0); const unidades=Number(c.unidades||0); return {...c,productoNombre:p?.nombre||'Producto eliminado',segmento:p?.segmento||'',destino:p?.destino||'',tiendaId:p?.tiendaId||'',tienda:tiendaNombreById(p?.tiendaId||''),precio,importe:precio*unidades}})}
-function comprasOrdenadas(){const rows=comprasEnriquecidas().slice(); rows.sort((a,b)=>{if(comprasSort==='ticket'){const at=(a.ticket||'').trim(); const bt=(b.ticket||'').trim(); if((!at)!==(!bt)) return at? -1:1; const c1=(a.tienda||'').localeCompare(b.tienda||'','es',{sensitivity:'base'}); if(c1) return c1; return at.localeCompare(bt,'es',{sensitivity:'base'});} const c1=(a.tienda||'').localeCompare(b.tienda||'','es',{sensitivity:'base'}); if(c1) return c1; const at=(a.ticket||'').trim(); const bt=(b.ticket||'').trim(); if((!at)!==(!bt)) return at? -1:1; return at.localeCompare(bt,'es',{sensitivity:'base'});}); return rows}
-function productosOrdenados(){const rows=state.productos.slice(); rows.sort((a,b)=>{const va=productosSort==='tienda'?tiendaNombreById(a.tiendaId||''):(a[productosSort]||''); const vb=productosSort==='tienda'?tiendaNombreById(b.tiendaId||''):(b[productosSort]||''); return String(va).localeCompare(String(vb),'es',{sensitivity:'base'}) || String(a.nombre||'').localeCompare(String(b.nombre||''),'es',{sensitivity:'base'});}); return rows}
-function situacionPriority(s){return s==='Pendiente'?0:s==='Efectivo'?1:s==='Bizum'?2:s==='ING. RURAL'?3:9}
-function asistentesOrdenados(){const rows=asistentesEnriquecidos().slice(); rows.sort((a,b)=>{const p=situacionPriority(a.situacion)-situacionPriority(b.situacion); if(p) return p; return (a.socioNombre||'').localeCompare(b.socioNombre||'','es',{sensitivity:'base'});}); return rows}
-function agrupacionCompradoPendiente(field){const bought={}, pend={}; comprasEnriquecidas().forEach(item=>{const key=item[field]||'Sin dato'; const tgt=String(item.ticket||'').trim()?bought:pend; tgt[key]=(tgt[key]||0)+item.importe;}); const keys=Array.from(new Set([...Object.keys(bought),...Object.keys(pend)])).sort((a,b)=>a.localeCompare(b,'es',{sensitivity:'base'})); const out=[]; keys.forEach(k=>{out.push({k:k+' Comprado',v:bought[k]||0,pending:false}); out.push({k:k+' Pdte.Compra',v:pend[k]||0,pending:true});}); return out}
-function summaryByStoreTicketSorted(){const rows=summaryByStoreTicket().slice(); rows.sort((a,b)=>{const [as,at='']=a.k.split(' | '); const [bs,bt='']=b.k.split(' | '); const c1=as.localeCompare(bs,'es',{sensitivity:'base'}); if(c1) return c1; if(a.pending!==b.pending) return a.pending?1:-1; return at.localeCompare(bt,'es',{sensitivity:'base'});}); return rows}
-function ticketImageKey(storeTicketKey){return storeTicketKey||''}
-function ticketImageForKey(storeTicketKey){return state.ticketImages?.[ticketImageKey(storeTicketKey)]||''}
-function setTicketImageForKey(storeTicketKey, dataUrl){if(!state.ticketImages) state.ticketImages={}; if(dataUrl) state.ticketImages[ticketImageKey(storeTicketKey)]=dataUrl; else delete state.ticketImages[ticketImageKey(storeTicketKey)]; saveData(); renderMain()}
-function handleTicketImageInput(input, storeTicketKey){const file=input.files&&input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=()=>setTicketImageForKey(storeTicketKey, String(reader.result||'')); reader.readAsDataURL(file)}
-function n2esFmt(v){return new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v||0))}
-function xlNumCell(v, cls=''){return '<td'+(cls?' class="'+cls+'"':'')+' style="mso-number-format:\"#\\.##0,00\"">'+Number(v||0).toFixed(2)+'</td>'}
-function xlMoneyCell(v, cls=''){return '<td'+(cls?' class="'+cls+'"':'')+' style="mso-number-format:\"#\\.##0,00 [$€-C0A]\"">'+Number(v||0).toFixed(2)+'</td>'}
-function xlTextCell(s, cls=''){return '<td'+(cls?' class="'+cls+'"':'')+'>'+escapeHtml(s||'')+'</td>'}
 
-function totals(){const precioEvento=Number(selectedEvent()?.precio||0); const asistentes=asistentesEnriquecidos().reduce((a,b)=>a+Number(b.numero||0),0); const ingresadosAsistentes=asistentesEnriquecidos().filter(x=>x.situacion!=='Pendiente').reduce((a,b)=>a+Number(b.numero||0),0); const pendientesAsistentes=asistentesEnriquecidos().filter(x=>x.situacion==='Pendiente').reduce((a,b)=>a+Number(b.numero||0),0); const presupuesto=asistentes*precioEvento; const ingresado=ingresadosAsistentes*precioEvento; const pendiente=pendientesAsistentes*precioEvento; const comprado=comprasEnriquecidas().filter(x=>String(x.ticket||'').trim()!=='').reduce((a,b)=>a+Number(b.importe||0),0); const pdteCompra=comprasEnriquecidas().filter(x=>String(x.ticket||'').trim()==='').reduce((a,b)=>a+Number(b.importe||0),0); const saldo=presupuesto-(comprado+pdteCompra); return {precioEvento,asistentes,presupuesto,ingresado,pendiente,comprado,pdteCompra,saldo}}
-function fillSelect(select,items,valueField,textField){select.innerHTML=''; items.forEach(item=>{const op=document.createElement('option'); op.value=item[valueField]; op.textContent=item[textField]; select.appendChild(op)})}
-function fillStaticSelect(select,arr){select.innerHTML=''; arr.forEach(v=>{const op=document.createElement('option'); op.value=v; op.textContent=v; select.appendChild(op)})}
-function setSaldoStyle(el,saldo){el.classList.remove('ok','bad'); el.classList.add(saldo>=0?'ok':'bad')}
-function summaryBy(field){
-  const keys = field==='segmento' ? SEGMENT_OPTIONS : DESTINO_OPTIONS;
-  const rows = [];
-  keys.forEach(key=>{
-    const comprado = comprasEnriquecidas().filter(item => (item[field]||'')===key && String(item.ticket||'').trim()!=='').reduce((a,b)=>a+Number(b.importe||0),0);
-    const pendiente = comprasEnriquecidas().filter(item => (item[field]||'')===key && String(item.ticket||'').trim()==='').reduce((a,b)=>a+Number(b.importe||0),0);
-    rows.push({k:key+' Comprado', v:comprado, pending:false});
-    rows.push({k:key+' Pdte.Compra', v:pendiente, pending:true});
-  });
-  return rows;
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function selectedEvent(){ return state.eventos.find(e => e.id === state.selectedEventId) || null; }
+function personaById(id){ return state.personas.find(p => p.id === id) || null; }
+function productoById(id){ return state.productos.find(p => p.id === id) || null; }
+function tiendaById(id){ return state.tiendas.find(t => t.id === id) || null; }
+function isLocked(){ return (selectedEvent()?.situacion || 'En curso') === 'Finalizado'; }
+
+function collabsForEvent(){
+  return state.colaboradores
+    .filter(c => c.eventId === state.selectedEventId)
+    .map(c => {
+      const persona = personaById(c.personaId);
+      const base = persona?.rango === 'SOCIO' ? Number(c.numero || 0) * Number(selectedEvent()?.precio || 0) : 0;
+      const donation = Number(c.importe || 0);
+      const total = base + donation;
+      return {...c, persona, base, donation, total};
+    })
+    .sort((a,b) => {
+      const order = {'Pendiente':0,'Efectivo':1,'Bizum':2,'ING. RURAL':3};
+      const oa = order[a.situacion] ?? 9, ob = order[b.situacion] ?? 9;
+      if(oa !== ob) return oa - ob;
+      return (a.persona?.nombre || '').localeCompare((b.persona?.nombre || ''), 'es');
+    });
 }
-function summaryByStoreTicket(){
+
+function comprasForEvent(){
+  return state.compras
+    .filter(c => c.eventId === state.selectedEventId)
+    .map(c => {
+      const producto = productoById(c.productoId);
+      const tienda = tiendaById(producto?.tiendaId || '');
+      return {
+        ...c,
+        producto,
+        tienda,
+        importe: Number(producto?.precio || 0) * Number(c.unidades || 0),
+        responsable: personaById(c.responsableId || '')
+      };
+    })
+    .sort((a,b) => {
+      const ta = (a.tienda?.nombre || '').localeCompare((b.tienda?.nombre || ''), 'es');
+      if(ta !== 0) return ta;
+      return String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
+    });
+}
+
+function ingresoSummary(){
+  const rows = collabsForEvent();
+  return PAYMENT_OPTIONS.map(tipo => {
+    const subset = rows.filter(r => r.situacion === tipo);
+    return {
+      tipo,
+      personas: subset.length,
+      importe: subset.reduce((a,b) => a + b.total, 0)
+    };
+  });
+}
+
+function budgetSummary(){
+  const rows = collabsForEvent();
+  const compras = comprasForEvent();
+
+  const socios = rows.filter(r => r.persona?.rango === 'SOCIO');
+  const donantes = rows.filter(r => r.persona?.rango === 'DONANTE');
+
+  const sociosImporte = socios.reduce((a,b) => a + b.total, 0);
+  const sociosIngresado = socios.filter(r => r.situacion !== 'Pendiente').reduce((a,b) => a + b.total, 0);
+  const sociosPendiente = socios.filter(r => r.situacion === 'Pendiente').reduce((a,b) => a + b.total, 0);
+
+  const donantesImporte = donantes.reduce((a,b) => a + b.total, 0);
+  const donantesIngresado = donantes.filter(r => r.situacion !== 'Pendiente').reduce((a,b) => a + b.total, 0);
+  const donantesPendiente = donantes.filter(r => r.situacion === 'Pendiente').reduce((a,b) => a + b.total, 0);
+
+  const totalComprometido = sociosImporte + donantesImporte;
+  const comprasTotal = compras.reduce((a,b) => a + b.importe, 0);
+  const comprasResueltas = compras.filter(c => String(c.ticketDonacion || '').trim() !== '').reduce((a,b) => a + b.importe, 0);
+  const comprasPendientes = compras.filter(c => String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.importe, 0);
+  const saldoOperativo = totalComprometido - comprasTotal;
+
+  return {
+    socios: {count:socios.length, importe:sociosImporte, ingresado:sociosIngresado, pendiente:sociosPendiente, saldo:totalComprometido},
+    donantes: {count:donantes.length, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente},
+    compras: {total:comprasTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, saldoOperativo}
+  };
+}
+
+function summaryBySegmento(){
+  const compras = comprasForEvent();
+  return SEGMENT_OPTIONS.flatMap(seg => {
+    const comprado = compras.filter(c => (c.producto?.segmento || '') === seg && String(c.ticketDonacion || '').trim() !== '').reduce((a,b) => a + b.importe, 0);
+    const pdte = compras.filter(c => (c.producto?.segmento || '') === seg && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.importe, 0);
+    return [
+      {k: `${seg} Comprado`, v: comprado, pending:false},
+      {k: `${seg} Pdte.Compra`, v: pdte, pending:true},
+    ];
+  });
+}
+
+function summaryByDestino(){
+  const compras = comprasForEvent();
+  return DESTINO_OPTIONS.flatMap(dest => {
+    const comprado = compras.filter(c => (c.producto?.destino || '') === dest && String(c.ticketDonacion || '').trim() !== '').reduce((a,b) => a + b.importe, 0);
+    const pdte = compras.filter(c => (c.producto?.destino || '') === dest && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.importe, 0);
+    return [
+      {k: `${dest} Comprado`, v: comprado, pending:false},
+      {k: `${dest} Pdte.Compra`, v: pdte, pending:true},
+    ];
+  });
+}
+
+function summaryByTiendaTicket(){
   const filled = {};
   const pending = {};
-  comprasEnriquecidas().forEach(item=>{
-    const tienda = item.tienda || 'Sin tienda';
-    const ticket = String(item.ticket||'').trim();
-    if(ticket){
-      const key = tienda + ' | ' + ticket;
-      filled[key] = (filled[key] || 0) + Number(item.importe || 0);
+  comprasForEvent().forEach(c => {
+    const key = `${c.tienda?.nombre || 'Sin tienda'} | ${String(c.ticketDonacion || '').trim() || 'Pdte.Compra'}`;
+    if(String(c.ticketDonacion || '').trim() === ''){
+      pending[key] = (pending[key] || 0) + c.importe;
     } else {
-      const key = tienda + ' | Pdte.Compra';
-      pending[key] = (pending[key] || 0) + Number(item.importe || 0);
+      filled[key] = (filled[key] || 0) + c.importe;
     }
   });
-  const filledRows = Object.entries(filled).sort((a,b)=> a[0].localeCompare(b[0], 'es')).map(([k,v])=>({k,v,pending:false}));
-  const pendingRows = Object.entries(pending).sort((a,b)=> a[0].localeCompare(b[0], 'es')).map(([k,v])=>({k,v,pending:true}));
-  return filledRows.concat(pendingRows);
+  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:false}));
+  const b = Object.entries(pending).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:true}));
+  return a.concat(b);
 }
-function renderSummary(targetId,rows){
-  const wrap=document.getElementById(targetId); wrap.innerHTML='';
-  if(!rows.length){wrap.innerHTML='<div class="hint">Sin datos.</div>'; return}
-  rows.forEach(r=>{
-    const div=document.createElement('div');
-    div.className='summary-item';
-    if(r.pending){div.style.color='#b91c1c'}
-    if(targetId==='summaryTienda' && !r.pending){
-      const img=ticketImageForKey(r.k);
-      div.innerHTML='<span>'+escapeHtml(r.k)+'</span><span style="display:flex;align-items:center;gap:8px;"><span class="pill">'+euro(r.v)+'</span>'+(img?'<img class="ticket-thumb" src="'+img+'" alt="ticket">':'')+'<label class="ticket-upload"><input type="file" accept="image/*" style="display:none"><span style="cursor:pointer">📷</span></label></span>';
-      const input=div.querySelector('input[type="file"]');
-      if(input){input.addEventListener('change',()=>handleTicketImageInput(input,r.k));}
-    } else {
-      div.innerHTML='<span>'+escapeHtml(r.k)+'</span><span class="pill"'+(r.pending?' style="background:#fef2f2;color:#b91c1c"':'')+'>'+euro(r.v)+'</span>';
+
+function renderSummaryList(targetId, rows){
+  const wrap = document.getElementById(targetId);
+  wrap.innerHTML = '';
+  if(!rows.length){
+    wrap.innerHTML = '<div class="hint">Sin datos.</div>';
+    return;
+  }
+  rows.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'summary-item';
+    if(r.pending) div.classList.add('red-row');
+    div.innerHTML = `<span>${escapeHtml(r.k)}</span><span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : ''}>${money(r.v)}</span>`;
+    wrap.appendChild(div);
+  });
+}
+
+function render(){
+  saveState();
+  renderHeader();
+  renderTabVisibility();
+  renderMainSelectors();
+  renderIngresosSummary();
+  renderColabs();
+  renderBudget();
+  renderCompras();
+  renderMaintenance();
+  renderLockState();
+}
+
+function renderHeader(){
+  const ev = selectedEvent();
+  document.getElementById('selectedEvent').innerHTML = state.eventos
+    .slice()
+    .sort((a,b)=>(a.titulo||'').localeCompare((b.titulo||''),'es'))
+    .map(e => `<option value="${e.id}" ${e.id===state.selectedEventId?'selected':''}>${escapeHtml(e.titulo)}</option>`)
+    .join('');
+  document.getElementById('eventDates').textContent = `(del ${ev?.fechaIni || '--/--/--'} al ${ev?.fechaFin || '--/--/--'})`;
+  const st = document.getElementById('eventStatus');
+  const fin = isLocked();
+  st.textContent = ev?.situacion || 'En curso';
+  st.className = 'status-pill ' + (fin ? 'status-finalizado' : 'status-curso');
+  const p = document.getElementById('btnTogglePower');
+  p.className = 'powerbtn ' + (fin ? 'off' : 'on');
+}
+
+function renderTabVisibility(){
+  document.getElementById('noEventMessage').classList.toggle('hidden', !!selectedEvent());
+  document.getElementById('tabIngresos').classList.toggle('hidden', currentMainTab !== 'ingresos' || !selectedEvent());
+  document.getElementById('tabCompras').classList.toggle('hidden', currentMainTab !== 'compras' || !selectedEvent());
+  document.getElementById('tabIngresosBtn').classList.toggle('active', currentMainTab === 'ingresos');
+  document.getElementById('tabComprasBtn').classList.toggle('active', currentMainTab === 'compras');
+}
+
+function renderMainSelectors(){
+  document.getElementById('collabPersona').innerHTML = state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)} (${escapeHtml(p.rango)})</option>`).join('');
+  document.getElementById('collabSituacion').innerHTML = PAYMENT_OPTIONS.map(v => `<option value="${v}">${v}</option>`).join('');
+  document.getElementById('buyProducto').innerHTML = state.productos.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
+  document.getElementById('buyTicket').innerHTML = TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pdte.Compra --' : escapeHtml(v)}</option>`).join('');
+  document.getElementById('buyResponsable').innerHTML = '<option value="">-- sin responsable --</option>' + state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
+}
+
+function renderIngresosSummary(){
+  const grid = document.getElementById('ingresosSummaryGrid');
+  grid.innerHTML = '';
+  ingresoSummary().forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'metric ' + (item.tipo === 'Pendiente' ? 'warn' : 'ok');
+    div.innerHTML = `<div class="label">${escapeHtml(item.tipo)}</div><div class="value">${item.personas} · ${money(item.importe)}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+function renderColabs(){
+  const wrap = document.getElementById('collabList');
+  const rows = collabsForEvent();
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Todavía no hay personas colaboradoras para este evento.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  rows.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'itemcard';
+    if(r.situacion === 'Pendiente') row.classList.add('red-row');
+    row.innerHTML = `
+      <div class="rowline collab">
+        <div class="field">
+          <label>Colaborador/a</label>
+          <select data-action="edit-collab-persona" data-id="${r.id}">
+            ${state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}" ${p.id===r.personaId?'selected':''}>${escapeHtml(p.nombre)} (${escapeHtml(p.rango)})</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Número</label>
+          <input type="number" min="0" step="1" value="${Number(r.numero||0)}" data-action="edit-collab-numero" data-id="${r.id}" />
+        </div>
+        <div class="field">
+          <label>Situación</label>
+          <select data-action="edit-collab-situacion" data-id="${r.id}">
+            ${PAYMENT_OPTIONS.map(v => `<option value="${v}" ${v===r.situacion?'selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Importe</label>
+          <input type="number" min="0" step="0.01" value="${Number(r.importe||0)}" data-action="edit-collab-importe" data-id="${r.id}" />
+        </div>
+        <div style="display:flex;gap:8px;align-items:end">
+          <button type="button" class="modify small" data-action="save-collab" data-id="${r.id}">Modificar</button>
+          <button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button>
+        </div>
+      </div>
+      <div class="hint">Rango: ${escapeHtml(r.persona?.rango || '')} · Evento importe: ${money(r.base)} · Total compromiso: ${money(r.total)}</div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderBudget(){
+  const grid = document.getElementById('budgetMetricsGrid');
+  const b = budgetSummary();
+  grid.innerHTML = '';
+  const entries = [
+    {label:'Socios', value:`${b.socios.count}`},
+    {label:'Importe socios', value:money(b.socios.importe)},
+    {label:'Ingresado socios', value:money(b.socios.ingresado)},
+    {label:'Pendiente socios', value:money(b.socios.pendiente), cls:'warn'},
+    {label:'Saldo socios', value:money(b.socios.saldo), cls:b.socios.saldo>=0?'ok':'bad'},
+    {label:'Donantes', value:`${b.donantes.count}`},
+    {label:'Importe donantes', value:money(b.donantes.importe)},
+    {label:'Ingresado donantes', value:money(b.donantes.ingresado)},
+    {label:'Pendiente donantes', value:money(b.donantes.pendiente), cls:'warn'},
+    {label:'Compras total', value:money(b.compras.total)},
+    {label:'Comprado', value:money(b.compras.resueltas), cls:'ok'},
+    {label:'Pdte. compra', value:money(b.compras.pendientes), cls:'warn'},
+    {label:'Saldo operativo', value:money(b.compras.saldoOperativo), cls:b.compras.saldoOperativo>=0?'ok':'bad'}
+  ];
+  entries.forEach(e => {
+    const div = document.createElement('div');
+    div.className = 'metric ' + (e.cls || '');
+    div.innerHTML = `<div class="label">${escapeHtml(e.label)}</div><div class="value">${escapeHtml(e.value)}</div>`;
+    grid.appendChild(div);
+  });
+  renderSummaryList('summarySegmento', summaryBySegmento());
+  renderSummaryList('summaryDestino', summaryByDestino());
+  renderSummaryList('summaryTiendaTicket', summaryByTiendaTicket());
+}
+
+function renderCompras(){
+  const wrap = document.getElementById('comprasList');
+  const rows = comprasForEvent();
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Todavía no hay compras o donaciones de producto para este evento.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  rows.forEach(r => {
+    const pending = String(r.ticketDonacion || '').trim() === '';
+    const row = document.createElement('div');
+    row.className = 'itemcard' + (pending ? ' red-row' : '');
+    row.innerHTML = `
+      <div class="rowline compra">
+        <div class="field">
+          <label>Producto</label>
+          <select data-action="edit-compra-producto" data-id="${r.id}">
+            ${state.productos.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}" ${p.id===r.productoId?'selected':''}>${escapeHtml(p.nombre)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Unidades</label>
+          <input type="number" min="0" step="0.01" value="${Number(r.unidades||0)}" data-action="edit-compra-unidades" data-id="${r.id}" />
+        </div>
+        <div class="field">
+          <label>Ticket/Donación</label>
+          <select data-action="edit-compra-ticket" data-id="${r.id}">
+            ${TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pdte.Compra --' : escapeHtml(v)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Responsable</label>
+          <select data-action="edit-compra-responsable" data-id="${r.id}">
+            <option value="" ${!r.responsableId?'selected':''}>-- sin responsable --</option>
+            ${state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}" ${p.id===r.responsableId?'selected':''}>${escapeHtml(p.nombre)}</option>`).join('')}
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;align-items:end">
+          <button type="button" class="modify small" data-action="save-compra" data-id="${r.id}">Modificar</button>
+          <button type="button" class="danger small" data-action="delete-compra" data-id="${r.id}">Eliminar</button>
+        </div>
+      </div>
+      <div class="hint">Tienda: ${escapeHtml(r.tienda?.nombre || '')} · Precio: ${money(r.producto?.precio || 0)} · Importe: ${money(r.importe)} ${r.responsable?.nombre ? '· Responsable: ' + escapeHtml(r.responsable.nombre) : ''}</div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderMaintenance(){
+  renderMaintenanceTabs();
+  renderPersonas();
+  renderEventos();
+  renderTiendas();
+  renderProductos();
+}
+
+function renderMaintenanceTabs(){
+  document.getElementById('mtPersonas').classList.toggle('hidden', currentMaintTab !== 'personas');
+  document.getElementById('mtEventos').classList.toggle('hidden', currentMaintTab !== 'eventos');
+  document.getElementById('mtTiendas').classList.toggle('hidden', currentMaintTab !== 'tiendas');
+  document.getElementById('mtProductos').classList.toggle('hidden', currentMaintTab !== 'productos');
+  document.getElementById('mtPersonasBtn').classList.toggle('active', currentMaintTab === 'personas');
+  document.getElementById('mtEventosBtn').classList.toggle('active', currentMaintTab === 'eventos');
+  document.getElementById('mtTiendasBtn').classList.toggle('active', currentMaintTab === 'tiendas');
+  document.getElementById('mtProductosBtn').classList.toggle('active', currentMaintTab === 'productos');
+}
+
+function renderPersonas(){
+  document.getElementById('newPersonaRango').innerHTML = PERSONA_RANGOS.map(v => `<option value="${v}">${v}</option>`).join('');
+  const wrap = document.getElementById('personasList');
+  const list = state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es'));
+  if(!list.length){
+    wrap.innerHTML = '<div class="empty">No hay personas.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  list.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'itemcard';
+    row.innerHTML = `
+      <div class="rowline persona">
+        <div class="field"><label>Nombre</label><input value="${escapeHtml(p.nombre)}" data-action="edit-persona-nombre" data-id="${p.id}" /></div>
+        <div class="field"><label>Rango</label><select data-action="edit-persona-rango" data-id="${p.id}">${PERSONA_RANGOS.map(v => `<option value="${v}" ${v===p.rango?'selected':''}>${v}</option>`).join('')}</select></div>
+        <button type="button" class="modify small" data-action="save-persona" data-id="${p.id}">Modificar</button>
+        <button type="button" class="danger small" data-action="delete-persona" data-id="${p.id}">Eliminar</button>
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderEventos(){
+  document.getElementById('newEventoSituacion').innerHTML = EVENT_SITUATIONS.map(v => `<option value="${v}">${v}</option>`).join('');
+  const wrap = document.getElementById('eventosList');
+  const list = state.eventos.slice().sort((a,b)=>(a.titulo||'').localeCompare((b.titulo||''),'es'));
+  if(!list.length){
+    wrap.innerHTML = '<div class="empty">No hay eventos.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  list.forEach(e => {
+    const cls = e.situacion === 'Finalizado' ? 'status-finalizado' : 'status-curso';
+    const row = document.createElement('div');
+    row.className = 'itemcard';
+    row.innerHTML = `
+      ${e.id===state.selectedEventId ? '<div class="badge-active">Activo</div>' : ''}
+      <div class="rowline evento">
+        <div class="field"><label>Título</label><input value="${escapeHtml(e.titulo)}" data-action="edit-evento-titulo" data-id="${e.id}" /></div>
+        <div class="field"><label>Precio</label><input type="number" min="0" step="0.01" value="${Number(e.precio||0)}" data-action="edit-evento-precio" data-id="${e.id}" /></div>
+        <div class="field"><label>Fecha ini</label><input value="${escapeHtml(e.fechaIni||'')}" data-action="edit-evento-fechaini" data-id="${e.id}" /></div>
+        <div class="field"><label>Fecha fin</label><input value="${escapeHtml(e.fechaFin||'')}" data-action="edit-evento-fechafin" data-id="${e.id}" /></div>
+        <div class="field"><label>Situación</label><select data-action="edit-evento-situacion" data-id="${e.id}">${EVENT_SITUATIONS.map(v => `<option value="${v}" ${v===e.situacion?'selected':''}>${v}</option>`).join('')}</select></div>
+        <button type="button" class="modify small" data-action="save-evento" data-id="${e.id}">Modificar</button>
+        <button type="button" class="danger small" data-action="delete-evento" data-id="${e.id}">Eliminar</button>
+      </div>
+      <div class="hint"><span class="status-pill ${cls}">${escapeHtml(e.situacion)}</span></div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderTiendas(){
+  const wrap = document.getElementById('tiendasList');
+  const list = state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es'));
+  if(!list.length){
+    wrap.innerHTML = '<div class="empty">No hay tiendas.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  list.forEach(t => {
+    const row = document.createElement('div');
+    row.className = 'itemcard';
+    row.innerHTML = `
+      <div class="rowline tienda">
+        <div class="field"><label>Nombre</label><input value="${escapeHtml(t.nombre)}" data-action="edit-tienda-nombre" data-id="${t.id}" /></div>
+        <button type="button" class="modify small" data-action="save-tienda" data-id="${t.id}">Modificar</button>
+        <button type="button" class="danger small" data-action="delete-tienda" data-id="${t.id}">Eliminar</button>
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderProductos(){
+  document.getElementById('newProductoSegmento').innerHTML = SEGMENT_OPTIONS.map(v => `<option value="${v}">${v}</option>`).join('');
+  document.getElementById('newProductoDestino').innerHTML = DESTINO_OPTIONS.map(v => `<option value="${v}">${v}</option>`).join('');
+  document.getElementById('newProductoTienda').innerHTML = state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}">${escapeHtml(t.nombre)}</option>`).join('');
+  const wrap = document.getElementById('productosList');
+  const list = state.productos.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es'));
+  if(!list.length){
+    wrap.innerHTML = '<div class="empty">No hay productos.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  const hdr = document.createElement('div');
+  hdr.className = 'hint';
+  hdr.innerHTML = 'Orden alfabético por nombre.';
+  wrap.appendChild(hdr);
+  list.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'itemcard';
+    row.innerHTML = `
+      <div class="rowline producto">
+        <div class="field"><label>Nombre</label><input value="${escapeHtml(p.nombre)}" data-action="edit-producto-nombre" data-id="${p.id}" /></div>
+        <div class="field"><label>Segmento</label><select data-action="edit-producto-segmento" data-id="${p.id}">${SEGMENT_OPTIONS.map(v => `<option value="${v}" ${v===p.segmento?'selected':''}>${v}</option>`).join('')}</select></div>
+        <div class="field"><label>Destino</label><select data-action="edit-producto-destino" data-id="${p.id}">${DESTINO_OPTIONS.map(v => `<option value="${v}" ${v===p.destino?'selected':''}>${v}</option>`).join('')}</select></div>
+        <div class="field"><label>Precio</label><input type="number" min="0" step="0.01" value="${Number(p.precio||0)}" data-action="edit-producto-precio" data-id="${p.id}" /></div>
+        <div class="field"><label>Tienda</label><select data-action="edit-producto-tienda" data-id="${p.id}">${state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}" ${t.id===p.tiendaId?'selected':''}>${escapeHtml(t.nombre)}</option>`).join('')}</select></div>
+        <button type="button" class="modify small" data-action="save-producto" data-id="${p.id}">Modificar</button>
+        <button type="button" class="danger small" data-action="delete-producto" data-id="${p.id}">Eliminar</button>
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderLockState(){
+  const locked = isLocked();
+  document.querySelectorAll('.app-lockable').forEach(el => {
+    el.classList.toggle('locked', locked);
+    if(el.matches('button,select,input')) el.disabled = locked;
+  });
+  document.getElementById('selectedEvent').disabled = locked;
+  document.getElementById('btnTogglePower').disabled = false;
+  document.getElementById('btnTogglePower').style.pointerEvents = 'auto';
+  document.getElementById('btnTogglePower').style.opacity = '1';
+}
+
+function addPersona(){
+  const nombre = document.getElementById('newPersonaNombre').value.trim();
+  const rango = document.getElementById('newPersonaRango').value;
+  if(!nombre) return;
+  state.personas.push({id:uid(), nombre, rango});
+  document.getElementById('newPersonaNombre').value = '';
+  render();
+}
+
+function addEvento(){
+  const titulo = document.getElementById('newEventoTitulo').value.trim();
+  if(!titulo) return;
+  state.eventos.push({
+    id:uid(),
+    titulo,
+    precio:Number(document.getElementById('newEventoPrecio').value || 0),
+    fechaIni:document.getElementById('newEventoFechaIni').value.trim(),
+    fechaFin:document.getElementById('newEventoFechaFin').value.trim(),
+    situacion:document.getElementById('newEventoSituacion').value || 'En curso'
+  });
+  document.getElementById('newEventoTitulo').value = '';
+  document.getElementById('newEventoPrecio').value = '0.00';
+  document.getElementById('newEventoFechaIni').value = '';
+  document.getElementById('newEventoFechaFin').value = '';
+  render();
+}
+
+function addTienda(){
+  const nombre = document.getElementById('newTiendaNombre').value.trim();
+  if(!nombre) return;
+  state.tiendas.push({id:uid(), nombre});
+  document.getElementById('newTiendaNombre').value = '';
+  render();
+}
+
+function addProducto(){
+  const nombre = document.getElementById('newProductoNombre').value.trim();
+  if(!nombre) return;
+  state.productos.push({
+    id:uid(),
+    nombre,
+    segmento:document.getElementById('newProductoSegmento').value,
+    destino:document.getElementById('newProductoDestino').value,
+    precio:Number(document.getElementById('newProductoPrecio').value || 0),
+    tiendaId:document.getElementById('newProductoTienda').value || ''
+  });
+  document.getElementById('newProductoNombre').value = '';
+  document.getElementById('newProductoPrecio').value = '0.00';
+  render();
+}
+
+function addColab(){
+  if(!selectedEvent()) return;
+  const personaId = document.getElementById('collabPersona').value;
+  if(!personaId) return;
+  state.colaboradores.push({
+    id:uid(),
+    eventId:state.selectedEventId,
+    personaId,
+    numero:Number(document.getElementById('collabNumero').value || 0),
+    situacion:document.getElementById('collabSituacion').value,
+    importe:Number(document.getElementById('collabImporte').value || 0)
+  });
+  document.getElementById('collabNumero').value = '1';
+  document.getElementById('collabSituacion').value = 'Pendiente';
+  document.getElementById('collabImporte').value = '0.00';
+  render();
+}
+
+function addCompra(){
+  if(!selectedEvent()) return;
+  const productoId = document.getElementById('buyProducto').value;
+  if(!productoId) return;
+  state.compras.push({
+    id:uid(),
+    eventId:state.selectedEventId,
+    productoId,
+    unidades:Number(document.getElementById('buyUnidades').value || 0),
+    ticketDonacion:document.getElementById('buyTicket').value,
+    responsableId:document.getElementById('buyResponsable').value || ''
+  });
+  document.getElementById('buyUnidades').value = '1.00';
+  document.getElementById('buyTicket').value = '';
+  document.getElementById('buyResponsable').value = '';
+  render();
+}
+
+function currentValuesByAction(action, id){
+  const selector = `[data-action="${action}"][data-id="${id}"]`;
+  const el = document.querySelector(selector);
+  return el ? el.value : '';
+}
+
+function handleClick(e){
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const action = btn.dataset.action || btn.id;
+
+  if(action !== 'btnTogglePower' && isLocked()) return;
+
+  switch(action){
+    case 'tabIngresosBtn': currentMainTab = 'ingresos'; render(); break;
+    case 'tabComprasBtn': currentMainTab = 'compras'; render(); break;
+    case 'btnToggleMaintenance':
+      document.getElementById('maintenanceWrapper').classList.toggle('hidden');
+      break;
+    case 'mtPersonasBtn': currentMaintTab = 'personas'; render(); break;
+    case 'mtEventosBtn': currentMaintTab = 'eventos'; render(); break;
+    case 'mtTiendasBtn': currentMaintTab = 'tiendas'; render(); break;
+    case 'mtProductosBtn': currentMaintTab = 'productos'; render(); break;
+    case 'btnAddPersona': addPersona(); break;
+    case 'btnAddEvento': addEvento(); break;
+    case 'btnAddTienda': addTienda(); break;
+    case 'btnAddProducto': addProducto(); break;
+    case 'btnAddColab': addColab(); break;
+    case 'btnAddCompra': addCompra(); break;
+    case 'btnTogglePower':
+      if(!selectedEvent()) return;
+      selectedEvent().situacion = isLocked() ? 'En curso' : 'Finalizado';
+      render();
+      break;
+    case 'toggleIngresosSummary':
+      document.getElementById('ingresosSummaryBody').classList.toggle('hidden');
+      break;
+    case 'toggleComprasSummary':
+      document.getElementById('comprasSummaryBody').classList.toggle('hidden');
+      break;
+    case 'save-persona': {
+      const id = btn.dataset.id;
+      const p = personaById(id);
+      if(p){
+        p.nombre = currentValuesByAction('edit-persona-nombre', id).trim();
+        p.rango = currentValuesByAction('edit-persona-rango', id);
+        render();
+      }
+      break;
     }
-    wrap.appendChild(div)
-  })
-}
-function renderPayStats(){const wrap=document.getElementById('payStats'); wrap.innerHTML=''; PAYMENT_OPTIONS.forEach(tipo=>{const personas=asistentesEnriquecidos().filter(a=>a.situacion===tipo).reduce((a,b)=>a+Number(b.numero||0),0); const div=document.createElement('div'); div.className='metric'; div.innerHTML='<div class="label">'+escapeHtml(tipo)+'</div><div class="value">'+personas+'</div>'; wrap.appendChild(div)})}
-function renderSociosList(){const wrap=document.getElementById('sociosList'); wrap.innerHTML=''; if(!state.socios.length){wrap.innerHTML='<div class="empty">No hay socios.</div>'; return} state.socios.forEach(s=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline socio"><div class="field"><label>Nombre</label><input id="socio-nombre-'+s.id+'" value="'+escapeAttr(s.nombre)+'" /></div><button type="button" class="modify small" onclick="modifySocio(\''+s.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteSocio(\''+s.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
-function renderEventosList(){const wrap=document.getElementById('eventosList'); wrap.innerHTML=''; const eventos=[...state.eventos].sort((a,b)=>(a.titulo||'').localeCompare((b.titulo||''),'es')); if(!eventos.length){wrap.innerHTML='<div class="empty">No hay eventos.</div>'; return} eventos.forEach(e=>{const row=document.createElement('div'); row.className='itemcard'; const statusClass=e.situacion==='Finalizado'?'status-finalizado':'status-curso'; row.innerHTML=(e.id===state.selectedEventId?'<div class="badge-active">Activo</div>':'')+'<div class="rowline evento"><div class="field"><label>Título</label><input id="evento-titulo-'+e.id+'" value="'+escapeAttr(e.titulo)+'" /></div><div class="field"><label>Precio</label><input id="evento-precio-'+e.id+'" type="number" min="0" step="0.01" value="'+Number(e.precio||0)+'" /></div><div class="field"><label>Fecha ini</label><input id="evento-fechaini-'+e.id+'" value="'+escapeAttr(e.fechaIni||'')+'" /></div><div class="field"><label>Fecha fin</label><input id="evento-fechafin-'+e.id+'" value="'+escapeAttr(e.fechaFin||'')+'" /></div><div class="field"><label>Situación</label><select id="evento-situacion-'+e.id+'"><option value="En curso" '+(e.situacion==='En curso'?'selected':'')+'>En curso</option><option value="Finalizado" '+(e.situacion==='Finalizado'?'selected':'')+'>Finalizado</option></select></div><button type="button" class="modify small" onclick="modifyEvento(\''+e.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteEvento(\''+e.id+'\')">Eliminar</button></div><div class="hint"><span class="status-pill '+statusClass+'">'+escapeHtml(e.situacion||'En curso')+'</span></div>'; wrap.appendChild(row)})}
-function renderTiendasList(){const wrap=document.getElementById('tiendasList'); wrap.innerHTML=''; const tiendas=[...state.tiendas].sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')); if(!tiendas.length){wrap.innerHTML='<div class="empty">No hay tiendas.</div>'; return} tiendas.forEach(t=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline tienda"><div class="field"><label>Nombre</label><input id="tienda-nombre-'+t.id+'" value="'+escapeAttr(t.nombre)+'" /></div><button type="button" class="modify small" onclick="modifyTienda(\''+t.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteTienda(\''+t.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
-function renderProductosList(){const wrap=document.getElementById('productosList'); wrap.innerHTML=''; let productos=[...state.productos];
-  productos.sort((a,b)=>{
-    const get=(p)=>{
-      if(productosSort==='nombre') return p.nombre||'';
-      if(productosSort==='segmento') return p.segmento||'';
-      if(productosSort==='destino') return p.destino||'';
-      if(productosSort==='tienda') return tiendaNombreById(p.tiendaId)||'';
-      return p.nombre||'';
-    };
-    return get(a).localeCompare(get(b),'es');
-  });
-  if(!productos.length){wrap.innerHTML='<div class="empty">No hay productos.</div>'; return}
-  const hdr=document.createElement('div');
-  hdr.className='hint';
-  hdr.innerHTML='Ordenar por: <a href="#" onclick="setProductosSort(\'nombre\');return false;">Nombre</a> · <a href="#" onclick="setProductosSort(\'segmento\');return false;">Segmento</a> · <a href="#" onclick="setProductosSort(\'destino\');return false;">Destino</a> · <a href="#" onclick="setProductosSort(\'tienda\');return false;">Tienda</a>';
-  wrap.appendChild(hdr);
-  productos.forEach(p=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline producto"><div class="field"><label>Nombre</label><input id="producto-nombre-'+p.id+'" value="'+escapeAttr(p.nombre)+'" /></div><div class="field"><label>Segmento</label><select id="producto-segmento-'+p.id+'">'+SEGMENT_OPTIONS.map(x=>'<option value="'+x+'" '+(x===p.segmento?'selected':'')+'>'+x+'</option>').join('')+'</select></div><div class="field"><label>Destino</label><select id="producto-destino-'+p.id+'">'+DESTINO_OPTIONS.map(x=>'<option value="'+x+'" '+(x===p.destino?'selected':'')+'>'+x+'</option>').join('')+'</select></div><div class="field"><label>Precio</label><input id="producto-precio-'+p.id+'" type="number" min="0" step="0.01" value="'+Number(p.precio||0)+'" /></div><div class="field"><label>Tienda</label><select id="producto-tienda-'+p.id+'">'+state.tiendas.map(t=>'<option value="'+t.id+'" '+(t.id===p.tiendaId?'selected':'')+'>'+escapeHtml(t.nombre)+'</option>').join('')+'</select></div><button type="button" class="modify small" onclick="modifyProducto(\''+p.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteProducto(\''+p.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
-function renderAsistentesList(){const wrap=document.getElementById('asistentesList'); wrap.innerHTML=''; let rows=asistentesEnriquecidos();
-  const order={'Pendiente':0,'Efectivo':1,'Bizum':2,'ING. RURAL':3};
-  rows=rows.sort((a,b)=>{
-    const da=order[a.situacion]??9, db=order[b.situacion]??9;
-    if(da!==db) return da-db;
-    return (a.socioNombre||'').localeCompare((b.socioNombre||''),'es');
-  });
-  if(!rows.length){wrap.innerHTML='<div class="empty">Todavía no hay asistentes cargados para este evento.</div>'; return}
-  rows.forEach(a=>{const row=document.createElement('div'); row.className='row itemcard asistente'; row.innerHTML='<div class="field"><label>Socio</label><select onchange="changeAsistenteSocio(\''+a.id+'\', this.value)">'+state.socios.map(s=>'<option value="'+s.id+'" '+(s.id===a.socioId?'selected':'')+'>'+escapeHtml(s.nombre)+'</option>').join('')+'</select></div><div class="field"><label>Número</label><input type="number" min="0" step="1" id="asistente-numero-'+a.id+'" value="'+Number(a.numero||0)+'" /></div><div class="field"><label>Situación</label><select id="asistente-situacion-'+a.id+'">'+PAYMENT_OPTIONS.map(x=>'<option value="'+x+'" '+(x===a.situacion?'selected':'')+'>'+x+'</option>').join('')+'</select></div><div class="actions"><button type="button" class="modify small" onclick="modifyAsistente(\''+a.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteAsistente(\''+a.id+'\')">Eliminar</button></div>'; wrap.appendChild(row)})}
-function renderComprasList(){const wrap=document.getElementById('comprasList'); wrap.innerHTML=''; let rows=comprasEnriquecidas();
-  if(comprasSort==='tienda'){
-    rows=rows.sort((a,b)=>{
-      const ta=(a.tienda||'').localeCompare((b.tienda||''),'es');
-      if(ta!==0) return ta;
-      return (String(a.ticket||'')).localeCompare(String(b.ticket||''),'es');
-    });
-  } else {
-    rows=rows.sort((a,b)=> String(a.ticket||'').localeCompare(String(b.ticket||''),'es'));
+    case 'delete-persona':
+      state.personas = state.personas.filter(p => p.id !== btn.dataset.id);
+      state.colaboradores = state.colaboradores.filter(c => c.personaId !== btn.dataset.id);
+      state.compras = state.compras.map(c => c.responsableId === btn.dataset.id ? ({...c, responsableId:''}) : c);
+      render();
+      break;
+    case 'save-evento': {
+      const id = btn.dataset.id;
+      const ev = state.eventos.find(x => x.id === id);
+      if(ev){
+        ev.titulo = currentValuesByAction('edit-evento-titulo', id).trim();
+        ev.precio = Number(currentValuesByAction('edit-evento-precio', id) || 0);
+        ev.fechaIni = currentValuesByAction('edit-evento-fechaini', id).trim();
+        ev.fechaFin = currentValuesByAction('edit-evento-fechafin', id).trim();
+        ev.situacion = currentValuesByAction('edit-evento-situacion', id);
+        render();
+      }
+      break;
+    }
+    case 'delete-evento':
+      state.eventos = state.eventos.filter(e => e.id !== btn.dataset.id);
+      state.colaboradores = state.colaboradores.filter(c => c.eventId !== btn.dataset.id);
+      state.compras = state.compras.filter(c => c.eventId !== btn.dataset.id);
+      state.selectedEventId = state.eventos[0]?.id || '';
+      render();
+      break;
+    case 'save-tienda': {
+      const id = btn.dataset.id;
+      const t = tiendaById(id);
+      if(t){
+        t.nombre = currentValuesByAction('edit-tienda-nombre', id).trim();
+        render();
+      }
+      break;
+    }
+    case 'delete-tienda':
+      state.tiendas = state.tiendas.filter(t => t.id !== btn.dataset.id);
+      state.productos = state.productos.map(p => p.tiendaId === btn.dataset.id ? ({...p, tiendaId:''}) : p);
+      render();
+      break;
+    case 'save-producto': {
+      const id = btn.dataset.id;
+      const p = productoById(id);
+      if(p){
+        p.nombre = currentValuesByAction('edit-producto-nombre', id).trim();
+        p.segmento = currentValuesByAction('edit-producto-segmento', id);
+        p.destino = currentValuesByAction('edit-producto-destino', id);
+        p.precio = Number(currentValuesByAction('edit-producto-precio', id) || 0);
+        p.tiendaId = currentValuesByAction('edit-producto-tienda', id);
+        render();
+      }
+      break;
+    }
+    case 'delete-producto':
+      state.productos = state.productos.filter(p => p.id !== btn.dataset.id);
+      state.compras = state.compras.filter(c => c.productoId !== btn.dataset.id);
+      render();
+      break;
+    case 'save-collab': {
+      const id = btn.dataset.id;
+      const c = state.colaboradores.find(x => x.id === id);
+      if(c){
+        c.personaId = currentValuesByAction('edit-collab-persona', id);
+        c.numero = Number(currentValuesByAction('edit-collab-numero', id) || 0);
+        c.situacion = currentValuesByAction('edit-collab-situacion', id);
+        c.importe = Number(currentValuesByAction('edit-collab-importe', id) || 0);
+        render();
+      }
+      break;
+    }
+    case 'delete-collab':
+      state.colaboradores = state.colaboradores.filter(c => c.id !== btn.dataset.id);
+      render();
+      break;
+    case 'save-compra': {
+      const id = btn.dataset.id;
+      const c = state.compras.find(x => x.id === id);
+      if(c){
+        c.productoId = currentValuesByAction('edit-compra-producto', id);
+        c.unidades = Number(currentValuesByAction('edit-compra-unidades', id) || 0);
+        c.ticketDonacion = currentValuesByAction('edit-compra-ticket', id);
+        c.responsableId = currentValuesByAction('edit-compra-responsable', id);
+        render();
+      }
+      break;
+    }
+    case 'delete-compra':
+      state.compras = state.compras.filter(c => c.id !== btn.dataset.id);
+      render();
+      break;
+    case 'btnExportExcel': exportExcel(); break;
+    case 'btnShareWhats': shareWhats(); break;
+    case 'btnShareEmail': shareEmail(); break;
   }
-  if(!rows.length){wrap.innerHTML='<div class="empty">Todavía no hay compras cargadas para este evento.</div>'; return}
-  const hdr=document.createElement('div');
-  hdr.className='hint';
-  hdr.innerHTML='Ordenar por: <a href="#" onclick="setComprasSort(\'tienda\');return false;">Producto</a> · <a href="#" onclick="setComprasSort(\'ticket\');return false;">Ticket</a>';
-  wrap.appendChild(hdr);
-  rows.forEach(c=>{const row=document.createElement('div'); row.className='itemcard'; row.innerHTML='<div class="rowline compra-edit"><div class="field"><label>Producto</label><select id="compra-producto-'+c.id+'">'+state.productos.map(p=>'<option value="'+p.id+'" '+(p.id===c.productoId?'selected':'')+'>'+escapeHtml(p.nombre)+'</option>').join('')+'</select></div><div class="field"><label>Unidades</label><input id="compra-unidades-'+c.id+'" type="number" min="0" step="0.01" value="'+n2(c.unidades)+'" /></div><div class="field"><label>Ticket</label><input id="compra-ticket-'+c.id+'" value="'+escapeAttr(c.ticket||'')+'" /></div><button type="button" class="modify small" onclick="modifyCompra(\''+c.id+'\')">Modificar</button><button type="button" class="danger small" onclick="deleteCompra(\''+c.id+'\')">Eliminar</button></div><div class="hint">Precio: '+euro(c.precio)+' · Importe: '+euro(c.importe)+' · Tienda: '+escapeHtml(c.tienda||'')+'</div>'; wrap.appendChild(row)})}
-function renderSelectors(){fillSelect(document.getElementById('selectedEvent'),state.eventos,'id','titulo'); document.getElementById('selectedEvent').value=state.selectedEventId||''; fillSelect(document.getElementById('asistenteSocio'),state.socios,'id','nombre'); if(state.socios.length&&!document.getElementById('asistenteSocio').value)document.getElementById('asistenteSocio').value=state.socios[0].id; fillStaticSelect(document.getElementById('asistenteSituacion'),PAYMENT_OPTIONS); document.getElementById('asistenteSituacion').value='Pendiente'; fillSelect(document.getElementById('compraProducto'),state.productos,'id','nombre'); if(state.productos.length&&!document.getElementById('compraProducto').value)document.getElementById('compraProducto').value=state.productos[0].id; fillStaticSelect(document.getElementById('newProductoSegmento'),SEGMENT_OPTIONS); fillStaticSelect(document.getElementById('newProductoDestino'),DESTINO_OPTIONS); fillSelect(document.getElementById('newProductoTienda'),state.tiendas,'id','nombre')}
-function updateHeaderEventDates(){
-  const ev=selectedEvent();
-  const datesEl=document.getElementById('eventDates');
-  const statusEl=document.getElementById('eventStatus');
-  const power=document.getElementById('btnTogglePower');
-  if(datesEl){ datesEl.textContent='(del '+(ev?.fechaIni||'--/--/--')+' al '+(ev?.fechaFin||'--/--/--')+')'; }
-  const fin=(ev?.situacion||'En curso')==='Finalizado';
-  if(statusEl){
-    statusEl.textContent=ev?.situacion||'En curso';
-    statusEl.className='status-pill '+(fin?'status-finalizado':'status-curso');
+}
+
+function handleChange(e){
+  if(e.target.id === 'selectedEvent'){
+    if(isLocked()) return;
+    state.selectedEventId = e.target.value;
+    render();
   }
-  if(power){
-    power.className='powerbtn '+(fin?'off':'on');
-    power.disabled=false;
-    power.style.pointerEvents='auto';
-    power.style.opacity='1';
-  }
-  applyEventLock(fin);
 }
-function applyEventLock(isLocked){
-  document.querySelectorAll('.app-lockable').forEach(el=>el.classList.toggle('locked',isLocked));
-  ['btnExportExcel','btnShareWhats','btnShareEmail','btnToggleMaintenance'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){el.disabled=!!isLocked; el.style.pointerEvents=isLocked?'none':'auto'; el.style.opacity=isLocked?'0.45':'1';}
-  });
-  const power=document.getElementById('btnTogglePower');
-  if(power){power.disabled=false; power.style.pointerEvents='auto'; power.style.opacity='1';}
+
+function exportExcel(){
+  const ev = selectedEvent();
+  if(!ev) return;
+
+  const collabs = collabsForEvent();
+  const compras = comprasForEvent();
+  const budget = budgetSummary();
+  const segRows = summaryBySegmento();
+  const destRows = summaryByDestino();
+  const tiendaRows = summaryByTiendaTicket();
+
+  function cellText(v, cls=''){ return `<td${cls ? ` class="${cls}"` : ''}>${escapeHtml(String(v))}</td>`; }
+  function cellNum(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'0,00';" x:num="${Number(n||0).toFixed(2)}">${numberEs(n)}</td>`; }
+  function cellMoney(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(n)} €</td>`; }
+
+  const html = `
+  <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}
+      th,td{border:1px solid #dbe2ea;padding:6px 8px}
+      th{background:#111827;color:#ffffff}
+      .title{background:#111827;color:#ffffff;font-weight:bold}
+      .ok{background:#ecfdf5;color:#047857;font-weight:bold}
+      .bad{background:#fef2f2;color:#b91c1c;font-weight:bold}
+      .warn{background:#fff7ed;color:#c2410c;font-weight:bold}
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>
+      <tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
+      <tr><td>Fechas</td><td>(del ${escapeHtml(ev.fechaIni || '')} al ${escapeHtml(ev.fechaFin || '')})</td></tr>
+      <tr><td>Situación</td><td class="${ev.situacion === 'Finalizado' ? 'bad' : 'ok'}">${escapeHtml(ev.situacion)}</td></tr>
+      <tr><td>Precio evento</td>${cellMoney(ev.precio)}</tr>
+      <tr><td>Total comprometido</td>${cellMoney(budget.socios.saldo)}</tr>
+      <tr><td>Ingresado total</td>${cellMoney(budget.socios.ingresado + budget.donantes.ingresado)}</tr>
+      <tr><td>Pendiente total</td>${cellMoney(budget.socios.pendiente + budget.donantes.pendiente, 'warn')}</tr>
+      <tr><td>Compras total</td>${cellMoney(budget.compras.total)}</tr>
+      <tr><td>Saldo operativo</td>${cellMoney(budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad')}</tr>
+      <tr><td>Fecha y hora emisión</td><td>${escapeHtml(new Date().toLocaleString('es-ES'))}</td></tr>
+    </table>
+    <br>
+    <table>
+      <tr><th class="title" colspan="7">PERSONAS COLABORADORAS</th></tr>
+      <tr><th>Colaborador/a</th><th>Rango</th><th>Número</th><th>Situación</th><th>Importe</th><th>Evento-Importe</th><th>Total compromiso</th></tr>
+      ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText(r.persona?.nombre || '')}${cellText(r.persona?.rango || '')}${cellNum(r.numero)}${cellText(r.situacion)}${cellMoney(r.donation)}${cellMoney(r.base)}${cellMoney(r.total)}</tr>`).join('')}
+    </table>
+    <br>
+    <table>
+      <tr><th class="title" colspan="9">COMPRAS Y DONACIONES DEL EVENTO</th></tr>
+      <tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th></tr>
+      ${compras.map(r => `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pdte.Compra')}${cellText(r.responsable?.nombre || '')}</tr>`).join('')}
+    </table>
+    <br>
+    <table>
+      <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr>
+      <tr><th>Segmento</th><th>Importe</th></tr>
+      ${segRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v)}</tr>`).join('')}
+    </table>
+    <br>
+    <table>
+      <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr>
+      <tr><th>Destino</th><th>Importe</th></tr>
+      ${destRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v)}</tr>`).join('')}
+    </table>
+    <br>
+    <table>
+      <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
+      <tr><th>Tienda y ticket/donado</th><th>Importe</th></tr>
+      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v)}</tr>`).join('')}
+    </table>
+  </body>
+  </html>`;
+
+  const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (ev.titulo || 'evento').replace(/\s+/g,'_') + '_ControlEvent_v6.xls';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
-function updateCompraPreview(){const productoId=document.getElementById('compraProducto').value; const unidades=Number(document.getElementById('compraUnidades').value||0); const p=state.productos.find(x=>x.id===productoId); const precio=Number(p?.precio||0); document.getElementById('compraPrecio').value=euro(precio); document.getElementById('compraImporte').value=euro(precio*unidades); document.getElementById('compraTienda').value=tiendaNombreById(p?.tiendaId||'')}
-function setMaintTab(tab){currentMaintTab=tab; const map={socios:'maintSocios',eventos:'maintEventos',tiendas:'maintTiendas',productos:'maintProductos'}; const btns={socios:'tabSociosBtn',eventos:'tabEventosBtn',tiendas:'tabTiendasBtn',productos:'tabProductosBtn'}; Object.keys(map).forEach(k=>{document.getElementById(map[k]).classList.toggle('hidden',k!==tab); document.getElementById(btns[k]).classList.toggle('active',k===tab)})}
-function renderMain(){const hasEvent=!!selectedEvent(); document.getElementById('noEventMessage').classList.toggle('hidden',hasEvent); updateHeaderEventDates(); document.getElementById('tabAsistentes').classList.toggle('hidden',!hasEvent||currentTab!=='asistentes'); document.getElementById('tabCompras').classList.toggle('hidden',!hasEvent||currentTab!=='compras'); const t=totals(); document.getElementById('ctrlAsistentes').textContent=t.asistentes; document.getElementById('ctrlPrecioEvento').textContent=euro(t.precioEvento); document.getElementById('ctrlPresupuesto').textContent=euro(t.presupuesto); document.getElementById('ctrlIngresado').textContent=euro(t.ingresado); document.getElementById('ctrlPendiente').textContent=euro(t.pendiente); document.getElementById('ctrlComprado').textContent=euro(t.comprado); document.getElementById('ctrlPdteCompra').textContent=euro(t.pdteCompra); document.getElementById('ctrlSaldo').textContent=euro(t.saldo); setSaldoStyle(document.getElementById('ctrlSaldoBox'),t.saldo); renderAsistentesList(); renderComprasList(); renderPayStats(); renderSummary('summarySegmento',summaryBy('segmento')); renderSummary('summaryDestino',summaryBy('destino')); renderSummary('summaryTienda',summaryByStoreTicketSorted()); renderSociosList(); renderEventosList(); renderTiendasList(); renderProductosList(); updateCompraPreview()}
-function fullRender(){if(!state.selectedEventId&&state.eventos[0])state.selectedEventId=state.eventos[0].id; renderSelectors(); renderMain(); saveData()}
-function exportExcelHtml(){const ev=selectedEvent(); if(!ev){alert('No hay evento activo.'); return}
-  const asistentes=asistentesOrdenados(); const t=totals(); const fecha=nowString(); const compras=comprasOrdenadas();
-  const seg=agrupacionCompradoPendiente('segmento'); const des=agrupacionCompradoPendiente('destino'); const tie=summaryByStoreTicketSorted();
-  const css='<style>table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}th,td{border:1px solid #dbe2ea;padding:6px 8px;vertical-align:middle}th{background:#111827;color:#ffffff}.title{background:#111827;color:#ffffff;font-weight:bold}.warn{background:#fff7ed;color:#c2410c;font-weight:bold}.ok{background:#ecfdf5;color:#047857;font-weight:bold}.bad{background:#fef2f2;color:#b91c1c;font-weight:bold}img{max-width:140px;max-height:120px}</style>';
-  const saldoClass=t.saldo>=0?'ok':'bad';
-  const asistentesRows=asistentes.map(a=>{const cls=a.situacion==='Pendiente'?'bad':''; return '<tr'+(cls?' class="'+cls+'"':'')+'>'+xlTextCell(a.socioNombre,cls)+xlNumCell(Number(a.numero||0),cls)+xlTextCell(a.situacion||'',cls)+xlMoneyCell(Number(a.numero||0)*Number(ev.precio||0),cls)+'</tr>'}).join('');
-  const comprasRows=compras.map(c=>{const cls=(String(c.ticket||'').trim()==='')?'bad':''; return '<tr'+(cls?' class="'+cls+'"':'')+'>'+xlTextCell(c.productoNombre,cls)+xlTextCell(c.segmento||'',cls)+xlTextCell(c.destino||'',cls)+xlNumCell(c.unidades,cls)+xlMoneyCell(c.precio,cls)+xlMoneyCell(c.importe,cls)+xlTextCell(c.tienda||'',cls)+xlTextCell(c.ticket||'',cls)+'</tr>'}).join('');
-  const segRows=seg.map(r=>'<tr'+(r.pending?' class="bad"':'')+'>'+xlTextCell(r.k,r.pending?'bad':'')+xlMoneyCell(r.v,r.pending?'bad':'')+'</tr>').join('');
-  const desRows=des.map(r=>'<tr'+(r.pending?' class="bad"':'')+'>'+xlTextCell(r.k,r.pending?'bad':'')+xlMoneyCell(r.v,r.pending?'bad':'')+'</tr>').join('');
-  const tieRows=tie.map(r=>{const cls=r.pending?'bad':''; const img=!r.pending && ticketImageForKey(r.k)?'<img src="'+ticketImageForKey(r.k)+'" alt="ticket">':''; return '<tr'+(cls?' class="'+cls+'"':'')+'>'+xlTextCell(r.k,cls)+xlMoneyCell(r.v,cls)+'<td'+(cls?' class="'+cls+'"':'')+'>'+img+'</td></tr>'}).join('');
-  const html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8">'+css+'</head><body>'
-  +'<table><tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>'
-  +'<tr><td>Evento</td><td>'+escapeHtml(ev.titulo)+'</td></tr>'
-  +'<tr><td>Fechas</td><td>(del '+escapeHtml(ev.fechaIni||'')+' al '+escapeHtml(ev.fechaFin||'')+')</td></tr>'
-  +'<tr><td>Situación</td><td class="'+((ev.situacion||'En curso')==='Finalizado'?'bad':'ok')+'">'+escapeHtml(ev.situacion||'En curso')+'</td></tr>'
-  +'<tr><td>Precio por persona</td>'+xlMoneyCell(t.precioEvento)+'</tr>'
-  +'<tr><td>Nº asistentes</td>'+xlNumCell(t.asistentes)+'</tr>'
-  +'<tr><td>Presupuesto</td>'+xlMoneyCell(t.presupuesto)+'</tr>'
-  +'<tr><td>Ingresado</td>'+xlMoneyCell(t.ingresado)+'</tr>'
-  +'<tr><td>Pendiente</td>'+xlMoneyCell(t.pendiente,'warn')+'</tr>'
-  +'<tr><td>Compras realizadas</td>'+xlMoneyCell(t.comprado)+'</tr>'
-  +'<tr><td>Compras pendientes</td>'+xlMoneyCell(t.pdteCompra,'warn')+'</tr>'
-  +'<tr><td>Saldo</td>'+xlMoneyCell(t.saldo,saldoClass)+'</tr>'
-  +'<tr><td>Fecha y hora emisión</td><td>'+escapeHtml(fecha)+'</td></tr></table><br>'
-  +'<table><tr><th class="title" colspan="4">ASISTENTES</th></tr><tr><th>Nombre</th><th>Número</th><th>Situación</th><th>Evento-Importe</th></tr>'+asistentesRows+'</table><br>'
-  +'<table><tr><th class="title" colspan="8">COMPRAS</th></tr><tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>TICKET</th></tr>'+comprasRows+'</table><br>'
-  +'<table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr><tr><th>Segmento</th><th>Importe</th></tr>'+segRows+'</table><br>'
-  +'<table><tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr><tr><th>Destino</th><th>Importe</th></tr>'+desRows+'</table><br>'
-  +'<table><tr><th class="title" colspan="3">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET</th></tr><tr><th>Tienda y ticket</th><th>Importe</th><th>Ticket</th></tr>'+tieRows+'</table>'
-  +'</body></html>';
-  const blob=new Blob([html],{type:'application/vnd.ms-excel;charset=utf-8;'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=(ev.titulo||'evento').replace(/\s+/g,'_')+'_ControlEvent.xls'; link.click(); URL.revokeObjectURL(link.href)}
 
-function shareWhats(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const txt='Evento: '+ev.titulo+'\nFechas: (del '+(ev.fechaIni||'')+' al '+(ev.fechaFin||'')+')\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en WhatsApp.'; window.location.href='https://wa.me/?text='+encodeURIComponent(txt)}
-function shareEmail(){exportExcelHtml(); const ev=selectedEvent(); if(!ev)return; const t=totals(); const subject=encodeURIComponent('Datos del evento: '+ev.titulo); const body=encodeURIComponent('Evento: '+ev.titulo+'\nFechas: (del '+(ev.fechaIni||'')+' al '+(ev.fechaFin||'')+')\nAsistentes: '+t.asistentes+'\nPresupuesto: '+euro(t.presupuesto)+'\nIngresado: '+euro(t.ingresado)+'\nPendiente: '+euro(t.pendiente)+'\nComprado: '+euro(t.comprado)+'\nPdte. compra: '+euro(t.pdteCompra)+'\nSaldo: '+euro(t.saldo)+'\n\nEl Excel descargado incluye compras y cálculos por agrupación para adjuntarlo en tu app de correo.'); window.location.href='mailto:?subject='+subject+'&body='+body}
-function escapeHtml(str){return String(str??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;')}
-function escapeAttr(str){return escapeHtml(str)}
-function setComprasSort(v){comprasSort=v; renderComprasList()}
-function setProductosSort(v){productosSort=v; renderProductosList()}
-function modifySocio(id){const row=state.socios.find(x=>x.id===id); if(row){row.nombre=document.getElementById('socio-nombre-'+id).value.trim(); fullRender()}}
-function deleteSocio(id){state.socios=state.socios.filter(x=>x.id!==id); fullRender()}
-function modifyEvento(id){const row=state.eventos.find(x=>x.id===id); if(row){row.titulo=document.getElementById('evento-titulo-'+id).value.trim(); row.precio=Number(document.getElementById('evento-precio-'+id).value||0); row.fechaIni=document.getElementById('evento-fechaini-'+id).value.trim(); row.fechaFin=document.getElementById('evento-fechafin-'+id).value.trim(); row.situacion=document.getElementById('evento-situacion-'+id).value; fullRender()}}
-function deleteEvento(id){state.eventos=state.eventos.filter(x=>x.id!==id); state.asistentes=state.asistentes.filter(x=>x.eventId!==id); state.compras=state.compras.filter(x=>x.eventId!==id); if(state.selectedEventId===id)state.selectedEventId=state.eventos[0]?.id||''; fullRender()}
-function modifyTienda(id){const row=state.tiendas.find(x=>x.id===id); if(row){row.nombre=document.getElementById('tienda-nombre-'+id).value.trim(); fullRender()}}
-function deleteTienda(id){state.tiendas=state.tiendas.filter(x=>x.id!==id); state.productos=state.productos.map(p=>p.tiendaId===id?{...p,tiendaId:''}:p); fullRender()}
-function modifyProducto(id){const row=state.productos.find(x=>x.id===id); if(row){row.nombre=document.getElementById('producto-nombre-'+id).value.trim(); row.segmento=document.getElementById('producto-segmento-'+id).value; row.destino=document.getElementById('producto-destino-'+id).value; row.precio=Number(document.getElementById('producto-precio-'+id).value||0); row.tiendaId=document.getElementById('producto-tienda-'+id).value||''; fullRender()}}
-function deleteProducto(id){state.productos=state.productos.filter(x=>x.id!==id); fullRender()}
-function changeAsistenteSocio(id,val){const row=state.asistentes.find(x=>x.id===id); if(row){row.socioId=val; saveData(); renderMain()}}
-function modifyAsistente(id){const row=state.asistentes.find(x=>x.id===id); if(row){row.numero=Number(document.getElementById('asistente-numero-'+id).value||0); row.situacion=document.getElementById('asistente-situacion-'+id).value; fullRender()}}
-function deleteAsistente(id){state.asistentes=state.asistentes.filter(x=>x.id!==id); fullRender()}
-function modifyCompra(id){const row=state.compras.find(x=>x.id===id); if(row){row.productoId=document.getElementById('compra-producto-'+id).value; row.unidades=Number(document.getElementById('compra-unidades-'+id).value||0); row.ticket=document.getElementById('compra-ticket-'+id).value.trim(); fullRender()}}
-function deleteCompra(id){state.compras=state.compras.filter(x=>x.id!==id); fullRender()}
-function setComprasSort(sort){comprasSort=sort; renderMain()}
-function setProductosSort(sort){productosSort=sort; renderMain()}
-function initEvents(){
-  document.getElementById('tabAsistentesBtn')?.addEventListener('click',function(){
-    currentTab='asistentes';
-    this.classList.add('active');
-    document.getElementById('tabComprasBtn')?.classList.remove('active');
-    renderMain();
-  });
-  document.getElementById('tabComprasBtn')?.addEventListener('click',function(){
-    currentTab='compras';
-    this.classList.add('active');
-    document.getElementById('tabAsistentesBtn')?.classList.remove('active');
-    renderMain();
-  });
-  document.getElementById('selectedEvent')?.addEventListener('change',function(e){
-    state.selectedEventId=e.target.value;
-    fullRender();
-  });
-  document.getElementById('compraProducto')?.addEventListener('change',updateCompraPreview);
-  document.getElementById('compraUnidades')?.addEventListener('input',updateCompraPreview);
-
-  document.getElementById('btnAddSocio')?.addEventListener('click',function(){
-    const nombre=document.getElementById('newSocioNombre').value.trim();
-    if(!nombre)return;
-    state.socios.push({id:uid(),nombre});
-    document.getElementById('newSocioNombre').value='';
-    fullRender();
-  });
-
-  document.getElementById('btnAddEvento')?.addEventListener('click',function(){
-    const titulo=document.getElementById('newEventoTitulo').value.trim();
-    const precio=Number(document.getElementById('newEventoPrecio').value||0);
-    if(!titulo)return;
-    const ev={id:uid(),titulo,precio,fechaIni:document.getElementById('newEventoFechaIni').value.trim(),fechaFin:document.getElementById('newEventoFechaFin').value.trim(),situacion:'En curso'};
-    state.eventos.push(ev);
-    if(!state.selectedEventId)state.selectedEventId=ev.id;
-    document.getElementById('newEventoTitulo').value='';
-    document.getElementById('newEventoPrecio').value='0';
-    document.getElementById('newEventoFechaIni').value='';
-    document.getElementById('newEventoFechaFin').value='';
-    fullRender();
-  });
-
-  document.getElementById('btnAddTienda')?.addEventListener('click',function(){
-    const nombre=document.getElementById('newTiendaNombre').value.trim();
-    if(!nombre)return;
-    state.tiendas.push({id:uid(),nombre});
-    document.getElementById('newTiendaNombre').value='';
-    fullRender();
-  });
-
-  document.getElementById('btnAddProducto')?.addEventListener('click',function(){
-    const nombre=document.getElementById('newProductoNombre').value.trim();
-    if(!nombre)return;
-    state.productos.push({
-      id:uid(),
-      nombre,
-      segmento:document.getElementById('newProductoSegmento').value,
-      destino:document.getElementById('newProductoDestino').value,
-      precio:Number(document.getElementById('newProductoPrecio').value||0),
-      tiendaId:document.getElementById('newProductoTienda').value||''
-    });
-    document.getElementById('newProductoNombre').value='';
-    document.getElementById('newProductoPrecio').value='0';
-    fullRender();
-  });
-
-  document.getElementById('btnAddAsistente')?.addEventListener('click',function(){
-    if(!state.selectedEventId)return;
-    const socioId=document.getElementById('asistenteSocio').value;
-    if(!socioId)return;
-    state.asistentes.push({
-      id:uid(),
-      eventId:state.selectedEventId,
-      socioId,
-      numero:Number(document.getElementById('asistenteNumero').value||0),
-      situacion:document.getElementById('asistenteSituacion').value
-    });
-    document.getElementById('asistenteNumero').value='1';
-    document.getElementById('asistenteSituacion').value='Pendiente';
-    fullRender();
-  });
-
-  document.getElementById('btnAddCompra')?.addEventListener('click',function(){
-    if(!state.selectedEventId)return;
-    const productoId=document.getElementById('compraProducto').value;
-    if(!productoId)return;
-    state.compras.push({
-      id:uid(),
-      eventId:state.selectedEventId,
-      productoId,
-      unidades:Number(document.getElementById('compraUnidades').value||0),
-      ticket:document.getElementById('compraTicket').value.trim()
-    });
-    document.getElementById('compraUnidades').value='1.00';
-    document.getElementById('compraTicket').value='';
-    fullRender();
-  });
-
-  document.getElementById('btnExportExcel')?.addEventListener('click',exportExcelHtml);
-  document.getElementById('btnShareWhats')?.addEventListener('click',shareWhats);
-  document.getElementById('btnShareEmail')?.addEventListener('click',shareEmail);
-
-  document.getElementById('btnToggleMaintenance')?.addEventListener('click',function(){
-    const ev=selectedEvent();
-    if((ev?.situacion||'En curso')==='Finalizado') return;
-    const box=document.getElementById('maintenanceWrapper');
-    box.classList.toggle('hidden');
-    if(!box.classList.contains('hidden')) setMaintTab(currentMaintTab);
-  });
-
-  document.getElementById('btnTogglePower')?.addEventListener('click',function(){
-    const ev=selectedEvent();
-    if(!ev)return;
-    ev.situacion=(ev.situacion==='Finalizado'?'En curso':'Finalizado');
-    fullRender();
-  });
-
-  document.getElementById('tabSociosBtn')?.addEventListener('click',function(){setMaintTab('socios')});
-  document.getElementById('tabEventosBtn')?.addEventListener('click',function(){setMaintTab('eventos')});
-  document.getElementById('tabTiendasBtn')?.addEventListener('click',function(){setMaintTab('tiendas')});
-  document.getElementById('tabProductosBtn')?.addEventListener('click',function(){setMaintTab('productos')});
+function shareWhats(){
+  if(isLocked()) return;
+  exportExcel();
+  const ev = selectedEvent();
+  if(!ev) return;
+  const b = budgetSummary();
+  const txt = `Evento: ${ev.titulo}\nFechas: (del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})\nTotal comprometido: ${money(b.socios.saldo)}\nCompras: ${money(b.compras.total)}\nSaldo operativo: ${money(b.compras.saldoOperativo)}\n\nAdjunta el Excel descargado en WhatsApp.`;
+  window.location.href = 'https://wa.me/?text=' + encodeURIComponent(txt);
 }
-initEvents();
-fullRender();
-  </script>
+
+function shareEmail(){
+  if(isLocked()) return;
+  exportExcel();
+  const ev = selectedEvent();
+  if(!ev) return;
+  const b = budgetSummary();
+  const subject = encodeURIComponent('Datos del evento: ' + ev.titulo);
+  const body = encodeURIComponent(`Evento: ${ev.titulo}\nFechas: (del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})\nTotal comprometido: ${money(b.socios.saldo)}\nCompras: ${money(b.compras.total)}\nSaldo operativo: ${money(b.compras.saldoOperativo)}\n\nAdjunta el Excel descargado en tu app de correo.`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+document.addEventListener('click', handleClick);
+document.addEventListener('change', handleChange);
+
+render();
+</script>
 </body>
 </html>
