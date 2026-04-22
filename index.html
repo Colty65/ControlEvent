@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.2</title>
+  <title>ControlEvent v6.3</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -27,7 +27,7 @@
     .powerbtn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px;font-size:22px;line-height:1;cursor:pointer}
     .powerbtn.on{color:var(--ok)}
     .powerbtn.off{color:var(--bad)}
-    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
+    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:8px}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{display:grid;gap:12px}.budget-main{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.budget-side{display:flex;align-items:stretch}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
     .main{padding:14px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
     .section-title{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
@@ -79,12 +79,12 @@
       .brand{font-size:18px}
       .main{padding:20px}
       .metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
-      .subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .subgrid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.budget-wrap{grid-template-columns:4fr 1.2fr}
       .footer-inner{grid-template-columns:repeat(4,minmax(0,1fr))}
       .row-collab-form{display:grid;grid-template-columns:2fr .8fr 1.1fr 1.1fr 1.1fr auto;gap:10px;align-items:end}
       .row-purchase-form{display:grid;grid-template-columns:1.4fr .6fr .8fr .9fr 1fr 1fr 1.2fr auto;gap:10px;align-items:end}
       .rowline.persona{grid-template-columns:1.5fr 1fr auto auto;align-items:end}
-      .rowline.evento{grid-template-columns:1.4fr .8fr .9fr .9fr 1fr auto auto;align-items:end}
+      .rowline.evento{grid-template-columns:1.2fr .8fr .9fr .9fr 1.6fr 1fr auto auto;align-items:end}
       .rowline.tienda{grid-template-columns:1fr auto auto;align-items:end}
       .rowline.producto{grid-template-columns:1.3fr 1fr 1fr .8fr 1fr auto auto;align-items:end}
       .rowline.collab{grid-template-columns:1.3fr .6fr .9fr 1fr 1fr auto;align-items:end}
@@ -100,14 +100,16 @@
         <div class="subtitle">©oltyLAB ‘26</div>
       </div>
       <div class="centerhead">
+        <button type="button" id="toggleEventDesc" class="outline info-mini" title="Descripción del evento">ⓘ</button>
         <div class="event-label">Evento:</div>
         <select id="selectedEvent" style="max-width:280px;"></select>
         <div class="event-dates" id="eventDates">(del --/--/-- al --/--/--)</div>
         <div id="eventStatus" class="status-pill status-curso">En curso</div>
+        <div id="eventDescBubble" class="event-desc-bubble hidden"></div>
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.2</span>
+          <span>ControlEvent v6.3</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -165,7 +167,7 @@
               <select id="collabSituacion"></select>
             </div>
             <div class="field">
-              <label>Importe voluntario (€)</label>
+              <label>Importe voluntario</label>
               <input id="collabImporte" type="number" min="0" step="0.01" value="0.00" />
             </div>
             <div class="field">
@@ -199,7 +201,7 @@
                   <p>Resumen por socios, donantes y compras del evento.</p>
                 </div>
               </div>
-              <div class="metrics" id="budgetMetricsGrid"></div>
+              <div class="budget-wrap"><div class="metrics budget-main" id="budgetMetricsGrid"></div><div class="budget-side" id="budgetSaldoGlobalBox"></div></div>
             </div>
 
             <div class="card" style="box-shadow:none;margin:12px 0 0 0">
@@ -294,6 +296,7 @@
             <div class="field"><label>Fecha ini</label><input id="newEventoFechaIni" placeholder="DD/MM/AA" /></div>
             <div class="field"><label>Fecha fin</label><input id="newEventoFechaFin" placeholder="DD/MM/AA" /></div>
             <div class="field"><label>Situación</label><select id="newEventoSituacion"></select></div>
+            <div class="field"><label>Descripción</label><input id="newEventoDescripcion" /></div>
             <button type="button" id="btnAddEvento">Añadir</button>
             <div></div>
           </div>
@@ -351,6 +354,7 @@ const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS', ...Arr
 let currentMainTab = 'ingresos';
 let currentMaintTab = 'personas';
 let currentProductSort = 'nombre';
+let showEventDesc = false;
 function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'].includes(String(v||'')); }
 
 const state = loadState();
@@ -368,8 +372,8 @@ function loadState(){
       {id:uid(), nombre:'Fundación amiga', rango:'DONANTE'}
     ],
     eventos: [
-      {id:uid(), titulo:'Comida Primavera', precio:15, fechaIni:'01/05/25', fechaFin:'02/05/25', situacion:'En curso'},
-      {id:uid(), titulo:'Cena Verano', precio:20, fechaIni:'15/08/25', fechaFin:'16/08/25', situacion:'En curso'}
+      {id:uid(), titulo:'Comida Primavera', precio:15, fechaIni:'01/05/25', fechaFin:'02/05/25', situacion:'En curso', descripcion:'Evento de ejemplo para organizar compras y colaboración económica.'},
+      {id:uid(), titulo:'Cena Verano', precio:20, fechaIni:'15/08/25', fechaFin:'16/08/25', situacion:'En curso', descripcion:'Segundo evento de ejemplo.'}
     ],
     tiendas: [
       {id:uid(), nombre:'Leroy Merlin'},
@@ -378,6 +382,7 @@ function loadState(){
     productos: [],
     colaboradores: [],
     compras: [],
+    ticketImages: {},
     selectedEventId: ''
   };
   defaults.productos = [
@@ -396,11 +401,12 @@ function loadState(){
       ...defaults,
       ...parsed,
       personas: (parsed.personas || defaults.personas).map(p => ({...p, rango:p.rango || 'SOCIO'})),
-      eventos: (parsed.eventos || defaults.eventos).map(e => ({...e, fechaIni:e.fechaIni || '', fechaFin:e.fechaFin || '', situacion:e.situacion || 'En curso'})),
+      eventos: (parsed.eventos || defaults.eventos).map(e => ({...e, fechaIni:e.fechaIni || '', fechaFin:e.fechaFin || '', situacion:e.situacion || 'En curso', descripcion:e.descripcion || ''})),
       tiendas: parsed.tiendas || defaults.tiendas,
       productos: (parsed.productos || defaults.productos).map(p => ({...p, tiendaId:p.tiendaId || ''})),
       colaboradores: (parsed.colaboradores || []).map(c => ({...c, numero:Number(c.numero||0), importe:Number(c.importe||0)})),
       compras: (parsed.compras || []).map(c => ({...c, unidades:Number(c.unidades||0), responsableId:c.responsableId || ''})),
+      ticketImages: parsed.ticketImages || {},
       selectedEventId: parsed.selectedEventId || defaults.selectedEventId
     };
   } catch(e){
@@ -532,6 +538,8 @@ function summaryByDestino(){
   });
 }
 
+function ticketImageStateKey(key){ return `${state.selectedEventId}|${key}`; }
+
 function summaryByTiendaTicket(){
   const filled = {};
   const pending = {};
@@ -546,8 +554,8 @@ function summaryByTiendaTicket(){
       filled[key].donated = filled[key].donated || donated;
     }
   });
-  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,obj])=>({k,v:obj.v,pending:false,donated:obj.donated}));
-  const b = Object.entries(pending).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:true,donated:false}));
+  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,obj])=>({k,v:obj.v,pending:false,donated:obj.donated,image:state.ticketImages?.[ticketImageStateKey(k)] || ''}));
+  const b = Object.entries(pending).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:true,donated:false,image:''}));
   return a.concat(b);
 }
 
@@ -558,13 +566,42 @@ function renderSummaryList(targetId, rows){
     wrap.innerHTML = '<div class="hint">Sin datos.</div>';
     return;
   }
-  rows.forEach(r => {
+  rows.forEach((r, idx) => {
     const div = document.createElement('div');
     div.className = 'summary-item';
     if(r.pending) div.classList.add('red-row');
-    div.innerHTML = `<span>${escapeHtml(r.k)}</span><span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : (r.donated ? ' style="text-decoration:line-through"' : '')}>${money(r.v)}</span>`;
+    const amountHtml = `<span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : (r.donated ? ' style="text-decoration:line-through"' : '')}>${money(r.v)}</span>`;
+    if(targetId === 'summaryTiendaTicket' && !r.pending){
+      const preview = r.image ? `<img class="ticket-thumb" src="${r.image}" alt="ticket" />` : '';
+      div.innerHTML = `<span>${escapeHtml(r.k)}</span><span style="display:flex;align-items:center;gap:8px;">${amountHtml}<span class="ticket-actions"><label class="link-sort">📎<input class="ticket-file-input" type="file" accept="image/*" onchange="uploadTicketImage(event, ${JSON.stringify(targetId)}, ${JSON.stringify(r.k)})"></label>${preview}${r.image ? `<button type="button" class="outline small" onclick="removeTicketImage(${JSON.stringify(r.k)})">🗑️</button>` : ''}</span></span>`;
+    } else {
+      div.innerHTML = `<span>${escapeHtml(r.k)}</span>${amountHtml}`;
+    }
     wrap.appendChild(div);
+    if((targetId === 'summarySegmento' || targetId === 'summaryDestino') && idx % 2 === 1 && idx < rows.length - 1){
+      const spacer = document.createElement('div');
+      spacer.className = 'summary-spacer';
+      wrap.appendChild(spacer);
+    }
   });
+}
+
+
+function uploadTicketImage(event, targetId, key){
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(){
+    if(!state.ticketImages) state.ticketImages = {};
+    state.ticketImages[ticketImageStateKey(key)] = reader.result;
+    render();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeTicketImage(key){
+  if(state.ticketImages) delete state.ticketImages[ticketImageStateKey(key)];
+  render();
 }
 
 function render(){
@@ -592,6 +629,11 @@ function renderHeader(){
   const fin = isLocked();
   st.textContent = ev?.situacion || 'En curso';
   st.className = 'status-pill ' + (fin ? 'status-finalizado' : 'status-curso');
+  const bubble = document.getElementById('eventDescBubble');
+  if(bubble){
+    bubble.textContent = ev?.descripcion || 'Sin descripción del evento.';
+    bubble.classList.toggle('hidden', !showEventDesc);
+  }
   const p = document.getElementById('btnTogglePower');
   p.className = 'powerbtn ' + (fin ? 'off' : 'on');
   const dt = document.getElementById('headerDateTime');
@@ -662,13 +704,10 @@ function renderColabs(){
           <input class="soft-readonly" readonly value="${money(r.base)}" />
         </div>
         <div class="field">
-          <label>Importe voluntario (€)</label>
-          <input type="number" min="0" step="0.01" value="${Number(r.importe||0)}" data-action="edit-collab-importe" data-id="${r.id}" />
+          <label>Importe voluntario</label>
+          <input type="number" min="0" step="0.01" value="${Number(r.importe||0).toFixed(2)}" data-action="edit-collab-importe" data-id="${r.id}" />
         </div>
-        <div style="display:flex;gap:8px;align-items:end">
-          <button type="button" class="modify small" data-action="save-collab" data-id="${r.id}">Modificar</button>
-          <button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button>
-        </div>
+        <button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button>
       </div>
     `;
     wrap.appendChild(row);
@@ -677,14 +716,15 @@ function renderColabs(){
 
 function renderBudget(){
   const grid = document.getElementById('budgetMetricsGrid');
+  const saldoBox = document.getElementById('budgetSaldoGlobalBox');
   const b = budgetSummary();
   grid.innerHTML = '';
+  if(saldoBox) saldoBox.innerHTML = '';
   const entries = [
     {label:'Socios', value:`${b.socios.count}`},
     {label:'Importe socios', value:money(b.socios.importe)},
     {label:'Ingresado socios', value:money(b.socios.ingresado)},
     {label:'Pendiente socios', value:money(b.socios.pendiente), cls:'warn'},
-    {label:'Saldo global', value:money(b.socios.saldo), cls:b.socios.saldo>=0?'ok':'bad'},
     {label:'Donantes', value:`${b.donantes.count}`},
     {label:'Importe donantes', value:money(b.donantes.importe)},
     {label:'Ingresado donantes', value:money(b.donantes.ingresado)},
@@ -700,6 +740,12 @@ function renderBudget(){
     div.innerHTML = `<div class="label">${escapeHtml(e.label)}</div><div class="value">${escapeHtml(e.value)}</div>`;
     grid.appendChild(div);
   });
+  if(saldoBox){
+    const div = document.createElement('div');
+    div.className = 'metric ' + (b.socios.saldo>=0?'ok':'bad');
+    div.innerHTML = `<div class="label">SALDO GLOBAL</div><div class="value">${escapeHtml(money(b.socios.saldo))}</div>`;
+    saldoBox.appendChild(div);
+  }
   renderSummaryList('summarySegmento', summaryBySegmento());
   renderSummaryList('summaryDestino', summaryByDestino());
   renderSummaryList('summaryTiendaTicket', summaryByTiendaTicket());
@@ -794,7 +840,7 @@ function renderPersonas(){
   wrap.innerHTML = '';
   list.forEach(p => {
     const row = document.createElement('div');
-    row.className = 'itemcard';
+    row.className = 'itemcard maint-soft';
     row.innerHTML = `
       <div class="rowline persona">
         <div class="field"><label>Nombre</label><input value="${escapeHtml(p.nombre)}" data-action="edit-persona-nombre" data-id="${p.id}" /></div>
@@ -819,7 +865,7 @@ function renderEventos(){
   list.forEach(e => {
     const cls = e.situacion === 'Finalizado' ? 'status-finalizado' : 'status-curso';
     const row = document.createElement('div');
-    row.className = 'itemcard';
+    row.className = 'itemcard maint-soft';
     row.innerHTML = `
       ${e.id===state.selectedEventId ? '<div class="badge-active">Activo</div>' : ''}
       <div class="rowline evento">
@@ -827,6 +873,7 @@ function renderEventos(){
         <div class="field"><label>Precio</label><input type="number" min="0" step="0.01" value="${Number(e.precio||0)}" data-action="edit-evento-precio" data-id="${e.id}" /></div>
         <div class="field"><label>Fecha ini</label><input value="${escapeHtml(e.fechaIni||'')}" data-action="edit-evento-fechaini" data-id="${e.id}" /></div>
         <div class="field"><label>Fecha fin</label><input value="${escapeHtml(e.fechaFin||'')}" data-action="edit-evento-fechafin" data-id="${e.id}" /></div>
+        <div class="field"><label>Descripción</label><input value="${escapeHtml(e.descripcion||'')}" data-action="edit-evento-descripcion" data-id="${e.id}" /></div>
         <div class="field"><label>Situación</label><select data-action="edit-evento-situacion" data-id="${e.id}">${EVENT_SITUATIONS.map(v => `<option value="${v}" ${v===e.situacion?'selected':''}>${v}</option>`).join('')}</select></div>
         <button type="button" class="modify small" data-action="save-evento" data-id="${e.id}">Modificar</button>
         <button type="button" class="danger small" data-action="delete-evento" data-id="${e.id}">Eliminar</button>
@@ -847,7 +894,7 @@ function renderTiendas(){
   wrap.innerHTML = '';
   list.forEach(t => {
     const row = document.createElement('div');
-    row.className = 'itemcard';
+    row.className = 'itemcard maint-soft';
     row.innerHTML = `
       <div class="rowline tienda">
         <div class="field"><label>Nombre</label><input value="${escapeHtml(t.nombre)}" data-action="edit-tienda-nombre" data-id="${t.id}" /></div>
@@ -934,12 +981,15 @@ function addEvento(){
     precio:Number(document.getElementById('newEventoPrecio').value || 0),
     fechaIni:document.getElementById('newEventoFechaIni').value.trim(),
     fechaFin:document.getElementById('newEventoFechaFin').value.trim(),
-    situacion:document.getElementById('newEventoSituacion').value || 'En curso'
+    situacion:document.getElementById('newEventoSituacion').value,
+    descripcion:document.getElementById('newEventoDescripcion').value.trim()
   });
+  if(!state.selectedEventId) state.selectedEventId = state.eventos[state.eventos.length-1].id;
   document.getElementById('newEventoTitulo').value = '';
   document.getElementById('newEventoPrecio').value = '0.00';
   document.getElementById('newEventoFechaIni').value = '';
   document.getElementById('newEventoFechaFin').value = '';
+  document.getElementById('newEventoDescripcion').value = '';
   render();
 }
 
@@ -1054,6 +1104,10 @@ function handleClick(e){
       selectedEvent().situacion = isLocked() ? 'En curso' : 'Finalizado';
       render();
       break;
+    case 'toggleEventDesc':
+      showEventDesc = !showEventDesc;
+      renderHeader();
+      break;
     case 'toggleIngresosSummary':
       document.getElementById('ingresosSummaryBody').classList.toggle('hidden');
       break;
@@ -1084,6 +1138,7 @@ function handleClick(e){
         ev.precio = Number(currentValuesByAction('edit-evento-precio', id) || 0);
         ev.fechaIni = currentValuesByAction('edit-evento-fechaini', id).trim();
         ev.fechaFin = currentValuesByAction('edit-evento-fechafin', id).trim();
+        ev.descripcion = currentValuesByAction('edit-evento-descripcion', id).trim();
         ev.situacion = currentValuesByAction('edit-evento-situacion', id);
         render();
       }
@@ -1191,7 +1246,7 @@ function exportExcel(){
 
   function cellText(v, cls=''){ return `<td${cls ? ` class="${cls}"` : ''}>${escapeHtml(String(v))}</td>`; }
   function cellNum(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'0,00';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
-  function cellMoney(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
+  function cellMoney(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}€</td>`; }
 
   const html = `
   <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -1212,6 +1267,7 @@ function exportExcel(){
       <tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>
       <tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
       <tr><td>Fechas</td><td>(del ${escapeHtml(ev.fechaIni || '')} al ${escapeHtml(ev.fechaFin || '')})</td></tr>
+      <tr><td>Descripción</td><td>${escapeHtml(ev.descripcion || '')}</td></tr>
       <tr><td>Situación</td><td class="${ev.situacion === 'Finalizado' ? 'bad' : 'ok'}">${escapeHtml(ev.situacion)}</td></tr>
       <tr><td>Precio evento</td>${cellMoney(ev.precio)}</tr>
       <tr><td>Total comprometido</td>${cellMoney(budget.socios.saldo)}</tr>
@@ -1225,14 +1281,14 @@ function exportExcel(){
     <br>
     <table>
       <tr><th class="title" colspan="6">INGRESOS DE SOCIOS Y DONANTES</th></tr>
-      <tr><th>Colaborador/a</th><th>Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario (€)</th><th>Total compromiso</th></tr>
+      <tr><th>Colaborador/a</th><th>Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
       ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero)}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
     </table>
     <br>
     <table>
-      <tr><th class="title" colspan="9">COMPRAS Y DONACIONES DEL EVENTO</th></tr>
-      <tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th></tr>
-      ${compras.map(r => `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pdte.Compra')}${cellText(r.responsable?.nombre || '')}</tr>`).join('')}
+      <tr><th class="title" colspan="10">COMPRAS Y DONACIONES DE PRODUCTO</th></tr>
+      <tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th><th>Foto ticket</th></tr>
+      ${compras.map(r => { const tkey = `${r.tienda?.nombre || 'Sin tienda'} | ${String(r.ticketDonacion || '').trim() || 'Pdte.Compra'}`; const img = state.ticketImages?.[ticketImageStateKey(tkey)] || ''; return `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pdte.Compra')}${cellText(r.responsable?.nombre || '')}<td>${img ? `<img src="${img}" style="max-width:120px;max-height:80px;object-fit:contain;" />` : ''}</td></tr>`; }).join('')}
     </table>
     <br>
     <table>
@@ -1248,9 +1304,9 @@ function exportExcel(){
     </table>
     <br>
     <table>
-      <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
-      <tr><th>Tienda y ticket/donado</th><th>Importe</th></tr>
-      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}</tr>`).join('')}
+      <tr><th class="title" colspan="3">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
+      <tr><th>Tienda y ticket/donado</th><th>Importe</th><th>Ticket</th></tr>
+      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}<td>${r.image ? `<img src="${r.image}" style="max-width:120px;max-height:80px;object-fit:contain;" />` : ''}</td></tr>`).join('')}
     </table>
   </body>
   </html>`;
