@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.4.2</title>
+  <title>ControlEvent v6.5</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -27,7 +27,7 @@
     .powerbtn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px;font-size:22px;line-height:1;cursor:pointer}
     .powerbtn.on{color:var(--ok)}
     .powerbtn.off{color:var(--bad)}
-    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{display:grid;gap:12px}.budget-main{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.budget-side{display:flex;align-items:stretch}.budget-layout{display:grid;gap:12px}.budget-panel{border:1px solid var(--border);border-radius:22px;background:#fff;padding:16px;box-shadow:var(--shadow)}.budget-panel h3{margin:0 0 12px 0;font-size:16px;letter-spacing:.02em}.budget-rows{display:grid;gap:10px}.budget-row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:14px;background:#f8fafc;border:1px solid rgba(17,24,39,.05)}.budget-row strong{font-size:13px}.budget-row span{font-weight:900;font-size:18px}.budget-panel.socios{background:linear-gradient(180deg,#eef6ff 0%,#f8fbff 100%)}.budget-panel.donantes{background:linear-gradient(180deg,#fff7e8 0%,#fffdf7 100%)}.budget-panel.operativo{background:linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)}.money-input{font-variant-numeric:tabular-nums}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
+    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{overflow-x:auto}.budget-layout{display:grid;grid-template-columns:repeat(3,minmax(235px,1fr));gap:10px;min-width:780px}.budget-panel{border:1px solid var(--border);border-radius:22px;background:#fff;padding:14px;box-shadow:var(--shadow)}.budget-panel h3{margin:0 0 10px 0;font-size:16px;letter-spacing:.02em}.budget-rows{display:grid;gap:8px}.budget-row{display:flex;justify-content:space-between;gap:6px;padding:8px 10px;border-radius:14px;background:#f8fafc;border:1px solid rgba(17,24,39,.05)}.budget-row strong{font-size:12px}.budget-row span{font-weight:900;font-size:16px;white-space:nowrap}.budget-panel.socios{background:linear-gradient(180deg,#eef6ff 0%,#f8fbff 100%)}.budget-panel.donantes{background:linear-gradient(180deg,#fff7e8 0%,#fffdf7 100%)}.budget-panel.operativo{background:linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)}.money-input{font-variant-numeric:tabular-nums}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
     .main{padding:14px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
     .section-title{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
@@ -60,7 +60,7 @@
     .separator{height:1px;background:var(--border);margin:16px 0}
     .hint{font-size:12px;color:var(--muted)}
     .itemcard{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff;margin-top:10px}
-    .rowline{display:grid;gap:10px}
+    .rowline{display:grid;gap:10px}.rowline.collab{grid-template-columns:1.25fr .52fr .85fr .95fr .78fr auto auto;align-items:end}.money-text{font-variant-numeric:tabular-nums}
     .subgrid-3{display:grid;gap:10px}
     .summary-card{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}
     .summary-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:#f8fafc;margin-top:3px;font-size:14px}
@@ -86,8 +86,8 @@
       .rowline.persona{grid-template-columns:1.5fr 1fr auto auto;align-items:end}
       .rowline.evento{grid-template-columns:1.2fr .8fr .9fr .9fr 1.6fr 1fr auto auto;align-items:end}
       .rowline.tienda{grid-template-columns:1fr auto auto;align-items:end}
-      .rowline.producto{grid-template-columns:1.3fr 1fr 1fr .8fr 1fr auto auto;align-items:end}
-      .rowline.collab{grid-template-columns:1.3fr .6fr .9fr 1fr 1fr auto;align-items:end}
+      .rowline.producto{grid-template-columns:1.3fr 1fr 1fr .9fr 1fr auto auto;align-items:end}
+      .rowline.collab{grid-template-columns:1.25fr .5fr .82fr .95fr .78fr auto auto;align-items:end}
       .rowline.compra{grid-template-columns:1.2fr .55fr .8fr .9fr 1fr 1fr 1.1fr auto;align-items:end}
     }
   </style>
@@ -109,7 +109,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.4.2</span>
+          <span>ControlEvent v6.5</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -168,7 +168,7 @@
             </div>
             <div class="field">
               <label>Importe voluntario</label>
-              <input id="collabImporte" class="money-input" type="number" min="0" step="0.01" value="0.00" />
+              <input id="collabImporte" class="money-text" type="text" value="0,00 €" />
             </div>
             <div class="field">
               <label>&nbsp;</label>
@@ -321,7 +321,7 @@
             <div class="field"><label>Nombre</label><input id="newProductoNombre" /></div>
             <div class="field"><label>Segmento</label><select id="newProductoSegmento"></select></div>
             <div class="field"><label>Destino</label><select id="newProductoDestino"></select></div>
-            <div class="field"><label>Precio</label><input id="newProductoPrecio" type="number" min="0" step="0.01" value="0.00" /></div>
+            <div class="field"><label>Precio</label><input id="newProductoPrecio" class="money-text" type="text" value="0,00 €" /></div>
             <div class="field"><label>Tienda</label><select id="newProductoTienda"></select></div>
             <button type="button" id="btnAddProducto">Añadir</button>
             <div></div>
@@ -363,6 +363,12 @@ if(!state.comprasSort) state.comprasSort = 'tienda';
 function uid(){ return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
 function money(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(n||0)); }
 function numberEs(n){ return new Intl.NumberFormat('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}).format(Number(n||0)); }
+function euroInputValue(n){ return numberEs(Number(n||0)) + ' €'; }
+function parseEuroInput(v){
+  const s = String(v||'').replace(/€/g,'').replace(/\./g,'').replace(',', '.').trim();
+  const n = Number(s);
+  return Number.isFinite(n) ? n : 0;
+}
 function escapeHtml(s){ return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
 
 function loadState(){
@@ -531,7 +537,7 @@ function summaryBySegmento(){
     const pdte = compras.filter(c => (c.producto?.segmento || '') === seg && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
     return [
       {k: `${seg} Comprado o donado`, v: comprado, pending:false, donated:false},
-      {k: `${seg} Pdte.Compra o donación`, v: pdte, pending:true, donated:false},
+      {k: `${seg} Pte.compra o donación o donación`, v: pdte, pending:true, donated:false},
     ];
   });
 }
@@ -543,7 +549,7 @@ function summaryByDestino(){
     const pdte = compras.filter(c => (c.producto?.destino || '') === dest && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
     return [
       {k: `${dest} Comprado o donado`, v: comprado, pending:false, donated:false},
-      {k: `${dest} Pdte.Compra o donación`, v: pdte, pending:true, donated:false},
+      {k: `${dest} Pte.compra o donación o donación`, v: pdte, pending:true, donated:false},
     ];
   });
 }
@@ -554,8 +560,11 @@ function summaryByTiendaTicket(){
   const filled = {};
   const pending = {};
   comprasForEvent().forEach(c => {
-    const key = `${c.tienda?.nombre || 'Sin tienda'} | ${String(c.ticketDonacion || '').trim() || 'Pdte.Compra'}`;
-    if(String(c.ticketDonacion || '').trim() === ''){
+    const tienda = c.tienda?.nombre || 'Sin tienda';
+    const rawTicket = String(c.ticketDonacion || '').trim();
+    const displayTicket = rawTicket || 'Pte.compra o donación';
+    const key = `${tienda} | ${displayTicket}`;
+    if(rawTicket === ''){
       pending[key] = (pending[key] || 0) + c.valor;
     } else {
       const donated = isDonationTicket(c.ticketDonacion);
@@ -564,7 +573,7 @@ function summaryByTiendaTicket(){
       filled[key].donated = filled[key].donated || donated;
     }
   });
-  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,obj])=>({k,v:obj.v,pending:false,donated:obj.donated,image:state.ticketImages?.[ticketImageStateKey(k)] || ''}));
+  const a = Object.entries(filled).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,obj])=>({k,v:obj.v,pending:false,donated:obj.donated,image:(!obj.donated && state.ticketImages?.[ticketImageStateKey(k)]) ? state.ticketImages[ticketImageStateKey(k)] : ''}));
   const b = Object.entries(pending).sort((x,y)=>x[0].localeCompare(y[0],'es')).map(([k,v])=>({k,v,pending:true,donated:false,image:''}));
   return a.concat(b);
 }
@@ -581,7 +590,7 @@ function renderSummaryList(targetId, rows){
     div.className = 'summary-item';
     if(r.pending) div.classList.add('red-row');
     const amountHtml = `<span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : (r.donated ? ' style="text-decoration:line-through"' : '')}>${money(r.v)}</span>`;
-    if(targetId === 'summaryTiendaTicket' && !r.pending){
+    if(targetId === 'summaryTiendaTicket' && !r.pending && !r.donated){
       const inputId = `ticketUpload_${idx}`;
       const encodedKey = encodeURIComponent(r.k);
       const preview = r.image ? `<img class="ticket-thumb" src="${r.image}" alt="ticket" />` : '';
@@ -679,7 +688,7 @@ function renderMainSelectors(){
   document.getElementById('collabPersona').innerHTML = state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)} (${escapeHtml(p.rango)})</option>`).join('');
   document.getElementById('collabSituacion').innerHTML = PAYMENT_OPTIONS.map(v => `<option value="${v}">${v}</option>`).join('');
   document.getElementById('buyProducto').innerHTML = state.productos.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
-  document.getElementById('buyTicket').innerHTML = TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pdte.Compra --' : escapeHtml(v)}</option>`).join('');
+  document.getElementById('buyTicket').innerHTML = TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pte.compra o donación --' : escapeHtml(v)}</option>`).join('');
   document.getElementById('buyResponsable').innerHTML = '<option value="">-- sin responsable --</option>' + state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
   updateBuyPreview();
 }
@@ -731,10 +740,7 @@ function renderColabs(){
           <input class="soft-readonly" readonly value="${money(r.base)}" />
         </div>
         <div class="field">
-          <label>Importe voluntario</label>
-          <input class="money-input" type="number" min="0" step="0.01" value="${Number(r.importe||0).toFixed(2)}" data-action="edit-collab-importe" data-id="${r.id}" />
-        </div>
-        <button type="button" class="modify small" data-action="save-collab" data-id="${r.id}">Modificar</button><button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button>
+          <label>Importe voluntario</label><input class="money-text" type="text" value="${euroInputValue(r.importe||0)}" data-action="edit-collab-importe" data-id="${r.id}" /></div><div style="display:flex;gap:8px;align-items:end"><button type="button" class="modify small" data-action="save-collab" data-id="${r.id}">Modificar</button><button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button></div>
       </div>
     `;
     wrap.appendChild(row);
@@ -769,7 +775,7 @@ function renderBudget(){
         <div class="budget-rows">
           <div class="budget-row"><strong>SALDO GLOBAL</strong><span style="color:${b.socios.saldo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.socios.saldo))}</span></div>
           <div class="budget-row"><strong>COMPRADO</strong><span>${escapeHtml(money(b.compras.resueltas))}</span></div>
-          <div class="budget-row"><strong>PDTE. COMPRA</strong><span style="color:#c2410c">${escapeHtml(money(b.compras.pendientes))}</span></div>
+          <div class="budget-row"><strong>PTE. COMPRA O DONACIÓN</strong><span style="color:#c2410c">${escapeHtml(money(b.compras.pendientes))}</span></div>
           <div class="budget-row"><strong>SALDO OPERATIVO</strong><span style="color:${b.compras.saldoOperativo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.compras.saldoOperativo))}</span></div>
         </div>
       </div>`;
@@ -827,7 +833,7 @@ function renderCompras(){
         <div class="field">
           <label>Ticket/Donación</label>
           <select data-action="edit-compra-ticket" data-id="${r.id}">
-            ${TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pdte.Compra --' : escapeHtml(v)}</option>`).join('')}
+            ${TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pte.compra o donación --' : escapeHtml(v)}</option>`).join('')}
           </select>
         </div>
         <div class="field">
@@ -976,7 +982,7 @@ function renderProductos(){
         <div class="field"><label>Nombre</label><input value="${escapeHtml(p.nombre)}" data-action="edit-producto-nombre" data-id="${p.id}" /></div>
         <div class="field"><label>Segmento</label><select data-action="edit-producto-segmento" data-id="${p.id}">${SEGMENT_OPTIONS.map(v => `<option value="${v}" ${v===p.segmento?'selected':''}>${v}</option>`).join('')}</select></div>
         <div class="field"><label>Destino</label><select data-action="edit-producto-destino" data-id="${p.id}">${DESTINO_OPTIONS.map(v => `<option value="${v}" ${v===p.destino?'selected':''}>${v}</option>`).join('')}</select></div>
-        <div class="field"><label>Precio</label><input type="number" min="0" step="0.01" value="${Number(p.precio||0)}" data-action="edit-producto-precio" data-id="${p.id}" /></div>
+        <div class="field"><label>Precio</label><input class="money-text" type="text" value="${euroInputValue(p.precio||0)}" data-action="edit-producto-precio" data-id="${p.id}" /></div>
         <div class="field"><label>Tienda</label><select data-action="edit-producto-tienda" data-id="${p.id}"><option value="" ${!p.tiendaId?'selected':''}>-- sin decidir --</option>${state.tiendas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(t => `<option value="${t.id}" ${t.id===p.tiendaId?'selected':''}>${escapeHtml(t.nombre)}</option>`).join('')}</select></div>
         <button type="button" class="modify small" data-action="save-producto" data-id="${p.id}">Modificar</button>
         <button type="button" class="danger small" data-action="delete-producto" data-id="${p.id}">Eliminar</button>
@@ -1050,11 +1056,11 @@ function addProducto(){
     nombre,
     segmento:document.getElementById('newProductoSegmento').value,
     destino:document.getElementById('newProductoDestino').value,
-    precio:Number(document.getElementById('newProductoPrecio').value || 0),
+    precio:parseEuroInput(document.getElementById('newProductoPrecio').value || 0),
     tiendaId:document.getElementById('newProductoTienda').value || ''
   });
   document.getElementById('newProductoNombre').value = '';
-  document.getElementById('newProductoPrecio').value = '0.00';
+  document.getElementById('newProductoPrecio').value = '0,00 €';
   render();
 }
 
@@ -1068,11 +1074,11 @@ function addColab(){
     personaId,
     numero:Number(document.getElementById('collabNumero').value || 0),
     situacion:document.getElementById('collabSituacion').value,
-    importe:Number(document.getElementById('collabImporte').value || 0)
+    importe:parseEuroInput(document.getElementById('collabImporte').value || 0)
   });
   document.getElementById('collabNumero').value = '1';
   document.getElementById('collabSituacion').value = 'Pendiente';
-  document.getElementById('collabImporte').value = '0.00';
+  document.getElementById('collabImporte').value = '0,00 €';
   render();
 }
 
@@ -1213,7 +1219,7 @@ function handleClick(e){
         p.nombre = currentValuesByAction('edit-producto-nombre', id).trim();
         p.segmento = currentValuesByAction('edit-producto-segmento', id);
         p.destino = currentValuesByAction('edit-producto-destino', id);
-        p.precio = Number(currentValuesByAction('edit-producto-precio', id) || 0);
+        p.precio = parseEuroInput(currentValuesByAction('edit-producto-precio', id) || 0);
         p.tiendaId = currentValuesByAction('edit-producto-tienda', id);
         render();
       }
@@ -1231,7 +1237,7 @@ function handleClick(e){
         c.personaId = currentValuesByAction('edit-collab-persona', id);
         c.numero = Number(currentValuesByAction('edit-collab-numero', id) || 0);
         c.situacion = currentValuesByAction('edit-collab-situacion', id);
-        c.importe = Number(currentValuesByAction('edit-collab-importe', id) || 0);
+        c.importe = parseEuroInput(currentValuesByAction('edit-collab-importe', id) || 0);
         render();
       }
       break;
@@ -1287,7 +1293,7 @@ function exportExcel(){
 
   function cellText(v, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''}${extra ? ` style="${extra}"` : ''}>${escapeHtml(String(v))}</td>`; }
   function cellNum(n, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''} style="${extra || ''}mso-number-format:'0,00';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
-  function cellMoney(n, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''} style="${extra || ''}mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}€</td>`; }
+  function cellMoney(n, cls='', extra=''){ const val=Number(n||0).toFixed(2); return `<td${cls ? ` class="${cls}"` : ''} style="${extra || ''}mso-number-format:'\\#\\.\\#\\#0,00\\ [$€-C0A]';" x:num="${val}">${numberEs(val)}€</td>`; }
 
   const html = `
   <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -1306,7 +1312,7 @@ function exportExcel(){
   <body>
     <table>
       <tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>
-      <tr><td>Generado por</td><td>ControlEvent v6.4.2 - ©oltyLAB ’26</td></tr><tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
+      <tr><td>Generado por</td><td>ControlEvent v6.5 - ©oltyLAB ’26</td></tr><tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
       <tr><td>Fechas</td><td>(del ${escapeHtml(ev.fechaIni || '')} al ${escapeHtml(ev.fechaFin || '')})</td></tr>
       <tr><td>Descripción</td><td>${escapeHtml(ev.descripcion || '')}</td></tr>
       <tr><td>Situación</td><td class="${ev.situacion === 'Finalizado' ? 'bad' : 'ok'}">${escapeHtml(ev.situacion)}</td></tr>
@@ -1329,7 +1335,7 @@ function exportExcel(){
     <table>
       <tr><th class="title" colspan="9">COMPRAS Y DONACIONES DE PRODUCTO</th></tr>
       <tr><th>Producto</th><th style="width:140px">Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th></tr>
-      ${compras.map(r => `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '', '', 'width:140px;')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pdte.Compra')}${cellText(r.responsable?.nombre || '')}</tr>`).join('')}
+      ${compras.map(r => `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '', '', 'width:140px;')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pte.compra o donación')}${cellText(r.responsable?.nombre || '')}</tr>`).join('')}
     </table>
     <br>
     <table>
@@ -1347,7 +1353,7 @@ function exportExcel(){
     <table>
       <tr><th class="title" colspan="3">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
       <tr><th>Tienda y ticket/donado</th><th>Importe</th><th>Ticket</th></tr>
-      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}<td>${r.image ? `<img src="${r.image}" style="max-width:120px;max-height:80px;object-fit:contain;" />` : ''}</td></tr>`).join('')}
+      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}<td>${(!r.pending && !r.donated && r.image) ? `<img src="${r.image}" style="max-width:120px;max-height:80px;object-fit:contain;" />` : ''}</td></tr>`).join('')}
     </table>
   </body>
   </html>`;
@@ -1355,7 +1361,7 @@ function exportExcel(){
   const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (ev.titulo || 'evento').replace(/\s+/g,'_') + '_ControlEvent_v6.xls';
+  a.download = (ev.titulo || 'evento').replace(/\s+/g,'_') + '_ControlEvent_v6_5.xls';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
