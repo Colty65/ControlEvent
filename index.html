@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.6</title>
+  <title>ControlEvent v6.6.1</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -109,7 +109,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.6</span>
+          <span>ControlEvent v6.6.1</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -1291,38 +1291,31 @@ function exportExcel(){
   const destRows = summaryByDestino();
   const tiendaRows = summaryByTiendaTicket();
 
-  function moneyDisplay(n){ return `${numberEs(Number(n || 0))}€`; }
-  function cellText(v, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''}${extra ? ` style="${extra}"` : ''}>${escapeHtml(String(v ?? ''))}</td>`; }
+  function fixed2(n){
+    return Number(n || 0).toFixed(2);
+  }
+  function cellText(v, cls='', extra=''){
+    return `<td${cls ? ` class="${cls}"` : ''}${extra ? ` style="${extra}"` : ''}>${escapeHtml(String(v ?? ''))}</td>`;
+  }
   function cellNum(n, cls='', extra=''){
-    const val = Number(n || 0).toFixed(2);
-    const style = `${extra || ''}mso-displayed-decimal-separator:",";mso-displayed-thousand-separator:".";mso-number-format:"0,00";`;
-    return `<td${cls ? ` class="${cls}"` : ''} style="${style}" x:num="${val}">${numberEs(val)}</td>`;
+    const val = fixed2(n);
+    const style = `${extra || ''}mso-displayed-decimal-separator:",";mso-displayed-thousand-separator:".";mso-number-format:"0.00";`;
+    return `<td${cls ? ` class="${cls}"` : ''} style="${style}" x:num="${val}">${val}</td>`;
   }
   function cellMoney(n, cls='', extra=''){
-    const val = Number(n || 0).toFixed(2);
-    const style = `${extra || ''}mso-displayed-decimal-separator:",";mso-displayed-thousand-separator:".";mso-number-format:"#.##0,00 [$€-C0A]";`;
-    return `<td${cls ? ` class="${cls}"` : ''} style="${style}" x:num="${val}">${moneyDisplay(val)}</td>`;
+    const val = fixed2(n);
+    const style = `${extra || ''}mso-displayed-decimal-separator:",";mso-displayed-thousand-separator:".";mso-number-format:"\\0022€\\0022\ #,##0.00";`;
+    return `<td${cls ? ` class="${cls}"` : ''} style="${style}" x:num="${val}">${val}</td>`;
+  }
+  function cellTicketImage(dataUrl){
+    if(!dataUrl) return '<td></td>';
+    return `<td><img src="${dataUrl}" style="max-width:120px;max-height:80px;object-fit:contain;" /></td>`;
   }
 
-  const imageRefs = {};
-  const imageParts = [];
-  let imageCount = 1;
-
-  tiendaRows.forEach(r => {
-    if(r.pending || r.donated || !r.image) return;
-    const m = String(r.image).match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-    if(!m) return;
-    const mime = m[1];
-    const data = m[2];
-    const ext = mime.includes('png') ? 'png' : (mime.includes('webp') ? 'webp' : 'jpg');
-    const location = `ticket_${imageCount}.${ext}`;
-    imageRefs[r.k] = location;
-    imageParts.push({mime, data, location});
-    imageCount += 1;
-  });
-
-  const htmlBody = `
-  <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+  const html = `
+  <html xmlns:o="urn:schemas-microsoft-com:office:office"
+        xmlns:x="urn:schemas-microsoft-com:office:excel"
+        xmlns="http://www.w3.org/TR/REC-html40">
   <head>
     <meta charset="UTF-8">
     <style>
@@ -1339,7 +1332,7 @@ function exportExcel(){
   <body>
     <table>
       <tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>
-      <tr><td>Generado por</td><td>ControlEvent v6.6 - ©oltyLAB ’26</td></tr>
+      <tr><td>Generado por</td><td>ControlEvent v6.6.1 - ©oltyLAB ’26</td></tr>
       <tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
       <tr><td>Fechas</td><td>(del ${escapeHtml(ev.fechaIni || '')} al ${escapeHtml(ev.fechaFin || '')})</td></tr>
       <tr><td>Descripción</td><td>${escapeHtml(ev.descripcion || '')}</td></tr>
@@ -1380,47 +1373,15 @@ function exportExcel(){
     <table>
       <tr><th class="title" colspan="3">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
       <tr><th>Tienda y ticket/donado</th><th>Importe</th><th>Ticket</th></tr>
-      ${tiendaRows.map(r => {
-        const imgLoc = imageRefs[r.k] || '';
-        const imgHtml = (!r.pending && !r.donated && imgLoc) ? `<img src="${imgLoc}" style="max-width:120px;max-height:80px;object-fit:contain;" />` : '';
-        return `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}<td>${imgHtml}</td></tr>`;
-      }).join('')}
+      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}${(!r.pending && !r.donated) ? cellTicketImage(r.image || '') : '<td></td>'}</tr>`).join('')}
     </table>
   </body>
   </html>`;
 
-  let blob;
-  if(imageParts.length){
-    const boundary = '----=_ControlEvent_' + Math.random().toString(36).slice(2);
-    const mht = [
-      'MIME-Version: 1.0',
-      `Content-Type: multipart/related; boundary="${boundary}"; type="text/html"`,
-      '',
-      `--${boundary}`,
-      'Content-Type: text/html; charset="utf-8"',
-      'Content-Location: file:///C:/ControlEvent.xls',
-      '',
-      htmlBody,
-      '',
-      ...imageParts.flatMap(part => [
-        `--${boundary}`,
-        `Content-Location: ${part.location}`,
-        `Content-Type: ${part.mime}`,
-        'Content-Transfer-Encoding: base64',
-        '',
-        part.data,
-        ''
-      ]),
-      `--${boundary}--`
-    ].join('\r\n');
-    blob = new Blob([mht], {type:'application/vnd.ms-excel'});
-  } else {
-    blob = new Blob([htmlBody], {type:'application/vnd.ms-excel;charset=utf-8;'});
-  }
-
+  const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v6_6.xls`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v6_6_1.xls`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
