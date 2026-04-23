@@ -1313,7 +1313,7 @@ async function exportExcel(){
   const ws = wb.addWorksheet('Evento');
   ws.properties.defaultRowHeight = 20;
   ws.columns = [
-    {width: 34}, {width: 18}, {width: 18}, {width: 12}, {width: 16},
+    {width: 24}, {width: 44}, {width: 18}, {width: 12}, {width: 16},
     {width: 16}, {width: 18}, {width: 20}, {width: 22}
   ];
 
@@ -1382,6 +1382,15 @@ async function exportExcel(){
     setText(row,1,text,'title');
     applyTitle(ws.getRow(row));
   }
+  function summaryLabelValue(row, label, kind, value, fill='white'){
+    ws.mergeCells(row,2,row,9);
+    setText(row,1,label);
+    if(kind === 'money') setMoney(row,2,value,fill);
+    else setText(row,2,value,fill);
+    ws.getRow(row).height = 18;
+    ws.getCell(row,1).alignment = {vertical:'middle', horizontal:'left', wrapText:false};
+    ws.getCell(row,2).alignment = {vertical:'middle', horizontal:'left', wrapText:false};
+  }
   function addImageToCell(dataUrl, row, col){
     if(!dataUrl) return;
     const m = String(dataUrl).match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,/);
@@ -1399,19 +1408,21 @@ async function exportExcel(){
 
   let r = 1;
 
-  mergeTitle(r, 'RESUMEN DEL EVENTO', 2); r++;
-  setText(r,1,'Generado por'); setText(r,2,'ControlEvent v6.6.2 - ©oltyLAB ’26'); r++;
-  setText(r,1,'Evento'); setText(r,2,ev.titulo); r++;
-  setText(r,1,'Fechas'); setText(r,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`); r++;
-  setText(r,1,'Descripción'); setText(r,2,ev.descripcion || ''); r++;
-  setText(r,1,'Situación'); setText(r,2,ev.situacion || 'En curso', (ev.situacion === 'Finalizado' ? 'bad' : 'ok')); r++;
-  setText(r,1,'Precio evento'); setMoney(r,2,ev.precio); r++;
-  setText(r,1,'Total comprometido'); setMoney(r,2,budget.socios.saldo); r++;
-  setText(r,1,'Ingresado total'); setMoney(r,2,budget.socios.ingresado + budget.donantes.ingresado); r++;
-  setText(r,1,'Pendiente total'); setMoney(r,2,budget.socios.pendiente + budget.donantes.pendiente,'warn'); r++;
-  setText(r,1,'Valor estimado producto donado'); setMoney(r,2,budget.compras.valorDonado); r++;
-  setText(r,1,'Saldo operativo'); setMoney(r,2,budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad'); r++;
-  setText(r,1,'Fecha y hora emisión'); setText(r,2,new Date().toLocaleString('es-ES')); r += 2;
+  mergeTitle(r, 'RESUMEN DEL EVENTO', 9);
+  ws.getRow(r).height = 20;
+  r++;
+  summaryLabelValue(r, 'Generado por', 'text', 'ControlEvent v6.6.2 - ©oltyLAB ’26'); r++;
+  summaryLabelValue(r, 'Evento', 'text', ev.titulo); r++;
+  summaryLabelValue(r, 'Fechas', 'text', `(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`); r++;
+  summaryLabelValue(r, 'Descripción', 'text', ev.descripcion || ''); r++;
+  summaryLabelValue(r, 'Situación', 'text', ev.situacion || 'En curso', (ev.situacion === 'Finalizado' ? 'bad' : 'ok')); r++;
+  summaryLabelValue(r, 'Precio evento', 'money', ev.precio); r++;
+  summaryLabelValue(r, 'Total comprometido', 'money', budget.socios.saldo); r++;
+  summaryLabelValue(r, 'Ingresado total', 'money', budget.socios.ingresado + budget.donantes.ingresado); r++;
+  summaryLabelValue(r, 'Pendiente total', 'money', budget.socios.pendiente + budget.donantes.pendiente, 'warn'); r++;
+  summaryLabelValue(r, 'Valor estimado producto donado', 'money', budget.compras.valorDonado); r++;
+  summaryLabelValue(r, 'Saldo operativo', 'money', budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad'); r++;
+  summaryLabelValue(r, 'Fecha y hora emisión', 'text', new Date().toLocaleString('es-ES')); r += 2;
 
   mergeTitle(r, 'INGRESOS DE SOCIOS Y DONANTES', 6); r++;
   ['Colaborador/a','Número','Situación','Importe obligatorio','Importe voluntario','Total compromiso'].forEach((h,i)=>setText(r, i+1, h, 'title'));
