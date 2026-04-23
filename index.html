@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.4</title>
+  <title>ControlEvent v6.4.1</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -109,7 +109,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.4</span>
+          <span>ControlEvent v6.4.1</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -354,11 +354,11 @@ const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS', ...Arr
 let currentMainTab = 'ingresos';
 let currentMaintTab = 'personas';
 let currentProductSort = 'nombre';
-if(!state.comprasSort) state.comprasSort = 'tienda';
 let showEventDesc = false;
 function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'].includes(String(v||'')); }
 
 const state = loadState();
+if(!state.comprasSort) state.comprasSort = 'tienda';
 
 function uid(){ return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
 function money(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(n||0)); }
