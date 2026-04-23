@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.4.1</title>
+  <title>ControlEvent v6.4.2</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -27,7 +27,7 @@
     .powerbtn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px;font-size:22px;line-height:1;cursor:pointer}
     .powerbtn.on{color:var(--ok)}
     .powerbtn.off{color:var(--bad)}
-    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{display:grid;gap:12px}.budget-main{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.budget-side{display:flex;align-items:stretch}.budget-layout{display:grid;gap:12px}.budget-panel{border:1px solid var(--border);border-radius:18px;background:#fff;padding:14px}.budget-panel h3{margin:0 0 10px 0;font-size:15px}.budget-rows{display:grid;gap:8px}.budget-row{display:flex;justify-content:space-between;gap:12px;padding:8px 10px;border-radius:12px;background:#f8fafc}.budget-row strong{font-size:13px}.budget-row span{font-weight:800}.budget-panel.socios{background:#f8fbff}.budget-panel.donantes{background:#fffdf7}.budget-panel.operativo{background:#ffffff}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
+    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{display:grid;gap:12px}.budget-main{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.budget-side{display:flex;align-items:stretch}.budget-layout{display:grid;gap:12px}.budget-panel{border:1px solid var(--border);border-radius:22px;background:#fff;padding:16px;box-shadow:var(--shadow)}.budget-panel h3{margin:0 0 12px 0;font-size:16px;letter-spacing:.02em}.budget-rows{display:grid;gap:10px}.budget-row{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:14px;background:#f8fafc;border:1px solid rgba(17,24,39,.05)}.budget-row strong{font-size:13px}.budget-row span{font-weight:900;font-size:18px}.budget-panel.socios{background:linear-gradient(180deg,#eef6ff 0%,#f8fbff 100%)}.budget-panel.donantes{background:linear-gradient(180deg,#fff7e8 0%,#fffdf7 100%)}.budget-panel.operativo{background:linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)}.money-input{font-variant-numeric:tabular-nums}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
     .main{padding:14px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
     .section-title{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
@@ -109,7 +109,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.4.1</span>
+          <span>ControlEvent v6.4.2</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -168,7 +168,7 @@
             </div>
             <div class="field">
               <label>Importe voluntario</label>
-              <input id="collabImporte" type="number" min="0" step="0.01" value="0.00" />
+              <input id="collabImporte" class="money-input" type="number" min="0" step="0.01" value="0.00" />
             </div>
             <div class="field">
               <label>&nbsp;</label>
@@ -583,9 +583,9 @@ function renderSummaryList(targetId, rows){
     const amountHtml = `<span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : (r.donated ? ' style="text-decoration:line-through"' : '')}>${money(r.v)}</span>`;
     if(targetId === 'summaryTiendaTicket' && !r.pending){
       const inputId = `ticketUpload_${idx}`;
+      const encodedKey = encodeURIComponent(r.k);
       const preview = r.image ? `<img class="ticket-thumb" src="${r.image}" alt="ticket" />` : '';
-      div.innerHTML = `<span>${escapeHtml(r.k)}</span><span style="display:flex;align-items:center;gap:8px;">${amountHtml}<span class="ticket-actions"><button type="button" class="outline small" onclick="document.getElementById('${inputId}').click()">📎</button><input id="${inputId}" class="ticket-file-input" type="file" accept="image/*" onchange="uploadTicketImage(event, ${JSON.stringify(encodeURIComponent('@@KEY@@'))})">${preview}${r.image ? `<button type="button" class="outline small" onclick="removeTicketImage(${JSON.stringify(encodeURIComponent('@@KEY@@'))})">🗑️</button>` : ''}</span></span>`;
-      div.innerHTML = div.innerHTML.replaceAll(encodeURIComponent('@@KEY@@'), encodeURIComponent(r.k));
+      div.innerHTML = `<span>${escapeHtml(r.k)}</span><span style="display:flex;align-items:center;gap:8px;">${amountHtml}<span class="ticket-actions"><button type="button" class="outline small" onclick="document.getElementById('${inputId}').click()">📎</button><input id="${inputId}" class="ticket-file-input" type="file" accept="image/*" onchange="uploadTicketImage(event, '${encodedKey}')">${preview}${r.image ? `<button type="button" class="outline small" onclick="removeTicketImage('${encodedKey}')">🗑️</button>` : ''}</span></span>`;
     } else {
       div.innerHTML = `<span>${escapeHtml(r.k)}</span>${amountHtml}`;
     }
@@ -603,14 +603,28 @@ function uploadTicketImage(event, encodedKey){
   if(!file) return;
   const key = decodeURIComponent(encodedKey);
   const reader = new FileReader();
-  reader.onload = function(){
-    if(!state.ticketImages) state.ticketImages = {};
-    state.ticketImages[ticketImageStateKey(key)] = reader.result;
-    render();
+  reader.onload = function(loadEvent){
+    const img = new Image();
+    img.onload = function(){
+      const maxW = 700, maxH = 700;
+      let {width, height} = img;
+      const ratio = Math.min(maxW / width, maxH / height, 1);
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      if(!state.ticketImages) state.ticketImages = {};
+      state.ticketImages[ticketImageStateKey(key)] = dataUrl;
+      render();
+    };
+    img.src = loadEvent.target.result;
   };
   reader.readAsDataURL(file);
 }
-
 function removeTicketImage(encodedKey){
   const key = decodeURIComponent(encodedKey);
   if(state.ticketImages) delete state.ticketImages[ticketImageStateKey(key)];
@@ -718,9 +732,9 @@ function renderColabs(){
         </div>
         <div class="field">
           <label>Importe voluntario</label>
-          <input type="number" min="0" step="0.01" value="${Number(r.importe||0).toFixed(2)}" data-action="edit-collab-importe" data-id="${r.id}" />
+          <input class="money-input" type="number" min="0" step="0.01" value="${Number(r.importe||0).toFixed(2)}" data-action="edit-collab-importe" data-id="${r.id}" />
         </div>
-        <button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button>
+        <button type="button" class="modify small" data-action="save-collab" data-id="${r.id}">Modificar</button><button type="button" class="danger small" data-action="delete-collab" data-id="${r.id}">Eliminar</button>
       </div>
     `;
     wrap.appendChild(row);
@@ -735,19 +749,19 @@ function renderBudget(){
       <div class="budget-panel socios">
         <h3>SOCIOS</h3>
         <div class="budget-rows">
-          <div class="budget-row"><strong>SOCIOS</strong><span>${escapeHtml(String(b.socios.count))}</span></div>
-          <div class="budget-row"><strong>IMPORTE SOCIOS</strong><span>${escapeHtml(money(b.socios.importe))}</span></div>
-          <div class="budget-row"><strong>INGRESADO SOCIOS</strong><span>${escapeHtml(money(b.socios.ingresado))}</span></div>
-          <div class="budget-row"><strong>PENDIENTE SOCIOS</strong><span style="color:#c2410c">${escapeHtml(money(b.socios.pendiente))}</span></div>
+          <div class="budget-row"><strong>Personas</strong><span>${escapeHtml(String(b.socios.count))}</span></div>
+          <div class="budget-row"><strong>Importe socios</strong><span>${escapeHtml(money(b.socios.importe))}</span></div>
+          <div class="budget-row"><strong>Ingresado socios</strong><span>${escapeHtml(money(b.socios.ingresado))}</span></div>
+          <div class="budget-row"><strong>Pendiente socios</strong><span style="color:#c2410c">${escapeHtml(money(b.socios.pendiente))}</span></div>
         </div>
       </div>
       <div class="budget-panel donantes">
         <h3>DONANTES</h3>
         <div class="budget-rows">
-          <div class="budget-row"><strong>DONANTES</strong><span>${escapeHtml(String(b.donantes.count))}</span></div>
-          <div class="budget-row"><strong>IMPORTE DONANTES</strong><span>${escapeHtml(money(b.donantes.importe))}</span></div>
-          <div class="budget-row"><strong>INGRESADO DONANTES</strong><span>${escapeHtml(money(b.donantes.ingresado))}</span></div>
-          <div class="budget-row"><strong>VALOR ESTIMADO PRODUCTO DONADO</strong><span>${escapeHtml(money(b.compras.valorDonado))}</span></div>
+          <div class="budget-row"><strong>Personas</strong><span>${escapeHtml(String(b.donantes.count))}</span></div>
+          <div class="budget-row"><strong>Importe donantes</strong><span>${escapeHtml(money(b.donantes.importe))}</span></div>
+          <div class="budget-row"><strong>Ingresado donantes</strong><span>${escapeHtml(money(b.donantes.ingresado))}</span></div>
+          <div class="budget-row"><strong>Valor producto donado</strong><span>${escapeHtml(money(b.compras.valorDonado))}</span></div>
         </div>
       </div>
       <div class="budget-panel operativo">
@@ -1292,7 +1306,7 @@ function exportExcel(){
   <body>
     <table>
       <tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>
-      <tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
+      <tr><td>Generado por</td><td>ControlEvent v6.4.2 - ©oltyLAB ’26</td></tr><tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
       <tr><td>Fechas</td><td>(del ${escapeHtml(ev.fechaIni || '')} al ${escapeHtml(ev.fechaFin || '')})</td></tr>
       <tr><td>Descripción</td><td>${escapeHtml(ev.descripcion || '')}</td></tr>
       <tr><td>Situación</td><td class="${ev.situacion === 'Finalizado' ? 'bad' : 'ok'}">${escapeHtml(ev.situacion)}</td></tr>
@@ -1308,8 +1322,8 @@ function exportExcel(){
     <br>
     <table>
       <tr><th class="title" colspan="6">INGRESOS DE SOCIOS Y DONANTES</th></tr>
-      <tr><th>Colaborador/a</th><th style="width:52px">Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
-      ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero, '', 'width:52px;')}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
+      <tr><th>Colaborador/a</th><th style="width:38px">Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
+      ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero, '', 'width:38px;')}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
     </table>
     <br>
     <table>
