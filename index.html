@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.3</title>
+  <title>ControlEvent v6.4</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -27,7 +27,7 @@
     .powerbtn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px;font-size:22px;line-height:1;cursor:pointer}
     .powerbtn.on{color:var(--ok)}
     .powerbtn.off{color:var(--bad)}
-    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:8px}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{display:grid;gap:12px}.budget-main{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.budget-side{display:flex;align-items:stretch}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
+    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{display:grid;gap:12px}.budget-main{grid-template-columns:repeat(4,minmax(0,1fr)) !important}.budget-side{display:flex;align-items:stretch}.budget-layout{display:grid;gap:12px}.budget-panel{border:1px solid var(--border);border-radius:18px;background:#fff;padding:14px}.budget-panel h3{margin:0 0 10px 0;font-size:15px}.budget-rows{display:grid;gap:8px}.budget-row{display:flex;justify-content:space-between;gap:12px;padding:8px 10px;border-radius:12px;background:#f8fafc}.budget-row strong{font-size:13px}.budget-row span{font-weight:800}.budget-panel.socios{background:#f8fbff}.budget-panel.donantes{background:#fffdf7}.budget-panel.operativo{background:#ffffff}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
     .main{padding:14px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
     .section-title{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
@@ -63,7 +63,7 @@
     .rowline{display:grid;gap:10px}
     .subgrid-3{display:grid;gap:10px}
     .summary-card{border:1px solid var(--border);border-radius:18px;padding:12px;background:#fff}
-    .summary-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:#f8fafc;margin-top:8px;font-size:14px}
+    .summary-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:12px;background:#f8fafc;margin-top:3px;font-size:14px}
     .pill{background:var(--soft);border-radius:999px;padding:4px 8px;font-size:12px;font-weight:700}
     .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .footer{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);border-top:1px solid var(--border);backdrop-filter:blur(8px)}
@@ -109,7 +109,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.3</span>
+          <span>ControlEvent v6.4</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -201,7 +201,7 @@
                   <p>Resumen por socios, donantes y compras del evento.</p>
                 </div>
               </div>
-              <div class="budget-wrap"><div class="metrics budget-main" id="budgetMetricsGrid"></div><div class="budget-side" id="budgetSaldoGlobalBox"></div></div>
+              <div class="budget-wrap"><div id="budgetLayout" class="budget-layout"></div></div>
             </div>
 
             <div class="card" style="box-shadow:none;margin:12px 0 0 0">
@@ -278,7 +278,7 @@
 
         <div id="mtPersonas" class="card">
           <div class="section-title"><div class="icon-badge">👤</div><div><h2>PERSONAS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="rowline persona">
+          <div class="rowline persona entry-zone">
             <div class="field"><label>Nombre</label><input id="newPersonaNombre" /></div>
             <div class="field"><label>Rango</label><select id="newPersonaRango"></select></div>
             <button type="button" id="btnAddPersona">Añadir</button>
@@ -290,7 +290,7 @@
 
         <div id="mtEventos" class="card hidden">
           <div class="section-title"><div class="icon-badge">🎉</div><div><h2>EVENTOS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="rowline evento">
+          <div class="rowline evento entry-zone">
             <div class="field"><label>Título</label><input id="newEventoTitulo" /></div>
             <div class="field"><label>Precio</label><input id="newEventoPrecio" type="number" min="0" step="0.01" value="0.00" /></div>
             <div class="field"><label>Fecha ini</label><input id="newEventoFechaIni" placeholder="DD/MM/AA" /></div>
@@ -306,7 +306,7 @@
 
         <div id="mtTiendas" class="card hidden">
           <div class="section-title"><div class="icon-badge">🏪</div><div><h2>TIENDAS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="rowline tienda">
+          <div class="rowline tienda entry-zone">
             <div class="field"><label>Nombre</label><input id="newTiendaNombre" /></div>
             <button type="button" id="btnAddTienda">Añadir</button>
             <div></div>
@@ -317,7 +317,7 @@
 
         <div id="mtProductos" class="card hidden">
           <div class="section-title"><div class="icon-badge">📦</div><div><h2>PRODUCTOS</h2><p>Alta, modificación y borrado.</p></div></div>
-          <div class="rowline producto">
+          <div class="rowline producto entry-zone">
             <div class="field"><label>Nombre</label><input id="newProductoNombre" /></div>
             <div class="field"><label>Segmento</label><select id="newProductoSegmento"></select></div>
             <div class="field"><label>Destino</label><select id="newProductoDestino"></select></div>
@@ -343,7 +343,7 @@
   </div>
 
 <script>
-const STORAGE_KEY = 'controlevent_v6_2';
+const STORAGE_KEY = 'controlevent_v6_4';
 const PERSONA_RANGOS = ['SOCIO','DONANTE'];
 const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
 const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
@@ -354,6 +354,7 @@ const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS', ...Arr
 let currentMainTab = 'ingresos';
 let currentMaintTab = 'personas';
 let currentProductSort = 'nombre';
+if(!state.comprasSort) state.comprasSort = 'tienda';
 let showEventDesc = false;
 function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'].includes(String(v||'')); }
 
@@ -414,7 +415,16 @@ function loadState(){
   }
 }
 
-function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(err){
+    try{
+      const clone = {...state, ticketImages:{}};
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(clone));
+    }catch(_){}
+  }
+}
 function selectedEvent(){ return state.eventos.find(e => e.id === state.selectedEventId) || null; }
 function personaById(id){ return state.personas.find(p => p.id === id) || null; }
 function productoById(id){ return state.productos.find(p => p.id === id) || null; }
@@ -572,8 +582,10 @@ function renderSummaryList(targetId, rows){
     if(r.pending) div.classList.add('red-row');
     const amountHtml = `<span class="pill"${r.pending ? ' style="background:#fef2f2;color:#b91c1c"' : (r.donated ? ' style="text-decoration:line-through"' : '')}>${money(r.v)}</span>`;
     if(targetId === 'summaryTiendaTicket' && !r.pending){
+      const inputId = `ticketUpload_${idx}`;
       const preview = r.image ? `<img class="ticket-thumb" src="${r.image}" alt="ticket" />` : '';
-      div.innerHTML = `<span>${escapeHtml(r.k)}</span><span style="display:flex;align-items:center;gap:8px;">${amountHtml}<span class="ticket-actions"><label class="link-sort">📎<input class="ticket-file-input" type="file" accept="image/*" onchange="uploadTicketImage(event, ${JSON.stringify(targetId)}, ${JSON.stringify(r.k)})"></label>${preview}${r.image ? `<button type="button" class="outline small" onclick="removeTicketImage(${JSON.stringify(r.k)})">🗑️</button>` : ''}</span></span>`;
+      div.innerHTML = `<span>${escapeHtml(r.k)}</span><span style="display:flex;align-items:center;gap:8px;">${amountHtml}<span class="ticket-actions"><button type="button" class="outline small" onclick="document.getElementById('${inputId}').click()">📎</button><input id="${inputId}" class="ticket-file-input" type="file" accept="image/*" onchange="uploadTicketImage(event, ${JSON.stringify(encodeURIComponent('@@KEY@@'))})">${preview}${r.image ? `<button type="button" class="outline small" onclick="removeTicketImage(${JSON.stringify(encodeURIComponent('@@KEY@@'))})">🗑️</button>` : ''}</span></span>`;
+      div.innerHTML = div.innerHTML.replaceAll(encodeURIComponent('@@KEY@@'), encodeURIComponent(r.k));
     } else {
       div.innerHTML = `<span>${escapeHtml(r.k)}</span>${amountHtml}`;
     }
@@ -586,10 +598,10 @@ function renderSummaryList(targetId, rows){
   });
 }
 
-
-function uploadTicketImage(event, targetId, key){
+function uploadTicketImage(event, encodedKey){
   const file = event.target.files && event.target.files[0];
   if(!file) return;
+  const key = decodeURIComponent(encodedKey);
   const reader = new FileReader();
   reader.onload = function(){
     if(!state.ticketImages) state.ticketImages = {};
@@ -599,7 +611,8 @@ function uploadTicketImage(event, targetId, key){
   reader.readAsDataURL(file);
 }
 
-function removeTicketImage(key){
+function removeTicketImage(encodedKey){
+  const key = decodeURIComponent(encodedKey);
   if(state.ticketImages) delete state.ticketImages[ticketImageStateKey(key)];
   render();
 }
@@ -715,36 +728,37 @@ function renderColabs(){
 }
 
 function renderBudget(){
-  const grid = document.getElementById('budgetMetricsGrid');
-  const saldoBox = document.getElementById('budgetSaldoGlobalBox');
+  const wrap = document.getElementById('budgetLayout');
   const b = budgetSummary();
-  grid.innerHTML = '';
-  if(saldoBox) saldoBox.innerHTML = '';
-  const entries = [
-    {label:'Socios', value:`${b.socios.count}`},
-    {label:'Importe socios', value:money(b.socios.importe)},
-    {label:'Ingresado socios', value:money(b.socios.ingresado)},
-    {label:'Pendiente socios', value:money(b.socios.pendiente), cls:'warn'},
-    {label:'Donantes', value:`${b.donantes.count}`},
-    {label:'Importe donantes', value:money(b.donantes.importe)},
-    {label:'Ingresado donantes', value:money(b.donantes.ingresado)},
-    {label:'Pendiente donantes', value:money(b.donantes.pendiente), cls:'warn'},
-    {label:'Valor estimado del producto donado', value:money(b.compras.valorDonado)},
-    {label:'Comprado', value:money(b.compras.resueltas), cls:'ok'},
-    {label:'Pdte. compra', value:money(b.compras.pendientes), cls:'warn'},
-    {label:'Saldo operativo', value:money(b.compras.saldoOperativo), cls:b.compras.saldoOperativo>=0?'ok':'bad'}
-  ];
-  entries.forEach(e => {
-    const div = document.createElement('div');
-    div.className = 'metric ' + (e.cls || '');
-    div.innerHTML = `<div class="label">${escapeHtml(e.label)}</div><div class="value">${escapeHtml(e.value)}</div>`;
-    grid.appendChild(div);
-  });
-  if(saldoBox){
-    const div = document.createElement('div');
-    div.className = 'metric ' + (b.socios.saldo>=0?'ok':'bad');
-    div.innerHTML = `<div class="label">SALDO GLOBAL</div><div class="value">${escapeHtml(money(b.socios.saldo))}</div>`;
-    saldoBox.appendChild(div);
+  if(wrap){
+    wrap.innerHTML = `
+      <div class="budget-panel socios">
+        <h3>SOCIOS</h3>
+        <div class="budget-rows">
+          <div class="budget-row"><strong>SOCIOS</strong><span>${escapeHtml(String(b.socios.count))}</span></div>
+          <div class="budget-row"><strong>IMPORTE SOCIOS</strong><span>${escapeHtml(money(b.socios.importe))}</span></div>
+          <div class="budget-row"><strong>INGRESADO SOCIOS</strong><span>${escapeHtml(money(b.socios.ingresado))}</span></div>
+          <div class="budget-row"><strong>PENDIENTE SOCIOS</strong><span style="color:#c2410c">${escapeHtml(money(b.socios.pendiente))}</span></div>
+        </div>
+      </div>
+      <div class="budget-panel donantes">
+        <h3>DONANTES</h3>
+        <div class="budget-rows">
+          <div class="budget-row"><strong>DONANTES</strong><span>${escapeHtml(String(b.donantes.count))}</span></div>
+          <div class="budget-row"><strong>IMPORTE DONANTES</strong><span>${escapeHtml(money(b.donantes.importe))}</span></div>
+          <div class="budget-row"><strong>INGRESADO DONANTES</strong><span>${escapeHtml(money(b.donantes.ingresado))}</span></div>
+          <div class="budget-row"><strong>VALOR ESTIMADO PRODUCTO DONADO</strong><span>${escapeHtml(money(b.compras.valorDonado))}</span></div>
+        </div>
+      </div>
+      <div class="budget-panel operativo">
+        <h3>OPERATIVA</h3>
+        <div class="budget-rows">
+          <div class="budget-row"><strong>SALDO GLOBAL</strong><span style="color:${b.socios.saldo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.socios.saldo))}</span></div>
+          <div class="budget-row"><strong>COMPRADO</strong><span>${escapeHtml(money(b.compras.resueltas))}</span></div>
+          <div class="budget-row"><strong>PDTE. COMPRA</strong><span style="color:#c2410c">${escapeHtml(money(b.compras.pendientes))}</span></div>
+          <div class="budget-row"><strong>SALDO OPERATIVO</strong><span style="color:${b.compras.saldoOperativo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.compras.saldoOperativo))}</span></div>
+        </div>
+      </div>`;
   }
   renderSummaryList('summarySegmento', summaryBySegmento());
   renderSummaryList('summaryDestino', summaryByDestino());
@@ -753,12 +767,25 @@ function renderBudget(){
 
 function renderCompras(){
   const wrap = document.getElementById('comprasList');
-  const rows = comprasForEvent();
+  let rows = comprasForEvent().slice();
+  if(state.comprasSort === 'ticket'){
+    rows.sort((a,b)=>{
+      const ta = String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
+      if(ta !== 0) return ta;
+      return (a.tienda?.nombre || '').localeCompare((b.tienda?.nombre || ''), 'es');
+    });
+  } else {
+    rows.sort((a,b)=>{
+      const ta = (a.tienda?.nombre || '').localeCompare((b.tienda?.nombre || ''), 'es');
+      if(ta !== 0) return ta;
+      return String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
+    });
+  }
   if(!rows.length){
     wrap.innerHTML = '<div class="empty">Todavía no hay compras o donaciones de producto para este evento.</div>';
     return;
   }
-  wrap.innerHTML = '';
+  wrap.innerHTML = '<div class="hint">Ordenar por: <a href="#" onclick="state.comprasSort=\'tienda\'; renderCompras(); return false;">Producto</a> · <a href="#" onclick="state.comprasSort=\'ticket\'; renderCompras(); return false;">Ticket</a></div>';
   rows.forEach(r => {
     const pending = String(r.ticketDonacion || '').trim() === '';
     const row = document.createElement('div');
@@ -1244,9 +1271,9 @@ function exportExcel(){
   const destRows = summaryByDestino();
   const tiendaRows = summaryByTiendaTicket();
 
-  function cellText(v, cls=''){ return `<td${cls ? ` class="${cls}"` : ''}>${escapeHtml(String(v))}</td>`; }
-  function cellNum(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'0,00';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
-  function cellMoney(n, cls=''){ return `<td${cls ? ` class="${cls}"` : ''} style="mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}€</td>`; }
+  function cellText(v, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''}${extra ? ` style="${extra}"` : ''}>${escapeHtml(String(v))}</td>`; }
+  function cellNum(n, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''} style="${extra || ''}mso-number-format:'0,00';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}</td>`; }
+  function cellMoney(n, cls='', extra=''){ return `<td${cls ? ` class="${cls}"` : ''} style="${extra || ''}mso-number-format:'#.##0,00 \\€';" x:num="${Number(n||0).toFixed(2)}">${numberEs(Number(n||0))}€</td>`; }
 
   const html = `
   <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -1281,14 +1308,14 @@ function exportExcel(){
     <br>
     <table>
       <tr><th class="title" colspan="6">INGRESOS DE SOCIOS Y DONANTES</th></tr>
-      <tr><th>Colaborador/a</th><th>Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
-      ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero)}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
+      <tr><th>Colaborador/a</th><th style="width:52px">Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
+      ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero, '', 'width:52px;')}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
     </table>
     <br>
     <table>
-      <tr><th class="title" colspan="10">COMPRAS Y DONACIONES DE PRODUCTO</th></tr>
-      <tr><th>Producto</th><th>Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th><th>Foto ticket</th></tr>
-      ${compras.map(r => { const tkey = `${r.tienda?.nombre || 'Sin tienda'} | ${String(r.ticketDonacion || '').trim() || 'Pdte.Compra'}`; const img = state.ticketImages?.[ticketImageStateKey(tkey)] || ''; return `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pdte.Compra')}${cellText(r.responsable?.nombre || '')}<td>${img ? `<img src="${img}" style="max-width:120px;max-height:80px;object-fit:contain;" />` : ''}</td></tr>`; }).join('')}
+      <tr><th class="title" colspan="9">COMPRAS Y DONACIONES DE PRODUCTO</th></tr>
+      <tr><th>Producto</th><th style="width:140px">Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th></tr>
+      ${compras.map(r => `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '', '', 'width:140px;')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pdte.Compra')}${cellText(r.responsable?.nombre || '')}</tr>`).join('')}
     </table>
     <br>
     <table>
