@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v6.6.1</title>
+  <title>ControlEvent v6.6.2</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -109,7 +109,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v6.6.1</span>
+          <span>ControlEvent v6.6.2</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -1280,9 +1280,24 @@ function handleChange(e){
   }
 }
 
-function exportExcel(){
+async function exportExcel(){
   const ev = selectedEvent();
   if(!ev) return;
+
+  if(!window.ExcelJS){
+    try{
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('No se pudo cargar ExcelJS'));
+        document.head.appendChild(s);
+      });
+    }catch(err){
+      alert('No se pudo cargar el motor de Excel. Para exportar esta versión necesita conexión a internet.');
+      return;
+    }
+  }
 
   const collabs = collabsForEvent();
   const compras = comprasForEvent();
@@ -1291,97 +1306,196 @@ function exportExcel(){
   const destRows = summaryByDestino();
   const tiendaRows = summaryByTiendaTicket();
 
-  function fixed2(n){
-    return Number(n || 0).toFixed(2);
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'ControlEvent v6.6.2 - ©oltyLAB ’26';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet('Evento');
+  ws.properties.defaultRowHeight = 20;
+  ws.columns = [
+    {width: 34}, {width: 18}, {width: 18}, {width: 12}, {width: 16},
+    {width: 16}, {width: 18}, {width: 20}, {width: 22}
+  ];
+
+  const border = {
+    top:{style:'thin', color:{argb:'FFDDE2EA'}},
+    left:{style:'thin', color:{argb:'FFDDE2EA'}},
+    bottom:{style:'thin', color:{argb:'FFDDE2EA'}},
+    right:{style:'thin', color:{argb:'FFDDE2EA'}}
+  };
+  const fills = {
+    title:'FF111827',
+    ok:'FFECFDF5',
+    bad:'FFFEF2F2',
+    warn:'FFFFF7ED',
+    white:'FFFFFFFF'
+  };
+  const moneyFmt = '#,##0.00 [$€-C0A]';
+  const numFmt = '0.00';
+
+  function applyCell(cell, fill='white'){
+    cell.border = border;
+    cell.alignment = {vertical:'middle', wrapText:true};
+    if(fill && fills[fill]){
+      cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:fills[fill]}};
+    }
   }
-  function cellText(v, cls='', extra=''){
-    return `<td${cls ? ` class="${cls}"` : ''}${extra ? ` style="${extra}"` : ''}>${escapeHtml(String(v ?? ''))}</td>`;
+  function applyTitle(row){
+    row.eachCell(cell => {
+      cell.font = {bold:true, color:{argb:'FFFFFFFF'}};
+      cell.fill = {type:'pattern', pattern:'solid', fgColor:{argb:fills.title}};
+      cell.border = border;
+      cell.alignment = {vertical:'middle', horizontal:'center'};
+    });
   }
-  function cellNum(n, cls='', extra=''){
-    const val = fixed2(n);
-    const style = `${extra || ''}mso-displayed-decimal-separator:",";mso-displayed-thousand-separator:".";mso-number-format:"0.00";`;
-    return `<td${cls ? ` class="${cls}"` : ''} style="${style}" x:num="${val}">${val}</td>`;
+  function applyRowClass(rowNumber, cls){
+    const row = ws.getRow(rowNumber);
+    row.eachCell(cell => {
+      applyCell(cell, cls);
+      if(cls === 'bad') cell.font = {color:{argb:'FFB91C1C'}, bold:false};
+      if(cls === 'ok') cell.font = {color:{argb:'FF047857'}, bold:false};
+      if(cls === 'warn') cell.font = {color:{argb:'FFC2410C'}, bold:false};
+    });
   }
-  function cellMoney(n, cls='', extra=''){
-    const val = fixed2(n);
-    const style = `${extra || ''}mso-displayed-decimal-separator:",";mso-displayed-thousand-separator:".";mso-number-format:"\\0022€\\0022\ #,##0.00";`;
-    return `<td${cls ? ` class="${cls}"` : ''} style="${style}" x:num="${val}">${val}</td>`;
+  function setText(r,c,v,fill='white'){
+    const cell = ws.getCell(r,c);
+    cell.value = v == null ? '' : String(v);
+    applyCell(cell, fill);
+    return cell;
   }
-  function cellTicketImage(dataUrl){
-    if(!dataUrl) return '<td></td>';
-    return `<td><img src="${dataUrl}" style="max-width:120px;max-height:80px;object-fit:contain;" /></td>`;
+  function setNum(r,c,v,fill='white'){
+    const cell = ws.getCell(r,c);
+    cell.value = Number(v || 0);
+    cell.numFmt = numFmt;
+    applyCell(cell, fill);
+    return cell;
+  }
+  function setMoney(r,c,v,fill='white'){
+    const cell = ws.getCell(r,c);
+    cell.value = Number(v || 0);
+    cell.numFmt = moneyFmt;
+    applyCell(cell, fill);
+    return cell;
+  }
+  function mergeTitle(row, text, cols=2){
+    ws.mergeCells(row,1,row,cols);
+    setText(row,1,text,'title');
+    applyTitle(ws.getRow(row));
+  }
+  function addImageToCell(dataUrl, row, col){
+    if(!dataUrl) return;
+    const m = String(dataUrl).match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,/);
+    if(!m) return;
+    const mime = m[1];
+    const ext = mime.includes('png') ? 'png' : (mime.includes('gif') ? 'gif' : 'jpeg');
+    const id = wb.addImage({base64:dataUrl, extension:ext});
+    ws.getRow(row).height = 60;
+    applyCell(ws.getCell(row,col), 'white');
+    ws.addImage(id, {
+      tl: {col: col-1 + 0.08, row: row-1 + 0.08},
+      ext: {width: 115, height: 72}
+    });
   }
 
-  const html = `
-  <html xmlns:o="urn:schemas-microsoft-com:office:office"
-        xmlns:x="urn:schemas-microsoft-com:office:excel"
-        xmlns="http://www.w3.org/TR/REC-html40">
-  <head>
-    <meta charset="UTF-8">
-    <style>
-      table{border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px}
-      th,td{border:1px solid #dbe2ea;padding:6px 8px;vertical-align:middle}
-      th{background:#111827;color:#ffffff}
-      .title{background:#111827;color:#ffffff;font-weight:bold}
-      .ok{background:#ecfdf5;color:#047857;font-weight:bold}
-      .bad{background:#fef2f2;color:#b91c1c;font-weight:bold}
-      .donado{text-decoration:line-through}
-      .warn{background:#fff7ed;color:#c2410c;font-weight:bold}
-    </style>
-  </head>
-  <body>
-    <table>
-      <tr><th class="title" colspan="2">RESUMEN DEL EVENTO</th></tr>
-      <tr><td>Generado por</td><td>ControlEvent v6.6.1 - ©oltyLAB ’26</td></tr>
-      <tr><td>Evento</td><td>${escapeHtml(ev.titulo)}</td></tr>
-      <tr><td>Fechas</td><td>(del ${escapeHtml(ev.fechaIni || '')} al ${escapeHtml(ev.fechaFin || '')})</td></tr>
-      <tr><td>Descripción</td><td>${escapeHtml(ev.descripcion || '')}</td></tr>
-      <tr><td>Situación</td><td class="${ev.situacion === 'Finalizado' ? 'bad' : 'ok'}">${escapeHtml(ev.situacion)}</td></tr>
-      <tr><td>Precio evento</td>${cellMoney(ev.precio)}</tr>
-      <tr><td>Total comprometido</td>${cellMoney(budget.socios.saldo)}</tr>
-      <tr><td>Ingresado total</td>${cellMoney(budget.socios.ingresado + budget.donantes.ingresado)}</tr>
-      <tr><td>Pendiente total</td>${cellMoney(budget.socios.pendiente + budget.donantes.pendiente, 'warn')}</tr>
-      <tr><td>Valor estimado producto donado</td>${cellMoney(budget.compras.valorDonado)}</tr>
-      <tr><td>Saldo operativo</td>${cellMoney(budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad')}</tr>
-      <tr><td>Fecha y hora emisión</td><td>${escapeHtml(new Date().toLocaleString('es-ES'))}</td></tr>
-    </table>
-    <br>
-    <table>
-      <tr><th class="title" colspan="6">INGRESOS DE SOCIOS Y DONANTES</th></tr>
-      <tr><th>Colaborador/a</th><th style="width:38px">Número</th><th>Situación</th><th>Importe obligatorio</th><th>Importe voluntario</th><th>Total compromiso</th></tr>
-      ${collabs.map(r => `<tr${r.situacion === 'Pendiente' ? ' class="bad"' : ''}>${cellText((r.persona?.nombre || '') + ' (' + (r.persona?.rango || '') + ')')}${cellNum(r.numero, '', 'width:38px;')}${cellText(r.situacion)}${cellMoney(r.base)}${cellMoney(r.donation)}${cellMoney(r.total)}</tr>`).join('')}
-    </table>
-    <br>
-    <table>
-      <tr><th class="title" colspan="9">COMPRAS Y DONACIONES DE PRODUCTO</th></tr>
-      <tr><th>Producto</th><th style="width:140px">Segmento</th><th>Destino</th><th>ud</th><th>Precio</th><th>Importe</th><th>Tienda</th><th>Ticket/Donación</th><th>Responsable</th></tr>
-      ${compras.map(r => `<tr${String(r.ticketDonacion || '').trim() === '' ? ' class="bad"' : ''}>${cellText(r.producto?.nombre || '')}${cellText(r.producto?.segmento || '', '', 'width:140px;')}${cellText(r.producto?.destino || '')}${cellNum(r.unidades)}${cellMoney(r.producto?.precio || 0)}${cellMoney(r.importe)}${cellText(r.tienda?.nombre || '')}${cellText(r.ticketDonacion || 'Pte.compra o donación')}${cellText(r.responsable?.nombre || '')}</tr>`).join('')}
-    </table>
-    <br>
-    <table>
-      <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - SEGMENTO</th></tr>
-      <tr><th>Segmento</th><th>Importe</th></tr>
-      ${segRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v)}</tr>`).join('')}
-    </table>
-    <br>
-    <table>
-      <tr><th class="title" colspan="2">CÁLCULOS POR AGRUPACIÓN - DESTINO</th></tr>
-      <tr><th>Destino</th><th>Importe</th></tr>
-      ${destRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v)}</tr>`).join('')}
-    </table>
-    <br>
-    <table>
-      <tr><th class="title" colspan="3">CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO</th></tr>
-      <tr><th>Tienda y ticket/donado</th><th>Importe</th><th>Ticket</th></tr>
-      ${tiendaRows.map(r => `<tr${r.pending ? ' class="bad"' : ''}>${cellText(r.k)}${cellMoney(r.v, r.donated ? 'donado' : '')}${(!r.pending && !r.donated) ? cellTicketImage(r.image || '') : '<td></td>'}</tr>`).join('')}
-    </table>
-  </body>
-  </html>`;
+  let r = 1;
 
-  const blob = new Blob([html], {type:'application/vnd.ms-excel;charset=utf-8;'});
+  mergeTitle(r, 'RESUMEN DEL EVENTO', 2); r++;
+  setText(r,1,'Generado por'); setText(r,2,'ControlEvent v6.6.2 - ©oltyLAB ’26'); r++;
+  setText(r,1,'Evento'); setText(r,2,ev.titulo); r++;
+  setText(r,1,'Fechas'); setText(r,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`); r++;
+  setText(r,1,'Descripción'); setText(r,2,ev.descripcion || ''); r++;
+  setText(r,1,'Situación'); setText(r,2,ev.situacion || 'En curso', (ev.situacion === 'Finalizado' ? 'bad' : 'ok')); r++;
+  setText(r,1,'Precio evento'); setMoney(r,2,ev.precio); r++;
+  setText(r,1,'Total comprometido'); setMoney(r,2,budget.socios.saldo); r++;
+  setText(r,1,'Ingresado total'); setMoney(r,2,budget.socios.ingresado + budget.donantes.ingresado); r++;
+  setText(r,1,'Pendiente total'); setMoney(r,2,budget.socios.pendiente + budget.donantes.pendiente,'warn'); r++;
+  setText(r,1,'Valor estimado producto donado'); setMoney(r,2,budget.compras.valorDonado); r++;
+  setText(r,1,'Saldo operativo'); setMoney(r,2,budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad'); r++;
+  setText(r,1,'Fecha y hora emisión'); setText(r,2,new Date().toLocaleString('es-ES')); r += 2;
+
+  mergeTitle(r, 'INGRESOS DE SOCIOS Y DONANTES', 6); r++;
+  ['Colaborador/a','Número','Situación','Importe obligatorio','Importe voluntario','Total compromiso'].forEach((h,i)=>setText(r, i+1, h, 'title'));
+  applyTitle(ws.getRow(r));
+  ws.getColumn(2).width = 9;
+  r++;
+  collabs.forEach(item => {
+    setText(r,1,`${item.persona?.nombre || ''} (${item.persona?.rango || ''})`);
+    setNum(r,2,item.numero);
+    setText(r,3,item.situacion);
+    setMoney(r,4,item.base);
+    setMoney(r,5,item.donation);
+    setMoney(r,6,item.total);
+    if(item.situacion === 'Pendiente') applyRowClass(r,'bad');
+    r++;
+  });
+  r++;
+
+  mergeTitle(r, 'COMPRAS Y DONACIONES DE PRODUCTO', 9); r++;
+  ['Producto','Segmento','Destino','ud','Precio','Importe','Tienda','Ticket/Donación','Responsable'].forEach((h,i)=>setText(r, i+1, h, 'title'));
+  applyTitle(ws.getRow(r));
+  r++;
+  compras.forEach(item => {
+    setText(r,1,item.producto?.nombre || '');
+    setText(r,2,item.producto?.segmento || '');
+    setText(r,3,item.producto?.destino || '');
+    setNum(r,4,item.unidades);
+    setMoney(r,5,item.producto?.precio || 0);
+    setMoney(r,6,item.importe);
+    setText(r,7,item.tienda?.nombre || '');
+    setText(r,8,item.ticketDonacion || 'Pte.compra o donación');
+    setText(r,9,item.responsable?.nombre || '');
+    if(String(item.ticketDonacion || '').trim() === '') applyRowClass(r,'bad');
+    r++;
+  });
+  r++;
+
+  mergeTitle(r, 'CÁLCULOS POR AGRUPACIÓN - SEGMENTO', 2); r++;
+  setText(r,1,'Segmento','title'); setText(r,2,'Importe','title'); applyTitle(ws.getRow(r)); r++;
+  segRows.forEach(item => {
+    setText(r,1,item.k);
+    setMoney(r,2,item.v);
+    if(item.pending) applyRowClass(r,'bad');
+    r++;
+  });
+  r++;
+
+  mergeTitle(r, 'CÁLCULOS POR AGRUPACIÓN - DESTINO', 2); r++;
+  setText(r,1,'Destino','title'); setText(r,2,'Importe','title'); applyTitle(ws.getRow(r)); r++;
+  destRows.forEach(item => {
+    setText(r,1,item.k);
+    setMoney(r,2,item.v);
+    if(item.pending) applyRowClass(r,'bad');
+    r++;
+  });
+  r++;
+
+  mergeTitle(r, 'CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO', 3); r++;
+  setText(r,1,'Tienda y ticket/donado','title');
+  setText(r,2,'Importe','title');
+  setText(r,3,'Ticket','title');
+  applyTitle(ws.getRow(r));
+  r++;
+  tiendaRows.forEach(item => {
+    setText(r,1,item.k);
+    setMoney(r,2,item.v);
+    if(item.donated) ws.getCell(r,2).font = {strike:true};
+    if(item.pending){
+      setText(r,3,'');
+      applyRowClass(r,'bad');
+    } else if(item.donated){
+      setText(r,3,'');
+    } else {
+      setText(r,3,'');
+      addImageToCell(item.image || '', r, 3);
+    }
+    r++;
+  });
+
+  const buffer = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v6_6_1.xls`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v6_6_2.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
