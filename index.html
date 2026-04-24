@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v7.1</title>
+  <title>ControlEvent v7.2</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -117,7 +117,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v7.1</span>
+          <span>ControlEvent v7.2</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -398,7 +398,25 @@ function money(n){ return new Intl.NumberFormat('es-ES',{style:'currency',curren
 function numberEs(n){ return new Intl.NumberFormat('es-ES',{minimumFractionDigits:2, maximumFractionDigits:2}).format(Number(n||0)); }
 function euroInputValue(n){ return numberEs(Number(n||0)) + ' €'; }
 function parseEuroInput(v){
-  const s = String(v||'').replace(/€/g,'').replace(/\./g,'').replace(',', '.').trim();
+  if(typeof v === 'number') return Number.isFinite(v) ? v : 0;
+  let s = String(v ?? '').replace(/€/g,'').replace(/\s/g,'').trim();
+  if(!s) return 0;
+
+  const lastComma = s.lastIndexOf(',');
+  const lastDot = s.lastIndexOf('.');
+
+  if(lastComma !== -1 && lastDot !== -1){
+    if(lastComma > lastDot){
+      s = s.replace(/\./g,'').replace(',', '.');
+    } else {
+      s = s.replace(/,/g,'');
+    }
+  } else if(lastComma !== -1){
+    s = s.replace(/\./g,'').replace(',', '.');
+  } else {
+    s = s.replace(/,/g,'');
+  }
+
   const n = Number(s);
   return Number.isFinite(n) ? n : 0;
 }
@@ -1595,7 +1613,7 @@ async function exportExcel(){
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.1 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v7.2 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const ws = wb.addWorksheet('Evento');
@@ -1699,7 +1717,7 @@ async function exportExcel(){
   mergeTitle(r, 'RESUMEN DEL EVENTO', 9);
   ws.getRow(r).height = 20;
   r++;
-  summaryLabelValue(r, 'Generado por', 'text', 'ControlEvent v7.1 - ©oltyLAB ’26'); r++;
+  summaryLabelValue(r, 'Generado por', 'text', 'ControlEvent v7.2 - ©oltyLAB ’26'); r++;
   summaryLabelValue(r, 'Evento', 'text', ev.titulo); r++;
   summaryLabelValue(r, 'Fechas', 'text', `(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`); r++;
   summaryLabelValue(r, 'Descripción', 'text', ev.descripcion || ''); r++;
@@ -1794,7 +1812,7 @@ async function exportExcel(){
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_1.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_2.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
