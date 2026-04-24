@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v7.2</title>
+  <title>ControlEvent v7.3</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -117,7 +117,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v7.2</span>
+          <span>ControlEvent v7.3</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -391,7 +391,7 @@ let showEventDesc = false;
 function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'].includes(String(v||'')); }
 
 const state = loadState();
-if(!state.comprasSort) state.comprasSort = 'tienda';
+if(!state.comprasSort) state.comprasSort = 'producto';
 
 function uid(){ return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
 function money(n){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(Number(n||0)); }
@@ -1079,24 +1079,34 @@ function renderBudget(){
 function renderCompras(){
   const wrap = document.getElementById('comprasList');
   let rows = comprasForEvent().slice();
+
   if(state.comprasSort === 'ticket'){
     rows.sort((a,b)=>{
       const ta = String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
       if(ta !== 0) return ta;
-      return (a.tienda?.nombre || '').localeCompare((b.tienda?.nombre || ''), 'es');
+      return (a.producto?.nombre || '').localeCompare((b.producto?.nombre || ''), 'es');
+    });
+  } else if(state.comprasSort === 'responsable'){
+    rows.sort((a,b)=>{
+      const ra = (a.responsable?.nombre || '').localeCompare((b.responsable?.nombre || ''), 'es');
+      if(ra !== 0) return ra;
+      return (a.producto?.nombre || '').localeCompare((b.producto?.nombre || ''), 'es');
     });
   } else {
     rows.sort((a,b)=>{
-      const ta = (a.tienda?.nombre || '').localeCompare((b.tienda?.nombre || ''), 'es');
-      if(ta !== 0) return ta;
+      const pa = (a.producto?.nombre || '').localeCompare((b.producto?.nombre || ''), 'es');
+      if(pa !== 0) return pa;
       return String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
     });
   }
+
   if(!rows.length){
     wrap.innerHTML = '<div class="empty">Todavía no hay compras o donaciones de producto para este evento.</div>';
     return;
   }
-  wrap.innerHTML = '<div class="hint">Ordenar por: <a href="#" onclick="state.comprasSort=\'tienda\'; renderCompras(); return false;">Producto</a> · <a href="#" onclick="state.comprasSort=\'ticket\'; renderCompras(); return false;">Ticket</a></div>';
+
+  wrap.innerHTML = '<div class="hint">Ordenar por: <a href="#" onclick="state.comprasSort=\'producto\'; renderCompras(); return false;">Producto</a> · <a href="#" onclick="state.comprasSort=\'ticket\'; renderCompras(); return false;">Ticket</a> · <a href="#" onclick="state.comprasSort=\'responsable\'; renderCompras(); return false;">Responsable</a></div>';
+
   rows.forEach(r => {
     const pending = String(r.ticketDonacion || '').trim() === '';
     const row = document.createElement('div');
@@ -1613,7 +1623,7 @@ async function exportExcel(){
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.2 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v7.3 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const ws = wb.addWorksheet('Evento');
@@ -1717,7 +1727,7 @@ async function exportExcel(){
   mergeTitle(r, 'RESUMEN DEL EVENTO', 9);
   ws.getRow(r).height = 20;
   r++;
-  summaryLabelValue(r, 'Generado por', 'text', 'ControlEvent v7.2 - ©oltyLAB ’26'); r++;
+  summaryLabelValue(r, 'Generado por', 'text', 'ControlEvent v7.3 - ©oltyLAB ’26'); r++;
   summaryLabelValue(r, 'Evento', 'text', ev.titulo); r++;
   summaryLabelValue(r, 'Fechas', 'text', `(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`); r++;
   summaryLabelValue(r, 'Descripción', 'text', ev.descripcion || ''); r++;
@@ -1812,7 +1822,7 @@ async function exportExcel(){
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_2.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_3.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
