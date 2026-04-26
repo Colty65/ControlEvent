@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v7.6</title>
+  <title>ControlEvent v7.7</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -126,7 +126,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v7.6</span>
+          <span>ControlEvent v7.7</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -1681,7 +1681,7 @@ async function exportSeedWorkbook(){
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.6 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v7.7 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -1798,7 +1798,7 @@ async function exportExcel(){
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.6 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v7.7 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {
@@ -1889,7 +1889,7 @@ async function exportExcel(){
   const wsRes = baseSheet('RESUMEN', [24, 44, 18, 12, 16, 16, 18, 20, 22]);
   let r = 1;
   mergeTitle(wsRes, r++, 'RESUMEN DEL EVENTO', 9);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v7.6 - ©oltyLAB ’26');
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v7.7 - ©oltyLAB ’26');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Evento'); putText(wsRes,r++,2,ev.titulo);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fechas'); putText(wsRes,r++,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Descripción'); putText(wsRes,r++,2,ev.descripcion || '');
@@ -1992,7 +1992,7 @@ async function exportExcel(){
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_6.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_7.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
