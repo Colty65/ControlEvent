@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v8.0</title>
+  <title>ControlEvent v8.1</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -107,6 +107,19 @@
     #toggleIngresosSummary,#toggleComprasSummary,#toggleComprasEvent{font-size:40px;min-width:72px;min-height:72px;display:flex;align-items:center;justify-content:center}
 
 .big-toggle-btn{font-size:40px;min-width:72px;min-height:72px;display:flex;align-items:center;justify-content:center}
+
+.chart-shell{display:grid;gap:18px}
+.chart-kpi{display:flex;gap:10px;flex-wrap:wrap}
+.chart-chip{padding:10px 14px;border-radius:16px;border:1px solid var(--border);background:#fff;font-weight:700}
+.chart-bars{display:grid;gap:16px}
+.chart-row{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:center}
+.chart-label{font-weight:800;color:#111827}
+.chart-track{position:relative;height:34px;background:#f3f4f6;border-radius:999px;overflow:hidden;border:1px solid #e5e7eb}
+.chart-seg{height:100%;display:inline-flex;align-items:center;justify-content:center;color:#111827;font-weight:800;font-size:12px;white-space:nowrap}
+.chart-note{font-size:12px;color:var(--muted)}
+.chart-saldo{height:40px}
+.chart-center-value{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#111827;pointer-events:none}
+
 </style>
 </head>
 <body>
@@ -126,7 +139,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v8.0</span>
+          <span>ControlEvent v8.1</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -139,10 +152,10 @@
       
 <div class="tabs app-lockable" id="mainTabs">
         <button type="button" class="tab active" id="tabIngresosBtn" title="Colaboradores económicos"><span class="tabicon">🤝</span></button>
-        <button type="button" class="tab" id="tabComprasBtn" title="Compras y otros gastos"><span class="tabicon">🛒</span></button>
         <button type="button" class="tab" id="tabDonacionesBtn" title="Donaciones de producto"><span class="tabicon">🎁</span></button>
-        <button type="button" class="tab" id="tabResumenBtn" title="Resumen presupuestario y cálculos por agrupación"><span class="tabicon">📊</span></button>
-        <button type="button" class="tab" id="tabGraficasBtn" title="Gráficas del evento"><span class="tabicon">📈</span></button>
+        <button type="button" class="tab" id="tabComprasBtn" title="Compras y otros gastos"><span class="tabicon">🛒</span></button>
+        <button type="button" class="tab" id="tabResumenBtn" title="Resumen presupuestario y cálculos por agrupación"><span class="tabicon">🧾</span></button>
+        <button type="button" class="tab" id="tabGraficasBtn" title="Gráficas del evento"><span class="tabicon">📊</span></button>
       </div>
 
       <div id="noEventMessage" class="card hidden">
@@ -306,7 +319,7 @@
         <div class="card">
           <div class="toggle-row">
             <div class="section-title" style="margin:0">
-              <div class="icon-badge">📊</div>
+              <div class="icon-badge">🧾</div>
               <div>
                 <h2>Resumen presupuestario y cálculos por agrupación</h2>
                 <p>Desplegar o plegar la información económica del evento.</p>
@@ -347,10 +360,10 @@
       <div id="tabGraficas" class="hidden app-lockable">
         <div class="card">
           <div class="section-title">
-            <div class="icon-badge">📈</div>
+            <div class="icon-badge">📊</div>
             <div>
               <h2>Gráficas del evento</h2>
-              <p>Comparativa visual entre ingresos monetarios, donación de producto valorada y gastos del evento.</p>
+              <p>Barras comparativas entre ingresos en dinero, gastos y saldo operativo.</p>
             </div>
           </div>
           <div id="eventChartWrap"></div>
@@ -896,22 +909,45 @@ function budgetSummary(){
   const donantesIngresado = donantesRows.filter(r => r.situacion !== 'Pendiente').reduce((a,b) => a + b.total, 0);
   const donantesPendiente = donantesRows.filter(r => r.situacion === 'Pendiente').reduce((a,b) => a + b.total, 0);
 
-  const totalComprometido = sociosImporte + donantesImporte;
+  const dineroIngresado = sociosIngresado + donantesIngresado;
+
   const comprasValorTotal = compras.reduce((a,b) => a + b.valor, 0);
-  const comprasResueltas = compras.filter(c => { const tk=String(c.ticketDonacion||'').trim(); return tk !== '' && tk !== 'GASTOS CORRIENTES' && !isDonationTicket(tk); }).reduce((a,b) => a + b.valor, 0);
+  const comprasResueltas = compras.filter(c => {
+    const tk = String(c.ticketDonacion || '').trim();
+    return tk !== '' && tk !== 'GASTOS CORRIENTES' && !isDonationTicket(tk);
+  }).reduce((a,b) => a + b.valor, 0);
+
   const comprasPendientes = compras.filter(c => String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
   const donadoTienda = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO TIENDA').reduce((a,b) => a + b.valor, 0);
   const donadoSocio = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO SOCIO').reduce((a,b) => a + b.valor, 0);
   const donadoOtros = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO OTROS').reduce((a,b) => a + b.valor, 0);
   const valorDonado = donadoTienda + donadoSocio + donadoOtros;
-  const gastosCorrientes = compras.filter(c => String(c.ticketDonacion || '').trim() === 'GASTOS CORRIENTES').reduce((a,b) => a + b.valor, 0);
-  const gastoOperativo = compras.reduce((a,b) => a + b.importe, 0);
-  const saldoReal = totalComprometido - gastoOperativo;
+
+  const gastosOrganizacion = compras.filter(c => String(c.ticketDonacion || '').trim() === 'GASTOS CORRIENTES').reduce((a,b) => a + b.valor, 0);
+  const saldoOperativo = dineroIngresado - comprasResueltas - gastosOrganizacion;
 
   return {
-    socios: {count:sociosCount, importe:sociosImporte, ingresado:sociosIngresado, pendiente:sociosPendiente, saldo:totalComprometido},
-    donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente, donadoTienda, donadoSocio, donadoOtros, valorDonado},
-    compras: {total:comprasValorTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, valorDonado, gastosCorrientes, gastoOperativo, saldoReal}
+    ingresosDinero: {
+      socios: {count:sociosCount, importe:sociosImporte, ingresado:sociosIngresado, pendiente:sociosPendiente},
+      donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente},
+      totalIngresado: dineroIngresado
+    },
+    donacionProducto: {donadoTienda, donadoSocio, donadoOtros, valorDonado},
+    operativa: {
+      ingresoDinero: dineroIngresado,
+      gastoCompras: comprasResueltas,
+      gastosOrganizacion,
+      pendiente: comprasPendientes,
+      saldoOperativo
+    },
+    compras: {
+      total: comprasValorTotal,
+      resueltas: comprasResueltas,
+      pendientes: comprasPendientes,
+      valorDonado,
+      gastosCorrientes: gastosOrganizacion,
+      saldoReal: saldoOperativo
+    }
   };
 }
 
@@ -1200,36 +1236,43 @@ function renderBudget(){
   if(wrap){
     wrap.innerHTML = `
       <div class="budget-panel socios">
-        <h3>SOCIOS</h3>
+        <h3>INGRESOS EN DINERO</h3>
         <div class="budget-rows">
-          <div class="budget-row"><strong>Personas</strong><span>${escapeHtml(String(b.socios.count))}</span></div>
-          <div class="budget-row"><strong>Importe socios</strong><span>${escapeHtml(money(b.socios.importe))}</span></div>
-          <div class="budget-row"><strong>Ingresado socios</strong><span>${escapeHtml(money(b.socios.ingresado))}</span></div>
-          <div class="budget-row"><strong>Pendiente socios</strong><span style="color:#c2410c">${escapeHtml(money(b.socios.pendiente))}</span></div>
+          <div class="budget-row budget-subgroup"><strong>SOCIOS</strong><span>${escapeHtml(money(b.ingresosDinero.socios.ingresado))}</span></div>
+          <div class="budget-subrows">
+            <div class="budget-subrow"><span>Personas</span><span>${escapeHtml(String(b.ingresosDinero.socios.count))}</span></div>
+            <div class="budget-subrow"><span>Importe socios</span><span>${escapeHtml(money(b.ingresosDinero.socios.importe))}</span></div>
+            <div class="budget-subrow"><span>Ingresado socios</span><span>${escapeHtml(money(b.ingresosDinero.socios.ingresado))}</span></div>
+            <div class="budget-subrow"><span>Pendiente socios</span><span>${escapeHtml(money(b.ingresosDinero.socios.pendiente))}</span></div>
+          </div>
+          <div class="budget-row budget-subgroup"><strong>DONANTES</strong><span>${escapeHtml(money(b.ingresosDinero.donantes.ingresado))}</span></div>
+          <div class="budget-subrows">
+            <div class="budget-subrow"><span>Personas</span><span>${escapeHtml(String(b.ingresosDinero.donantes.count))}</span></div>
+            <div class="budget-subrow"><span>Importe donantes</span><span>${escapeHtml(money(b.ingresosDinero.donantes.importe))}</span></div>
+            <div class="budget-subrow"><span>Ingresado donantes</span><span>${escapeHtml(money(b.ingresosDinero.donantes.ingresado))}</span></div>
+            <div class="budget-subrow"><span>Pendiente donantes</span><span>${escapeHtml(money(b.ingresosDinero.donantes.pendiente))}</span></div>
+          </div>
         </div>
       </div>
       <div class="budget-panel donantes">
-        <h3>DONANTES</h3>
+        <h3>DONACIÓN DE PRODUCTO</h3>
         <div class="budget-rows">
-          <div class="budget-row"><strong>Personas</strong><span>${escapeHtml(String(b.donantes.count))}</span></div>
-          <div class="budget-row"><strong>Importe donantes</strong><span>${escapeHtml(money(b.donantes.importe))}</span></div>
-          <div class="budget-row"><strong>Ingresado donantes</strong><span>${escapeHtml(money(b.donantes.ingresado))}</span></div>
-          <div class="budget-row budget-subgroup"><strong>Valor producto donado</strong><span>${escapeHtml(money(b.donantes.valorDonado))}</span></div>
           <div class="budget-subrows">
-            <div class="budget-subrow"><span>Donación de producto tiendas</span><span>${escapeHtml(money(b.donantes.donadoTienda))}</span></div>
-            <div class="budget-subrow"><span>Donación de producto socios</span><span>${escapeHtml(money(b.donantes.donadoSocio))}</span></div>
-            <div class="budget-subrow"><span>Donación de productos otros</span><span>${escapeHtml(money(b.donantes.donadoOtros))}</span></div>
+            <div class="budget-subrow"><span>Donación de producto tiendas</span><span>${escapeHtml(money(b.donacionProducto.donadoTienda))}</span></div>
+            <div class="budget-subrow"><span>Donación de producto socios</span><span>${escapeHtml(money(b.donacionProducto.donadoSocio))}</span></div>
+            <div class="budget-subrow"><span>Donación de productos otros</span><span>${escapeHtml(money(b.donacionProducto.donadoOtros))}</span></div>
           </div>
+          <div class="budget-row budget-subgroup"><strong>Valor producto donado</strong><span>${escapeHtml(money(b.donacionProducto.valorDonado))}</span></div>
         </div>
       </div>
       <div class="budget-panel operativo">
         <h3>OPERATIVA</h3>
         <div class="budget-rows">
-          <div class="budget-row"><strong>SALDO GLOBAL</strong><span style="color:${b.socios.saldo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.socios.saldo))}</span></div>
-          <div class="budget-row"><strong>COMPRADO</strong><span>${escapeHtml(money(b.compras.resueltas))}</span></div>
-          <div class="budget-row"><strong>GASTOS CORRIENTES</strong><span>${escapeHtml(money(b.compras.gastosCorrientes))}</span></div>
-          <div class="budget-row"><strong>PTE.COMPRA/DONAC/OTROS GASTOS</strong><span style="color:#c2410c">${escapeHtml(money(b.compras.pendientes))}</span></div>
-          <div class="budget-row"><strong>SALDO REAL</strong><span style="color:${b.compras.saldoReal>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.compras.saldoReal))}</span></div>
+          <div class="budget-row"><strong>INGRESO DINERO</strong><span>${escapeHtml(money(b.operativa.ingresoDinero))}</span></div>
+          <div class="budget-row"><strong>GASTO POR COMPRAS</strong><span>${escapeHtml(money(b.operativa.gastoCompras))}</span></div>
+          <div class="budget-row"><strong>GASTOS DE ORGANIZACIÓN</strong><span>${escapeHtml(money(b.operativa.gastosOrganizacion))}</span></div>
+          <div class="budget-row"><strong>PTE. DE COMPRAS Y/O GASTOS DE ORGANIZACIÓN</strong><span style="color:#c2410c">${escapeHtml(money(b.operativa.pendiente))}</span></div>
+          <div class="budget-row"><strong>SALDO OPERATIVO</strong><span style="color:${b.operativa.saldoOperativo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.operativa.saldoOperativo))}</span></div>
         </div>
       </div>`;
   }
@@ -1675,30 +1718,52 @@ function renderGraficas(){
   const wrap = document.getElementById('eventChartWrap');
   if(!wrap) return;
   const b = budgetSummary();
-  const labels = ['Ingresos dinero','Donación producto','Compras','Otros gastos'];
-  const values = [b.socios.ingresado + b.donantes.ingresado, b.donantes.valorDonado, b.compras.resueltas, b.compras.gastosCorrientes];
-  const maxVal = Math.max(1, ...values);
-  const points = values.map((v,i) => {
-    const x = 70 + i * 170;
-    const y = 280 - (v / maxVal) * 190;
-    return {x, y, v, label: labels[i]};
-  });
-  const poly = points.map(p => `${p.x},${p.y}`).join(' ');
+
+  const socioMoney = Number(b.ingresosDinero.socios.ingresado || 0);
+  const donanteMoney = Number(b.ingresosDinero.donantes.ingresado || 0);
+  const compraMoney = Number(b.operativa.gastoCompras || 0);
+  const orgMoney = Number(b.operativa.gastosOrganizacion || 0);
+  const saldo = Number(b.operativa.saldoOperativo || 0);
+
+  const ingresoTotal = socioMoney + donanteMoney;
+  const gastoTotal = compraMoney + orgMoney;
+  const maxVal = Math.max(1, ingresoTotal, gastoTotal, Math.abs(saldo));
+
+  const ingresoSocPct = (socioMoney / maxVal) * 100;
+  const ingresoDonPct = (donanteMoney / maxVal) * 100;
+  const gastoCompPct = (compraMoney / maxVal) * 100;
+  const gastoOrgPct = (orgMoney / maxVal) * 100;
+  const saldoPct = (Math.abs(saldo) / maxVal) * 100;
+
   wrap.innerHTML = `
     <div class="chart-shell">
-      <div class="chart-legend">
-        <span><span class="legend-dot" style="background:#16a34a"></span>Ingresos dinero</span>
-        <span><span class="legend-dot" style="background:#d97706"></span>Donación producto</span>
-        <span><span class="legend-dot" style="background:#2563eb"></span>Compras</span>
-        <span><span class="legend-dot" style="background:#dc2626"></span>Otros gastos</span>
+      <div class="chart-kpi">
+        <div class="chart-chip">Donación de producto valorada: ${escapeHtml(money(b.donacionProducto.valorDonado))}</div>
       </div>
-      <svg viewBox="0 0 760 340" width="100%" height="340" role="img" aria-label="Gráfica del evento">
-        <rect x="0" y="0" width="760" height="340" rx="16" fill="#ffffff"></rect>
-        <line x1="50" y1="280" x2="730" y2="280" stroke="#cbd5e1" stroke-width="2"/>
-        <line x1="60" y1="40" x2="60" y2="290" stroke="#cbd5e1" stroke-width="2"/>
-        <polyline points="${poly}" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        ${points.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${['#16a34a','#d97706','#2563eb','#dc2626'][i]}"></circle><text x="${p.x}" y="${p.y - 12}" text-anchor="middle" font-size="12" fill="#111827">${money(p.v)}</text><text x="${p.x}" y="312" text-anchor="middle" font-size="12" fill="#475569">${p.label}</text>`).join('')}
-      </svg>
+      <div class="chart-bars">
+        <div class="chart-row">
+          <div class="chart-label">INGRESOS EN DINERO</div>
+          <div class="chart-track" title="Total ingresos en dinero: ${escapeHtml(money(ingresoTotal))}">
+            <div class="chart-seg" title="Socios: ${escapeHtml(money(socioMoney))}" style="width:${ingresoSocPct}%;background:#86efac;"></div><div class="chart-seg" title="Donantes: ${escapeHtml(money(donanteMoney))}" style="width:${ingresoDonPct}%;background:#16a34a;"></div>
+            <div class="chart-center-value">${escapeHtml(money(ingresoTotal))}</div>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label">GASTOS</div>
+          <div class="chart-track" title="Total gastos: ${escapeHtml(money(gastoTotal))}">
+            <div class="chart-seg" title="Gasto por compras: ${escapeHtml(money(compraMoney))}" style="width:${gastoCompPct}%;background:#fca5a5;"></div><div class="chart-seg" title="Gastos de organización: ${escapeHtml(money(orgMoney))}" style="width:${gastoOrgPct}%;background:#dc2626;"></div>
+            <div class="chart-center-value">${escapeHtml(money(gastoTotal))}</div>
+          </div>
+        </div>
+        <div class="chart-row">
+          <div class="chart-label">SALDO OPERATIVO</div>
+          <div class="chart-track chart-saldo" title="Saldo operativo: ${escapeHtml(money(saldo))}">
+            <div class="chart-seg" style="width:${saldoPct}%;background:${saldo >= 0 ? '#0f766e' : '#b91c1c'};"></div>
+            <div class="chart-center-value">${escapeHtml(money(saldo))}</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-note">Pasa el cursor por cada tramo para ver el detalle de su cifra.</div>
     </div>`;
 }
 
@@ -1942,7 +2007,7 @@ async function exportSeedWorkbook(){
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v8.0 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v8.1 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -2061,7 +2126,7 @@ async function exportExcel(){
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v8.0 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v8.1 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -2140,26 +2205,81 @@ async function exportExcel(){
   }
   function makeChartDataUrl(){
     const canvas = document.createElement('canvas');
-    canvas.width = 920; canvas.height = 420;
+    canvas.width = 980; canvas.height = 460;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(70,340); ctx.lineTo(860,340); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(80,40); ctx.lineTo(80,350); ctx.stroke();
-    const labels = ['Ingresos dinero','Donación producto','Compras','Otros gastos'];
-    const values = [budget.socios.ingresado + budget.donantes.ingresado, budget.donantes.valorDonado, budget.compras.resueltas, budget.compras.gastosCorrientes];
-    const colors = ['#16a34a','#d97706','#2563eb','#dc2626'];
-    const maxVal = Math.max(1, ...values);
-    const pts = values.map((v,i)=>({x:120 + i*220, y:320 - (v/maxVal)*220, v, label:labels[i], color:colors[i]}));
-    ctx.strokeStyle = '#111827'; ctx.lineWidth = 4; ctx.beginPath();
-    pts.forEach((p,i)=>{ if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); }); ctx.stroke();
-    ctx.font = '14px Arial'; ctx.textAlign = 'center';
-    pts.forEach(p => {
-      ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x,p.y,7,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#111827'; ctx.fillText(new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(p.v), p.x, p.y-14);
-      ctx.fillStyle = '#475569'; ctx.fillText(p.label, p.x, 370);
-    });
-    ctx.textAlign = 'left';
+    const budget = budgetSummary();
+
+    const socioMoney = Number(budget.ingresosDinero.socios.ingresado || 0);
+    const donanteMoney = Number(budget.ingresosDinero.donantes.ingresado || 0);
+    const compraMoney = Number(budget.operativa.gastoCompras || 0);
+    const orgMoney = Number(budget.operativa.gastosOrganizacion || 0);
+    const saldo = Number(budget.operativa.saldoOperativo || 0);
+    const maxVal = Math.max(1, socioMoney + donanteMoney, compraMoney + orgMoney, Math.abs(saldo));
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#111827';
+    ctx.font = 'bold 24px Arial';
+    ctx.fillText('GRÁFICAS DEL EVENTO', 40, 40);
+
+    ctx.font = 'bold 16px Arial';
+    const left = 270, top = 110, width = 620, h = 42, gap = 90;
+
+    function fmt(v){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(v); }
+    function drawTrack(y, label, segments, totalLabel){
+      ctx.fillStyle = '#111827';
+      ctx.fillText(label, 40, y + 28);
+      ctx.fillStyle = '#f3f4f6';
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(left, y, width, h, 21);
+      ctx.fill();
+      ctx.stroke();
+      let x = left;
+      segments.forEach(seg => {
+        const w = Math.max(0, (Math.abs(seg.value) / maxVal) * width);
+        if(w <= 0) return;
+        ctx.fillStyle = seg.color;
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, 21);
+        ctx.fill();
+        x += w;
+      });
+      ctx.fillStyle = '#111827';
+      ctx.font = 'bold 18px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(totalLabel, left + width/2, y + 27);
+      ctx.textAlign = 'left';
+      ctx.font = 'bold 16px Arial';
+    }
+
+    drawTrack(top, 'INGRESOS EN DINERO', [
+      {value:socioMoney, color:'#86efac'},
+      {value:donanteMoney, color:'#16a34a'}
+    ], fmt(socioMoney + donanteMoney));
+
+    ctx.fillStyle = '#475569';
+    ctx.font = '14px Arial';
+    ctx.fillText('Socios: ' + fmt(socioMoney), left, top + 62);
+    ctx.fillText('Donantes: ' + fmt(donanteMoney), left + 260, top + 62);
+
+    drawTrack(top + gap, 'GASTOS', [
+      {value:compraMoney, color:'#fca5a5'},
+      {value:orgMoney, color:'#dc2626'}
+    ], fmt(compraMoney + orgMoney));
+
+    ctx.fillStyle = '#475569';
+    ctx.fillText('Gasto por compras: ' + fmt(compraMoney), left, top + gap + 62);
+    ctx.fillText('Gastos de organización: ' + fmt(orgMoney), left + 300, top + gap + 62);
+
+    drawTrack(top + gap*2, 'SALDO OPERATIVO', [
+      {value:Math.abs(saldo), color: saldo >= 0 ? '#0f766e' : '#b91c1c'}
+    ], fmt(saldo));
+
+    ctx.fillStyle = '#475569';
+    ctx.fillText('Donación de producto valorada: ' + fmt(budget.donacionProducto.valorDonado), 40, top + gap*2 + 80);
+
     return canvas.toDataURL('image/png');
   }
 
@@ -2167,20 +2287,20 @@ async function exportExcel(){
   const wsRes = baseSheet('RESUMEN', [24, 44, 18, 12, 16, 16, 18, 20, 22]);
   let r = 1;
   mergeTitle(wsRes, r++, 'RESUMEN DEL EVENTO', 9);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v8.0 - ©oltyLAB ’26');
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v8.1 - ©oltyLAB ’26');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Evento'); putText(wsRes,r++,2,ev.titulo);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fechas'); putText(wsRes,r++,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Descripción'); putText(wsRes,r++,2,ev.descripcion || '');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Situación'); putText(wsRes,r++,2,ev.situacion || 'En curso', (ev.situacion === 'Finalizado' ? 'bad' : 'ok'));
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Precio evento'); putMoney(wsRes,r++,2,ev.precio);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Total comprometido'); putMoney(wsRes,r++,2,budget.socios.saldo);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Ingresado total'); putMoney(wsRes,r++,2,budget.socios.ingresado + budget.donantes.ingresado);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Pendiente total'); putMoney(wsRes,r++,2,budget.socios.pendiente + budget.donantes.pendiente,'warn');
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Valor estimado producto donado'); putMoney(wsRes,r++,2,budget.donantes.valorDonado);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donado tienda'); putMoney(wsRes,r++,2,budget.donantes.donadoTienda);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donado socio'); putMoney(wsRes,r++,2,budget.donantes.donadoSocio);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donado otros'); putMoney(wsRes,r++,2,budget.donantes.donadoOtros);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Saldo real'); putMoney(wsRes,r++,2,budget.compras.saldoReal, budget.compras.saldoReal >= 0 ? 'ok' : 'bad');
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Ingreso dinero'); putMoney(wsRes,r++,2,budget.ingresosDinero.totalIngresado);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Gasto por compras'); putMoney(wsRes,r++,2,budget.operativa.gastoCompras);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Gastos de organización'); putMoney(wsRes,r++,2,budget.operativa.gastosOrganizacion);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Valor producto donado'); putMoney(wsRes,r++,2,budget.donacionProducto.valorDonado);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donación de producto tiendas'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoTienda);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donación de producto socios'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoSocio);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donación de productos otros'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoOtros);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Saldo operativo'); putMoney(wsRes,r++,2,budget.operativa.saldoOperativo, budget.operativa.saldoOperativo >= 0 ? 'ok' : 'bad');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fecha y hora emisión'); putText(wsRes,r++,2,new Date().toLocaleString('es-ES'));
 
   // INGRESOS
@@ -2224,7 +2344,7 @@ async function exportExcel(){
   const wsDon = baseSheet('DONACIONES DE PRODUCTO', [28, 16, 16, 10, 14, 14, 20, 24, 22]);
   r = 1;
   mergeTitle(wsDon, r++, 'DONACIONES DE PRODUCTO', 9);
-  titleRow(wsDon, r++, ['Producto','Segmento','Destino','ud','Precio','Valor','Tienda','Ticket/Donación/Otros Gastos','Responsable']);
+  titleRow(wsDon, r++, ['Producto','Segmento','Destino','ud','Precio','Valor','Tienda','Tipo de donación','Responsable']);
   donacionesSolo.forEach(item => {
     putText(wsDon,r,1,item.producto?.nombre || '');
     putText(wsDon,r,2,item.producto?.segmento || '');
@@ -2287,17 +2407,17 @@ async function exportExcel(){
   // GRAFICAS
   const wsGraf = baseSheet('GRAFICAS', [24,24,24,24]);
   mergeTitle(wsGraf, 1, 'GRÁFICAS DEL EVENTO', 4);
-  putText(wsGraf, 3, 1, 'Ingresos dinero'); putMoney(wsGraf, 3, 2, budget.socios.ingresado + budget.donantes.ingresado);
-  putText(wsGraf, 4, 1, 'Donación de producto'); putMoney(wsGraf, 4, 2, budget.donantes.valorDonado);
-  putText(wsGraf, 5, 1, 'Compras'); putMoney(wsGraf, 5, 2, budget.compras.resueltas);
-  putText(wsGraf, 6, 1, 'Otros gastos'); putMoney(wsGraf, 6, 2, budget.compras.gastosCorrientes);
+  putText(wsGraf, 3, 1, 'Ingreso dinero'); putMoney(wsGraf, 3, 2, budget.ingresosDinero.totalIngresado);
+  putText(wsGraf, 4, 1, 'Donación de producto valorada'); putMoney(wsGraf, 4, 2, budget.donacionProducto.valorDonado);
+  putText(wsGraf, 5, 1, 'Gasto por compras'); putMoney(wsGraf, 5, 2, budget.operativa.gastoCompras);
+  putText(wsGraf, 6, 1, 'Gastos de organización'); putMoney(wsGraf, 6, 2, budget.operativa.gastosOrganizacion);
   addImageToCell(wsGraf, makeChartDataUrl(), 8, 1);
 
   const buffer = await wb.xlsx.writeBuffer();
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v8_0.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v8_1.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
