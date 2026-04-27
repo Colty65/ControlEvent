@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v7.7</title>
+  <title>ControlEvent v7.8</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -126,7 +126,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v7.7</span>
+          <span>ControlEvent v7.8</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -232,7 +232,7 @@
               <div class="subgrid-3">
                 <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
                 <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
-                <div class="summary-card"><strong>Por tienda y ticket/donado</strong><div id="summaryTiendaTicket"></div></div>
+                <div class="summary-card"><strong>Por tienda y Ticket/Donación/Otros Gastos/Otros Gastos</strong><div id="summaryTiendaTicket"></div></div>
               </div>
             </div>
           </div>
@@ -264,7 +264,7 @@
               <input id="buyImporte" class="soft-readonly" readonly />
             </div>
             <div class="field">
-              <label>Ticket/Donación</label>
+              <label>Ticket/Donación/Otros Gastos/Otros Gastos/Otros Gastos</label>
               <select id="buyTicket"></select>
             </div>
             <div class="field">
@@ -381,6 +381,7 @@
       <button type="button" id="btnOpenImport" class="iconbtn outline app-lockable" title="Carga inicial">📥</button>
       <button type="button" id="btnExportSeed" class="iconbtn outline app-lockable" title="Descarga de datos">💾</button>
       <button type="button" id="btnToggleMaintenance" class="iconbtn secondary app-lockable maint-btn-closed" title="Mantenimiento"><img class="footer-img maint-footer-img" alt="Mantenimiento" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAeFBMVEX///8AAABxcXH09PQmJiby8vL7+/unp6e0tLRVVVVlZWWNjY3h4eHV1dXt7e2Dg4MTExNfX1+6uroNDQ3Dw8MuLi6fn5/Pz8/Jyck+Pj5kZGQXFxeGhoYhISGurq7l5eVGRkZRUVGUlJR7e3s5OTkyMjJERERtbW0t4/2CAAAL6UlEQVR4nO2d6ZaqOhBGRRDbVnFAcaBx7OH93/CSVBJSoRiOHRu8K9+Ps46M2aQyVKWgBwMnJycnJycnJycnJycnJycnJycnJycnJycnJycnJyf2VMEMUhT+TtSNh4YjTrNuquqfD6e4lu5Sc3S0RQ+vW8q8fbzfp+DF+9cSEwH2KTpcv9rteJ6r8jlwm+s+4dWi1mqwOBGgQWXzlsJbXnDuNaF6q8ePukHzBRD2zIe1Xmw6JqZGisMhiURVunSkFhYzge9kOTRjJXlxDRch0eVslGcY5jjmukK20l5j8ZA1sX+8P/gtOeSzl8Pq1+I5n5fqIcP6AZMOwURaN9eXzb8ueX2t2QYao8lV6Jy3At0zE0vOUzlqfpuTkX4v74FBwpYVGIYrk9pXLcxY9hPc9FudwSgAWehsBhLkZ7BYowM9mS7A6SHcCh1V1/nP+xH1dtwXL+gX/FhJB0w2rM6G38W9/8AViuL9Qh9gEY5vYifM8Nf2vh4v1fL+kNQW94eGVcX6sRRYsoE80rSAmeqb7K9JfieFjZtu2cuAUUi0ItiATchxjdub7nBe25jNxnyQjs9d9hhc0ZH6uCcWfx4v9VJ+SJO0aD4F+rz4sxi+vN5vW3GeE7FT/IR6I3sdh9Sr93nxafF9CX5D4jVCyQvwkf8AZ74sNi8nL5kMlpM9rxwe4IebKOnC0XkiESs1sOdrsI6y4D2fQZqmoM4IE9D7vyHPM9Cz+3ks9T+3sM7vT1wD6vsmHaowigXr40A2XCCqHmuP3btKKy8vSXRlYrOcWU9kR2f/jjVJrAXr1WU0ZVvu+wja4UXVv6x7TkDYF5g5tJ3LhFXVYr8J2JY/UfBbrf9NM3t4MthM0mYjSppbfJ4czKvf0kXxpmmeGmAdZZmyv0ntwwxj0OM8Gjue/Nr1FbJrV5KPmCcFGrx8HOrifJlYq3yQrqFXbDRFBtCUOxhMhDBBpAkvZ8+17UTSABbsc0ngmOx9zHEsqbQb2dzQ3h7aclaL00Ps87hLt6ta0gphv6eKuiVBLwKTPJu+myJ3ZWS2zr1TxCJL+ibSuhHPHQw61G8y94Q7gQhJ1P6N8J1wX9xguP7F84r13QYnuK8tnUhzh+8z1RHRfZuDU9eb/TsvZ4fLZ0YP7Ab/Rvfjlwm+s+4dWhKfT6vXi8j9X2e7+cPzZ3MBr1eL+M8fD7nvz6bX/sA0OwzltHeE44X+1y5fC1zt9Ty34ngpt6dchxYwcFZn5h1aAl83qxv1HZ4dLHUxWM8bHOZ5j0e32LnkD+2F9J3M9ps8yTVaF6q8dy3zXlP3Dq0JP5vVbyR+o7PDo+vFPml7yffwX1bcH+33MHa6l91bRsSH7TvjPFq7SuWcZj1e/d7h+3YoCvyjUlIvS0SC49jIFj9R8Fut/wBNM3T4MvgTl1Jd3fxfiYV6OgHKwr8p17TLTpzOlLcU6CD79jWP1HwW63/TTN0+DL4gpk+G3Ud3fxfD4VvMzGdbR6RwNac90VcsN2VdNwquXrP3Dq0fT6b7j11fDIg0JzoBgrnF9LajQXJOgwKv5F0STPynGq7utS8JrEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYjgvKSjlwm+s+4dWhKfT6vXi8jlwm+s+4dWgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/APN/6LqD6XqbSv8AR4RztXhFEQAAAJBJAAAAAJAZAwAAAAAAMgAAAAAAAAAJBO87+Kppvkx5yojYNdbTd2uPZmvLKppvkp3IhF2qKW9upXHszXllU03yU7kQm7VFLe3Urj2Zryyqab5KdyIRdqilvbqVx7M15ZVNN8lO5EJu1RS3t1K49ma8sqmm+SnciEXaopb26lcezNeWVTzLxE6CJSt7dSuPZmvLB2qy2v9Nnkv0Zh4idBEpX9urXHszXllU8yyRETkrdWh2T/TnN1x7M15ZWfkpiMyVlba0Xn/m5vuyMYnss37h66jbupnXWzN5S+vGvWKvQwHua9m+7LJ1KZVfPPVzj2Rryzb+qm14p10bWj8+3l5+bJh4idBEpX9urXHszXlm8iMHiR6Cf8AbqVx7M15Z6Xnd7v4qfP6OWZn42drgLdcOV2Uk6L3e8d+7ee7k13ZH5S+vGvWK0AOpLqTj/VZY39tG2W0f5DVOJPo4u3nq5x7M15ZVPMvETqKgtvbqVx7M15Z6Xnd7v4qfP6OWZh4idBEpX9urXHszXllPqw6rW2VvVsY2+R/RqY2hmdRD6sOq1tlb1bGNvkf0amNoZnUQ97X03LxK7LJ1KYn2Kr5u6ucezNeWdbd2pv42n/MbRNfWTXuK1QwtxTgPZUfk/Bz5Xrj2Zryxb+uu14ly0bWj8r3l5+bJh4idBEpX9urXHszXlm8iMHiR6Cf8AbqVx7M15Z6Xnd7v4qfP6OWNg42drgLdcOV2Uk6L3e8d+7ee7k13ZH5S+vGvWK0AOpLqTj/VZY39tG2W0f5DV0JPo4u3nq5x7M15Z1t3am/jaf8xtE19ZNe4rVOtLqTj/VZY39tG2W0f5DVOJPo4u3nq5x7M15Z1t3am/jaf8xtE19ZNe4rVAAAAAAAAAAAAAAAAAAAAAAAABgO8tajlwm+s+4dWhKfT6vXi8jlwm+s+4dWgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/2Q==" /></button>
+      <button type="button" id="btnToggleMaintenance" class="iconbtn secondary app-lockable maint-btn-closed" title="Mantenimiento"><img class="footer-img maint-footer-img" alt="Mantenimiento" src="data:image/png;base64,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" /></button>
     </div>
   </div></div>
 
@@ -391,7 +392,7 @@ const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
 const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
 const DESTINO_OPTIONS = ['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
 const EVENT_SITUATIONS = ['En curso','Finalizado'];
-const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS', ...Array.from({length:30}, (_,i)=>'TK'+String(i+1).padStart(2,'0'))];
+const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS','GASTOS CORRIENTES', ...Array.from({length:30}, (_,i)=>'TK'+String(i+1).padStart(2,'0'))];
 
 let currentMainTab = 'ingresos';
 let currentMaintTab = 'personas';
@@ -822,16 +823,27 @@ function budgetSummary(){
 
   const totalComprometido = sociosImporte + donantesImporte;
   const comprasValorTotal = compras.reduce((a,b) => a + b.valor, 0);
-  const comprasResueltas = compras.filter(c => String(c.ticketDonacion || '').trim() !== '' && !isDonationTicket(c.ticketDonacion)).reduce((a,b) => a + b.valor, 0);
+
+  const gastosCorrientes = compras.filter(c => String(c.ticketDonacion || '').trim() === 'GASTOS CORRIENTES').reduce((a,b) => a + b.valor, 0);
+  const comprasResueltas = compras.filter(c => {
+    const tk = String(c.ticketDonacion || '').trim();
+    return tk !== '' && tk !== 'GASTOS CORRIENTES' && !isDonationTicket(tk);
+  }).reduce((a,b) => a + b.valor, 0);
+
   const comprasPendientes = compras.filter(c => String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
-  const valorDonado = compras.filter(c => isDonationTicket(c.ticketDonacion)).reduce((a,b) => a + b.valor, 0);
+
+  const donadoTienda = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO TIENDA').reduce((a,b) => a + b.valor, 0);
+  const donadoSocio = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO SOCIO').reduce((a,b) => a + b.valor, 0);
+  const donadoOtros = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO OTROS').reduce((a,b) => a + b.valor, 0);
+  const valorDonado = donadoTienda + donadoSocio + donadoOtros;
+
   const gastoOperativo = compras.reduce((a,b) => a + b.importe, 0);
-  const saldoOperativo = totalComprometido - gastoOperativo;
+  const saldoReal = totalComprometido - comprasResueltas - gastosCorrientes;
 
   return {
     socios: {count:sociosCount, importe:sociosImporte, ingresado:sociosIngresado, pendiente:sociosPendiente, saldo:totalComprometido},
-    donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente},
-    compras: {total:comprasValorTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, valorDonado, gastoOperativo, saldoOperativo}
+    donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente, donadoTienda, donadoSocio, donadoOtros},
+    compras: {total:comprasValorTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, valorDonado, gastosCorrientes, gastoOperativo, saldoReal}
   };
 }
 
@@ -842,7 +854,7 @@ function summaryBySegmento(){
     const pdte = compras.filter(c => (c.producto?.segmento || '') === seg && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
     return [
       {k: `${seg} Comprado o donado`, v: comprado, pending:false, donated:false},
-      {k: `${seg} Pte.compra o donación o donación`, v: pdte, pending:true, donated:false},
+      {k: `${seg} Pte.compra/donac/otros gastos`, v: pdte, pending:true, donated:false},
     ];
   });
 }
@@ -854,7 +866,7 @@ function summaryByDestino(){
     const pdte = compras.filter(c => (c.producto?.destino || '') === dest && String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
     return [
       {k: `${dest} Comprado o donado`, v: comprado, pending:false, donated:false},
-      {k: `${dest} Pte.compra o donación o donación`, v: pdte, pending:true, donated:false},
+      {k: `${dest} Pte.compra/donac/otros gastos`, v: pdte, pending:true, donated:false},
     ];
   });
 }
@@ -867,7 +879,7 @@ function summaryByTiendaTicket(){
   comprasForEvent().forEach(c => {
     const tienda = c.tienda?.nombre || 'Sin tienda';
     const rawTicket = String(c.ticketDonacion || '').trim();
-    const displayTicket = rawTicket || 'Pte.compra o donación';
+    const displayTicket = rawTicket || 'Pte.compra/donac/otros gastos';
     const key = `${tienda} | ${displayTicket}`;
     if(rawTicket === ''){
       pending[key] = (pending[key] || 0) + c.valor;
@@ -904,7 +916,7 @@ function renderSummaryList(targetId, rows){
   if(targetId === 'summaryTiendaTicket'){
     const tools = document.createElement('div');
     tools.className = 'hint';
-    tools.innerHTML = 'Ordenar por: <a href="#" onclick="state.summaryTiendaSort=\'tienda\'; renderBudget(); return false;">Tienda</a> · <a href="#" onclick="state.summaryTiendaSort=\'ticket\'; renderBudget(); return false;">Ticket/donado</a>';
+    tools.innerHTML = 'Ordenar por: <a href="#" onclick="state.summaryTiendaSort=\'tienda\'; renderBudget(); return false;">Tienda</a> · <a href="#" onclick="state.summaryTiendaSort=\'ticket\'; renderBudget(); return false;">Ticket/Donación/Otros Gastos/Otros Gastos</a>';
     wrap.appendChild(tools);
   }
 
@@ -1038,7 +1050,7 @@ function renderMainSelectors(){
     '<option value="" selected>Busca un producto....</option>' +
     productos.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
 
-  document.getElementById('buyTicket').innerHTML = TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pte.compra o donación --' : escapeHtml(v)}</option>`).join('');
+  document.getElementById('buyTicket').innerHTML = TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('');
   document.getElementById('buyResponsable').innerHTML = '<option value="">-- sin responsable --</option>' + personas.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
   updateBuyPreview();
 }
@@ -1118,6 +1130,9 @@ function renderBudget(){
           <div class="budget-row"><strong>Importe donantes</strong><span>${escapeHtml(money(b.donantes.importe))}</span></div>
           <div class="budget-row"><strong>Ingresado donantes</strong><span>${escapeHtml(money(b.donantes.ingresado))}</span></div>
           <div class="budget-row"><strong>Valor producto donado</strong><span>${escapeHtml(money(b.compras.valorDonado))}</span></div>
+          <div class="budget-row"><strong>Donado tienda</strong><span>${escapeHtml(money(b.donantes.donadoTienda))}</span></div>
+          <div class="budget-row"><strong>Donado socio</strong><span>${escapeHtml(money(b.donantes.donadoSocio))}</span></div>
+          <div class="budget-row"><strong>Donado otros</strong><span>${escapeHtml(money(b.donantes.donadoOtros))}</span></div>
         </div>
       </div>
       <div class="budget-panel operativo">
@@ -1125,8 +1140,9 @@ function renderBudget(){
         <div class="budget-rows">
           <div class="budget-row"><strong>SALDO GLOBAL</strong><span style="color:${b.socios.saldo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.socios.saldo))}</span></div>
           <div class="budget-row"><strong>COMPRADO</strong><span>${escapeHtml(money(b.compras.resueltas))}</span></div>
-          <div class="budget-row"><strong>PTE. COMPRA O DONACIÓN</strong><span style="color:#c2410c">${escapeHtml(money(b.compras.pendientes))}</span></div>
-          <div class="budget-row"><strong>SALDO OPERATIVO</strong><span style="color:${b.compras.saldoOperativo>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.compras.saldoOperativo))}</span></div>
+          <div class="budget-row"><strong>GASTOS CORRIENTES</strong><span>${escapeHtml(money(b.compras.gastosCorrientes))}</span></div>
+          <div class="budget-row"><strong>PTE.COMPRA/DONAC/OTROS GASTOS</strong><span style="color:#c2410c">${escapeHtml(money(b.compras.pendientes))}</span></div>
+          <div class="budget-row"><strong>SALDO REAL</strong><span style="color:${b.compras.saldoReal>=0 ? '#047857' : '#b91c1c'}">${escapeHtml(money(b.compras.saldoReal))}</span></div>
         </div>
       </div>`;
   }
@@ -1191,9 +1207,9 @@ function renderCompras(){
           <input class="soft-readonly" readonly value="${money(r.importe)}" />
         </div>
         <div class="field">
-          <label>Ticket/Donación</label>
+          <label>Ticket/Donación/Otros Gastos/Otros Gastos/Otros Gastos</label>
           <select data-action="edit-compra-ticket" data-id="${r.id}">
-            ${TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pte.compra o donación --' : escapeHtml(v)}</option>`).join('')}
+            ${TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('')}
           </select>
         </div>
         <div class="field">
@@ -1680,7 +1696,7 @@ async function exportSeedWorkbook(){
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.7 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v7.8 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -1797,7 +1813,7 @@ async function exportExcel(){
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.7 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v7.8 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {
@@ -1888,7 +1904,7 @@ async function exportExcel(){
   const wsRes = baseSheet('RESUMEN', [24, 44, 18, 12, 16, 16, 18, 20, 22]);
   let r = 1;
   mergeTitle(wsRes, r++, 'RESUMEN DEL EVENTO', 9);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v7.7 - ©oltyLAB ’26');
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v7.8 - ©oltyLAB ’26');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Evento'); putText(wsRes,r++,2,ev.titulo);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fechas'); putText(wsRes,r++,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Descripción'); putText(wsRes,r++,2,ev.descripcion || '');
@@ -1924,7 +1940,7 @@ async function exportExcel(){
   const wsCom = baseSheet('COMPRAS Y DONACIONES', [28, 16, 16, 10, 14, 14, 20, 20, 22]);
   r = 1;
   mergeTitle(wsCom, r++, 'COMPRAS Y DONACIONES DE PRODUCTO', 9);
-  titleRow(wsCom, r++, ['Producto','Segmento','Destino','ud','Precio','Importe','Tienda','Ticket/Donación','Responsable']);
+  titleRow(wsCom, r++, ['Producto','Segmento','Destino','ud','Precio','Importe','Tienda','Ticket/Donación/Otros Gastos/Otros Gastos','Responsable']);
   compras.forEach(item => {
     putText(wsCom,r,1,item.producto?.nombre || '');
     putText(wsCom,r,2,item.producto?.segmento || '');
@@ -1933,7 +1949,7 @@ async function exportExcel(){
     putMoney(wsCom,r,5,item.producto?.precio || 0);
     putMoney(wsCom,r,6,item.importe);
     putText(wsCom,r,7,item.tienda?.nombre || '');
-    putText(wsCom,r,8,item.ticketDonacion || 'Pte.compra o donación');
+    putText(wsCom,r,8,item.ticketDonacion || 'Pte.compra/donac/otros gastos');
     putText(wsCom,r,9,item.responsable?.nombre || '');
     if(String(item.ticketDonacion || '').trim() === ''){
       for(let c=1;c<=9;c++) paint(wsCom.getCell(r,c),'bad');
@@ -1971,7 +1987,7 @@ async function exportExcel(){
   // AGR. TIENDA-TICKET
   const wsTT = baseSheet('AGR.TIENDA-TICKET', [40, 18, 20]);
   r = 1;
-  mergeTitle(wsTT, r++, 'CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONADO', 3);
+  mergeTitle(wsTT, r++, 'CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONACIÓN/OTROS GASTOS', 3);
   titleRow(wsTT, r++, ['Tienda y ticket/donado','Importe','Ticket']);
   tiendaRows.forEach(item => {
     putText(wsTT,r,1,item.k);
@@ -1991,7 +2007,7 @@ async function exportExcel(){
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_7.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_8.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
