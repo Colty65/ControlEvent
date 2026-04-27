@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v7.9</title>
+  <title>ControlEvent v8.0</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -27,7 +27,7 @@
     .powerbtn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:8px 10px;font-size:22px;line-height:1;cursor:pointer}
     .powerbtn.on{color:var(--ok)}
     .powerbtn.off{color:var(--bad)}
-    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:54px;height:54px;object-fit:contain;display:block}.maint-footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-wrap{overflow-x:auto}.budget-layout{display:grid;grid-template-columns:repeat(3,minmax(235px,1fr));gap:10px;min-width:780px}.budget-panel{border:1px solid var(--border);border-radius:22px;background:#fff;padding:14px;box-shadow:var(--shadow)}.budget-panel h3{margin:0 0 10px 0;font-size:16px;letter-spacing:.02em}.budget-rows{display:grid;gap:8px}.budget-row{display:flex;justify-content:space-between;gap:6px;padding:8px 10px;border-radius:14px;background:#f8fafc;border:1px solid rgba(17,24,39,.05)}.budget-row strong{font-size:12px}.budget-row span{font-weight:900;font-size:16px;white-space:nowrap}.budget-panel.socios{background:linear-gradient(180deg,#eef6ff 0%,#f8fbff 100%)}.budget-panel.donantes{background:linear-gradient(180deg,#fff7e8 0%,#fffdf7 100%)}.budget-panel.operativo{background:linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)}.money-input{font-variant-numeric:tabular-nums}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
+    .appname{display:flex;gap:10px;align-items:center;justify-content:flex-end;font-weight:800}.appname-stack{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.appclock{font-size:12px;color:var(--muted);font-weight:700}.entry-zone{background:#f8fbff;border:1px solid #dbe8f5;border-radius:18px;padding:12px}.entry-zone input,.entry-zone select{background:#f6fbff}.soft-readonly{background:#eef6ff !important}.footer-img{width:54px;height:54px;object-fit:contain;display:block}.maint-footer-img{width:38px;height:38px;object-fit:contain;display:block}.info-mini{padding:6px 8px;border-radius:10px;font-size:13px;line-height:1}.event-desc-bubble{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:#fff7ed;color:#7c2d12;font-size:13px}.itemcard.maint-soft{background:#f8fbff;border-color:#dbe8f5}.summary-spacer{height:12px;border-top:1px solid var(--border);margin:6px 0}.ticket-actions{display:flex;align-items:center;gap:6px;margin-left:8px}.ticket-thumb{max-width:52px;max-height:36px;border:1px solid var(--border);border-radius:6px;object-fit:cover}.budget-subrows{display:grid;gap:6px;margin-top:-2px;padding:0 8px 8px 8px}.budget-subrow{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:12px;background:#fff7ed;border:1px solid rgba(194,65,12,.15);font-size:12px}.chart-shell{background:#fff;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:var(--shadow)}.chart-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:8px 0 12px}.legend-dot{display:inline-block;width:12px;height:12px;border-radius:999px;margin-right:6px;vertical-align:middle}.budget-wrap{overflow-x:auto}.budget-layout{display:grid;grid-template-columns:repeat(3,minmax(235px,1fr));gap:10px;min-width:780px}.budget-panel{border:1px solid var(--border);border-radius:22px;background:#fff;padding:14px;box-shadow:var(--shadow)}.budget-panel h3{margin:0 0 10px 0;font-size:16px;letter-spacing:.02em}.budget-rows{display:grid;gap:8px}.budget-row{display:flex;justify-content:space-between;gap:6px;padding:8px 10px;border-radius:14px;background:#f8fafc;border:1px solid rgba(17,24,39,.05)}.budget-row strong{font-size:12px}.budget-row span{font-weight:900;font-size:16px;white-space:nowrap}.budget-panel.socios{background:linear-gradient(180deg,#eef6ff 0%,#f8fbff 100%)}.budget-panel.donantes{background:linear-gradient(180deg,#fff7e8 0%,#fffdf7 100%)}.budget-panel.operativo{background:linear-gradient(180deg,#f9fafb 0%,#ffffff 100%)}.money-input{font-variant-numeric:tabular-nums}.ticket-file-input{display:none}.maint-btn-open{background:#dcfce7 !important;border:2px solid #16a34a !important}.maint-btn-closed{background:#fee2e2 !important;border:2px solid #dc2626 !important}.nowrap{white-space:nowrap}
     .main{padding:14px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
     .section-title{display:flex;gap:10px;align-items:flex-start;margin-bottom:14px}
@@ -44,7 +44,7 @@
     button.danger{background:#b91c1c}
     button.modify{background:#0f766e}
     button.small{padding:8px 10px;border-radius:12px;font-size:13px}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#fff;padding:8px;border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:14px}
+    .tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;background:#fff;padding:8px;border-radius:18px;border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:14px}
     .tab{background:#fff;color:#111827;border:1px solid var(--border)}
     .tab.active{background:#111827;color:#fff;border-color:#111827}
     .hidden{display:none !important}
@@ -126,7 +126,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v7.9</span>
+          <span>ControlEvent v8.0</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -136,9 +136,13 @@
 
   <div class="app">
     <div class="main">
-      <div class="tabs app-lockable" id="mainTabs">
+      
+<div class="tabs app-lockable" id="mainTabs">
         <button type="button" class="tab active" id="tabIngresosBtn" title="Colaboradores económicos"><span class="tabicon">🤝</span></button>
-        <button type="button" class="tab" id="tabComprasBtn" title="Compras y donaciones de producto"><span class="tabicon">🛒</span></button>
+        <button type="button" class="tab" id="tabComprasBtn" title="Compras y otros gastos"><span class="tabicon">🛒</span></button>
+        <button type="button" class="tab" id="tabDonacionesBtn" title="Donaciones de producto"><span class="tabicon">🎁</span></button>
+        <button type="button" class="tab" id="tabResumenBtn" title="Resumen presupuestario y cálculos por agrupación"><span class="tabicon">📊</span></button>
+        <button type="button" class="tab" id="tabGraficasBtn" title="Gráficas del evento"><span class="tabicon">📈</span></button>
       </div>
 
       <div id="noEventMessage" class="card hidden">
@@ -155,7 +159,7 @@
                 <p>Desplegar o plegar el resumen por forma de ingreso.</p>
               </div>
             </div>
-            <button type="button" class="outline" id="toggleIngresosSummary" class="outline big-toggle-btn">💰</button>
+            <button type="button" class="outline" id="toggleIngresosSummary">💰</button>
           </div>
           <div id="ingresosSummaryBody" class="collapsed-body hidden">
             <div class="metrics" id="ingresosSummaryGrid"></div>
@@ -201,50 +205,10 @@
         <div class="card">
           <div class="toggle-row">
             <div class="section-title" style="margin:0">
-              <div class="icon-badge">📊</div>
-              <div>
-                <h2>Control presupuestario y cálculos por agrupación</h2>
-                <p>Desplegar o plegar la información económica del evento.</p>
-              </div>
-            </div>
-            <button type="button" class="outline" id="toggleComprasSummary" class="outline big-toggle-btn">📈</button>
-          </div>
-          <div id="comprasSummaryBody" class="collapsed-body hidden">
-            <div class="card" style="box-shadow:none;margin:12px 0 0 0">
-              <div class="section-title">
-                <div class="icon-badge">👥</div>
-                <div>
-                  <h2>Control presupuestario</h2>
-                  <p>Resumen por socios, donantes y compras del evento.</p>
-                </div>
-              </div>
-              <div class="budget-wrap"><div id="budgetLayout" class="budget-layout"></div></div>
-            </div>
-
-            <div class="card" style="box-shadow:none;margin:12px 0 0 0">
-              <div class="section-title">
-                <div class="icon-badge">🧾</div>
-                <div>
-                  <h2>Cálculos por agrupación</h2>
-                  <p>Importes por segmento, destino y por tienda y ticket/donado.</p>
-                </div>
-              </div>
-              <div class="subgrid-3">
-                <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
-                <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
-                <div class="summary-card"><strong>Por tienda y Ticket/Donación/Otros Gastos</strong><div id="summaryTiendaTicket"></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="toggle-row">
-            <div class="section-title" style="margin:0">
               <div class="icon-badge">🛒</div>
               <div>
-                <h2>Compras, donaciones y otros gastos del evento</h2>
-                <p>Compras normales, donaciones y otros gastos, con responsable opcional.</p>
+                <h2>Compras y otros gastos del evento</h2>
+                <p>Compras normales y otros gastos, con responsable opcional.</p>
               </div>
             </div>
             <button type="button" class="outline" id="toggleComprasEvent">🧰</button>
@@ -287,6 +251,109 @@
             <div class="separator"></div>
             <div id="comprasList"></div>
           </div>
+        </div>
+      </div>
+
+      <div id="tabDonaciones" class="hidden app-lockable">
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">🎁</div>
+            <div>
+              <h2>Donaciones de producto</h2>
+              <p>Mantén las donaciones DONADO TIENDA, DONADO SOCIO y DONADO OTROS.</p>
+            </div>
+          </div>
+          <div class="row-purchase-form entry-zone">
+            <div class="field">
+              <label>Producto</label>
+              <select id="donProducto"></select>
+            </div>
+            <div class="field">
+              <label>Unidades</label>
+              <input id="donUnidades" type="number" min="0" step="0.01" value="1.00" />
+            </div>
+            <div class="field">
+              <label>Precio</label>
+              <input id="donPrecio" class="soft-readonly" readonly />
+            </div>
+            <div class="field">
+              <label>Valor</label>
+              <input id="donImporte" class="soft-readonly" readonly />
+            </div>
+            <div class="field">
+              <label>Ticket/Donación/Otros Gastos</label>
+              <select id="donTicket"></select>
+            </div>
+            <div class="field">
+              <label>Tienda</label>
+              <input id="donTienda" class="soft-readonly" readonly />
+            </div>
+            <div class="field">
+              <label>Responsable</label>
+              <select id="donResponsable"></select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="btnAddDonacion">Añadir</button>
+            </div>
+          </div>
+          <div class="separator"></div>
+          <div id="donacionesList"></div>
+        </div>
+      </div>
+
+      <div id="tabResumen" class="hidden app-lockable">
+        <div class="card">
+          <div class="toggle-row">
+            <div class="section-title" style="margin:0">
+              <div class="icon-badge">📊</div>
+              <div>
+                <h2>Resumen presupuestario y cálculos por agrupación</h2>
+                <p>Desplegar o plegar la información económica del evento.</p>
+              </div>
+            </div>
+            <button type="button" class="outline" id="toggleComprasSummary">📈</button>
+          </div>
+          <div id="comprasSummaryBody" class="collapsed-body hidden">
+            <div class="card" style="box-shadow:none;margin:12px 0 0 0">
+              <div class="section-title">
+                <div class="icon-badge">👥</div>
+                <div>
+                  <h2>Resumen presupuestario</h2>
+                  <p>Resumen por socios, donantes, compras y donaciones del evento.</p>
+                </div>
+              </div>
+              <div class="budget-wrap"><div id="budgetLayout" class="budget-layout"></div></div>
+            </div>
+
+            <div class="card" style="box-shadow:none;margin:12px 0 0 0">
+              <div class="section-title">
+                <div class="icon-badge">🧾</div>
+                <div>
+                  <h2>Cálculos por agrupación</h2>
+                  <p>Importes por segmento, destino y por tienda y ticket/donación/otros gastos.</p>
+                </div>
+              </div>
+              <div class="subgrid-3">
+                <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
+                <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
+                <div class="summary-card"><strong>Por tienda y Ticket/Donación/Otros Gastos</strong><div id="summaryTiendaTicket"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tabGraficas" class="hidden app-lockable">
+        <div class="card">
+          <div class="section-title">
+            <div class="icon-badge">📈</div>
+            <div>
+              <h2>Gráficas del evento</h2>
+              <p>Comparativa visual entre ingresos monetarios, donación de producto valorada y gastos del evento.</p>
+            </div>
+          </div>
+          <div id="eventChartWrap"></div>
         </div>
       </div>
 
@@ -396,7 +463,9 @@ const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
 const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
 const DESTINO_OPTIONS = ['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
 const EVENT_SITUATIONS = ['En curso','Finalizado'];
-const TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS','GASTOS CORRIENTES', ...Array.from({length:30}, (_,i)=>'TK'+String(i+1).padStart(2,'0'))];
+const ALL_TICKET_OPTIONS = ['','DONADO TIENDA','DONADO SOCIO','DONADO OTROS','GASTOS CORRIENTES', ...Array.from({length:30}, (_,i)=>'TK'+String(i+1).padStart(2,'0'))];
+const PURCHASE_TICKET_OPTIONS = ['','GASTOS CORRIENTES', ...Array.from({length:30}, (_,i)=>'TK'+String(i+1).padStart(2,'0'))];
+const DONATION_TICKET_OPTIONS = ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'];
 
 let currentMainTab = 'ingresos';
 let currentMaintTab = 'personas';
@@ -404,6 +473,7 @@ let currentProductSort = 'nombre';
 let showEventDesc = false;
 let showComprasEvent = true;
 function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTROS'].includes(String(v||'')); }
+function isCurrentExpenseTicket(v){ return String(v||'').trim() === 'GASTOS CORRIENTES'; }
 
 const state = loadState();
 if(!state.comprasSort) state.comprasSort = 'producto';
@@ -828,26 +898,19 @@ function budgetSummary(){
 
   const totalComprometido = sociosImporte + donantesImporte;
   const comprasValorTotal = compras.reduce((a,b) => a + b.valor, 0);
-
-  const gastosCorrientes = compras.filter(c => String(c.ticketDonacion || '').trim() === 'GASTOS CORRIENTES').reduce((a,b) => a + b.valor, 0);
-  const comprasResueltas = compras.filter(c => {
-    const tk = String(c.ticketDonacion || '').trim();
-    return tk !== '' && tk !== 'GASTOS CORRIENTES' && !isDonationTicket(tk);
-  }).reduce((a,b) => a + b.valor, 0);
-
+  const comprasResueltas = compras.filter(c => { const tk=String(c.ticketDonacion||'').trim(); return tk !== '' && tk !== 'GASTOS CORRIENTES' && !isDonationTicket(tk); }).reduce((a,b) => a + b.valor, 0);
   const comprasPendientes = compras.filter(c => String(c.ticketDonacion || '').trim() === '').reduce((a,b) => a + b.valor, 0);
-
   const donadoTienda = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO TIENDA').reduce((a,b) => a + b.valor, 0);
   const donadoSocio = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO SOCIO').reduce((a,b) => a + b.valor, 0);
   const donadoOtros = compras.filter(c => String(c.ticketDonacion || '').trim() === 'DONADO OTROS').reduce((a,b) => a + b.valor, 0);
   const valorDonado = donadoTienda + donadoSocio + donadoOtros;
-
+  const gastosCorrientes = compras.filter(c => String(c.ticketDonacion || '').trim() === 'GASTOS CORRIENTES').reduce((a,b) => a + b.valor, 0);
   const gastoOperativo = compras.reduce((a,b) => a + b.importe, 0);
-  const saldoReal = totalComprometido - comprasResueltas - gastosCorrientes;
+  const saldoReal = totalComprometido - gastoOperativo;
 
   return {
     socios: {count:sociosCount, importe:sociosImporte, ingresado:sociosIngresado, pendiente:sociosPendiente, saldo:totalComprometido},
-    donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente, donadoTienda, donadoSocio, donadoOtros},
+    donantes: {count:donantesCount, importe:donantesImporte, ingresado:donantesIngresado, pendiente:donantesPendiente, donadoTienda, donadoSocio, donadoOtros, valorDonado},
     compras: {total:comprasValorTotal, resueltas:comprasResueltas, pendientes:comprasPendientes, valorDonado, gastosCorrientes, gastoOperativo, saldoReal}
   };
 }
@@ -1006,6 +1069,7 @@ function render(){
   renderColabs();
   renderBudget();
   renderCompras();
+  renderDonaciones();
   renderMaintenance();
   renderLockState();
 }
@@ -1034,11 +1098,18 @@ function renderHeader(){
 }
 
 function renderTabVisibility(){
-  document.getElementById('noEventMessage').classList.toggle('hidden', !!selectedEvent());
-  document.getElementById('tabIngresos').classList.toggle('hidden', currentMainTab !== 'ingresos' || !selectedEvent());
-  document.getElementById('tabCompras').classList.toggle('hidden', currentMainTab !== 'compras' || !selectedEvent());
+  const hasEvent = !!selectedEvent();
+  document.getElementById('noEventMessage').classList.toggle('hidden', hasEvent);
+  document.getElementById('tabIngresos').classList.toggle('hidden', currentMainTab !== 'ingresos' || !hasEvent);
+  document.getElementById('tabCompras').classList.toggle('hidden', currentMainTab !== 'compras' || !hasEvent);
+  document.getElementById('tabDonaciones').classList.toggle('hidden', currentMainTab !== 'donaciones' || !hasEvent);
+  document.getElementById('tabResumen').classList.toggle('hidden', currentMainTab !== 'resumen' || !hasEvent);
+  document.getElementById('tabGraficas').classList.toggle('hidden', currentMainTab !== 'graficas' || !hasEvent);
   document.getElementById('tabIngresosBtn').classList.toggle('active', currentMainTab === 'ingresos');
   document.getElementById('tabComprasBtn').classList.toggle('active', currentMainTab === 'compras');
+  document.getElementById('tabDonacionesBtn').classList.toggle('active', currentMainTab === 'donaciones');
+  document.getElementById('tabResumenBtn').classList.toggle('active', currentMainTab === 'resumen');
+  document.getElementById('tabGraficasBtn').classList.toggle('active', currentMainTab === 'graficas');
   const comprasBody = document.getElementById('comprasEventBody');
   if(comprasBody) comprasBody.classList.toggle('hidden', !showComprasEvent);
 }
@@ -1056,10 +1127,17 @@ function renderMainSelectors(){
   document.getElementById('buyProducto').innerHTML =
     '<option value="" selected>Busca un producto....</option>' +
     productos.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
-
-  document.getElementById('buyTicket').innerHTML = TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('');
+  document.getElementById('buyTicket').innerHTML = PURCHASE_TICKET_OPTIONS.map(v => `<option value="${v}">${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('');
   document.getElementById('buyResponsable').innerHTML = '<option value="">-- sin responsable --</option>' + personas.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
+
+  document.getElementById('donProducto').innerHTML =
+    '<option value="" selected>Busca un producto....</option>' +
+    productos.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
+  document.getElementById('donTicket').innerHTML = DONATION_TICKET_OPTIONS.map(v => `<option value="${v}">${escapeHtml(v)}</option>`).join('');
+  document.getElementById('donResponsable').innerHTML = '<option value="">-- sin responsable --</option>' + personas.map(p => `<option value="${p.id}">${escapeHtml(p.nombre)}</option>`).join('');
+
   updateBuyPreview();
+  updateDonationPreview();
 }
 
 function renderIngresosSummary(){
@@ -1136,10 +1214,12 @@ function renderBudget(){
           <div class="budget-row"><strong>Personas</strong><span>${escapeHtml(String(b.donantes.count))}</span></div>
           <div class="budget-row"><strong>Importe donantes</strong><span>${escapeHtml(money(b.donantes.importe))}</span></div>
           <div class="budget-row"><strong>Ingresado donantes</strong><span>${escapeHtml(money(b.donantes.ingresado))}</span></div>
-          <div class="budget-row"><strong>Valor producto donado</strong><span>${escapeHtml(money(b.compras.valorDonado))}</span></div>
-          <div class="budget-row"><strong>Donado tienda</strong><span>${escapeHtml(money(b.donantes.donadoTienda))}</span></div>
-          <div class="budget-row"><strong>Donado socio</strong><span>${escapeHtml(money(b.donantes.donadoSocio))}</span></div>
-          <div class="budget-row"><strong>Donado otros</strong><span>${escapeHtml(money(b.donantes.donadoOtros))}</span></div>
+          <div class="budget-row budget-subgroup"><strong>Valor producto donado</strong><span>${escapeHtml(money(b.donantes.valorDonado))}</span></div>
+          <div class="budget-subrows">
+            <div class="budget-subrow"><span>Donación de producto tiendas</span><span>${escapeHtml(money(b.donantes.donadoTienda))}</span></div>
+            <div class="budget-subrow"><span>Donación de producto socios</span><span>${escapeHtml(money(b.donantes.donadoSocio))}</span></div>
+            <div class="budget-subrow"><span>Donación de productos otros</span><span>${escapeHtml(money(b.donantes.donadoOtros))}</span></div>
+          </div>
         </div>
       </div>
       <div class="budget-panel operativo">
@@ -1156,11 +1236,12 @@ function renderBudget(){
   renderSummaryList('summarySegmento', summaryBySegmento());
   renderSummaryList('summaryDestino', summaryByDestino());
   renderSummaryList('summaryTiendaTicket', summaryByTiendaTicket());
+  renderGraficas();
 }
 
 function renderCompras(){
   const wrap = document.getElementById('comprasList');
-  let rows = comprasForEvent().slice();
+  let rows = comprasForEvent().filter(r => !isDonationTicket(r.ticketDonacion)).slice();
 
   if(state.comprasSort === 'ticket'){
     rows.sort((a,b)=>{
@@ -1183,7 +1264,7 @@ function renderCompras(){
   }
 
   if(!rows.length){
-    wrap.innerHTML = '<div class="empty">Todavía no hay compras o donaciones de producto para este evento.</div>';
+    wrap.innerHTML = '<div class="empty">Todavía no hay compras u otros gastos para este evento.</div>';
     return;
   }
 
@@ -1216,7 +1297,7 @@ function renderCompras(){
         <div class="field">
           <label>Ticket/Donación/Otros Gastos</label>
           <select data-action="edit-compra-ticket" data-id="${r.id}">
-            ${TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('')}
+            ${PURCHASE_TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('')}
           </select>
         </div>
         <div class="field">
@@ -1475,6 +1556,152 @@ function addColab(){
   render();
 }
 
+
+function renderDonaciones(){
+  const wrap = document.getElementById('donacionesList');
+  let rows = comprasForEvent().filter(r => isDonationTicket(r.ticketDonacion)).slice();
+
+  if(state.comprasSort === 'ticket'){
+    rows.sort((a,b)=>{
+      const ta = String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
+      if(ta !== 0) return ta;
+      return (a.producto?.nombre || '').localeCompare((b.producto?.nombre || ''), 'es');
+    });
+  } else if(state.comprasSort === 'responsable'){
+    rows.sort((a,b)=>{
+      const ra = (a.responsable?.nombre || '').localeCompare((b.responsable?.nombre || ''), 'es');
+      if(ra !== 0) return ra;
+      return (a.producto?.nombre || '').localeCompare((b.producto?.nombre || ''), 'es');
+    });
+  } else {
+    rows.sort((a,b)=>{
+      const pa = (a.producto?.nombre || '').localeCompare((b.producto?.nombre || ''), 'es');
+      if(pa !== 0) return pa;
+      return String(a.ticketDonacion || '').localeCompare(String(b.ticketDonacion || ''), 'es');
+    });
+  }
+
+  if(!rows.length){
+    wrap.innerHTML = '<div class="empty">Todavía no hay donaciones de producto para este evento.</div>';
+    return;
+  }
+
+  wrap.innerHTML = '<div class="hint">Ordenar por: <a href="#" onclick="state.comprasSort=\'producto\'; renderDonaciones(); return false;">Producto</a> · <a href="#" onclick="state.comprasSort=\'ticket\'; renderDonaciones(); return false;">Ticket</a> · <a href="#" onclick="state.comprasSort=\'responsable\'; renderDonaciones(); return false;">Responsable</a></div>';
+
+  rows.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'itemcard';
+    row.innerHTML = `
+      <div class="rowline compra">
+        <div class="field">
+          <label>Producto</label>
+          <select data-action="edit-compra-producto" data-id="${r.id}">
+            ${state.productos.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}" ${p.id===r.productoId?'selected':''}>${escapeHtml(p.nombre)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Unidades</label>
+          <input type="number" min="0" step="0.01" value="${Number(r.unidades||0)}" data-action="edit-compra-unidades" data-id="${r.id}" />
+        </div>
+        <div class="field">
+          <label>Precio</label>
+          <input class="soft-readonly" readonly value="${money(r.producto?.precio || 0)}" />
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input class="soft-readonly" readonly value="${money(r.valor)}" />
+        </div>
+        <div class="field">
+          <label>Ticket/Donación/Otros Gastos</label>
+          <select data-action="edit-compra-ticket" data-id="${r.id}">
+            ${DONATION_TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${escapeHtml(v)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>Tienda</label>
+          <input class="soft-readonly" readonly value="${escapeHtml(r.tienda?.nombre || '')}" />
+        </div>
+        <div class="field">
+          <label>Responsable</label>
+          <select data-action="edit-compra-responsable" data-id="${r.id}">
+            <option value="" ${!r.responsableId?'selected':''}>-- sin responsable --</option>
+            ${state.personas.slice().sort((a,b)=>(a.nombre||'').localeCompare((b.nombre||''),'es')).map(p => `<option value="${p.id}" ${p.id===r.responsableId?'selected':''}>${escapeHtml(p.nombre)}</option>`).join('')}
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;align-items:end">
+          <button type="button" class="modify small" data-action="save-compra" data-id="${r.id}">Modificar</button>
+          <button type="button" class="danger small" data-action="delete-compra" data-id="${r.id}">Eliminar</button>
+        </div>
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function addDonation(){
+  if(!selectedEvent()) return;
+  const productoId = document.getElementById('donProducto').value;
+  if(!productoId) return;
+  state.compras.push({
+    id:uid(),
+    eventId:state.selectedEventId,
+    productoId,
+    unidades:Number(document.getElementById('donUnidades').value || 0),
+    ticketDonacion:document.getElementById('donTicket').value,
+    responsableId:document.getElementById('donResponsable').value || ''
+  });
+  document.getElementById('donProducto').value = '';
+  document.getElementById('donUnidades').value = '1.00';
+  document.getElementById('donTicket').value = DONATION_TICKET_OPTIONS[0];
+  document.getElementById('donResponsable').value = '';
+  render();
+}
+
+function updateDonationPreview(){
+  const producto = productoById(document.getElementById('donProducto')?.value || '');
+  const unidades = Number(document.getElementById('donUnidades')?.value || 0);
+  const precio = Number(producto?.precio || 0);
+  const valor = precio * unidades;
+  const tienda = tiendaById(producto?.tiendaId || '');
+  const precioEl = document.getElementById('donPrecio');
+  const importeEl = document.getElementById('donImporte');
+  const tiendaEl = document.getElementById('donTienda');
+  if(precioEl) precioEl.value = money(precio);
+  if(importeEl) importeEl.value = money(valor);
+  if(tiendaEl) tiendaEl.value = tienda?.nombre || '';
+}
+
+function renderGraficas(){
+  const wrap = document.getElementById('eventChartWrap');
+  if(!wrap) return;
+  const b = budgetSummary();
+  const labels = ['Ingresos dinero','Donación producto','Compras','Otros gastos'];
+  const values = [b.socios.ingresado + b.donantes.ingresado, b.donantes.valorDonado, b.compras.resueltas, b.compras.gastosCorrientes];
+  const maxVal = Math.max(1, ...values);
+  const points = values.map((v,i) => {
+    const x = 70 + i * 170;
+    const y = 280 - (v / maxVal) * 190;
+    return {x, y, v, label: labels[i]};
+  });
+  const poly = points.map(p => `${p.x},${p.y}`).join(' ');
+  wrap.innerHTML = `
+    <div class="chart-shell">
+      <div class="chart-legend">
+        <span><span class="legend-dot" style="background:#16a34a"></span>Ingresos dinero</span>
+        <span><span class="legend-dot" style="background:#d97706"></span>Donación producto</span>
+        <span><span class="legend-dot" style="background:#2563eb"></span>Compras</span>
+        <span><span class="legend-dot" style="background:#dc2626"></span>Otros gastos</span>
+      </div>
+      <svg viewBox="0 0 760 340" width="100%" height="340" role="img" aria-label="Gráfica del evento">
+        <rect x="0" y="0" width="760" height="340" rx="16" fill="#ffffff"></rect>
+        <line x1="50" y1="280" x2="730" y2="280" stroke="#cbd5e1" stroke-width="2"/>
+        <line x1="60" y1="40" x2="60" y2="290" stroke="#cbd5e1" stroke-width="2"/>
+        <polyline points="${poly}" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        ${points.map((p, i) => `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${['#16a34a','#d97706','#2563eb','#dc2626'][i]}"></circle><text x="${p.x}" y="${p.y - 12}" text-anchor="middle" font-size="12" fill="#111827">${money(p.v)}</text><text x="${p.x}" y="312" text-anchor="middle" font-size="12" fill="#475569">${p.label}</text>`).join('')}
+      </svg>
+    </div>`;
+}
+
 function addCompra(){
   if(!selectedEvent()) return;
   const productoId = document.getElementById('buyProducto').value;
@@ -1526,6 +1753,9 @@ function handleClick(e){
   switch(action){
     case 'tabIngresosBtn': currentMainTab = 'ingresos'; render(); break;
     case 'tabComprasBtn': currentMainTab = 'compras'; render(); break;
+    case 'tabDonacionesBtn': currentMainTab = 'donaciones'; render(); break;
+    case 'tabResumenBtn': currentMainTab = 'resumen'; render(); break;
+    case 'tabGraficasBtn': currentMainTab = 'graficas'; render(); break;
     case 'btnToggleMaintenance':
       document.getElementById('maintenanceWrapper').classList.toggle('hidden');
       renderLockState();
@@ -1546,6 +1776,7 @@ function handleClick(e){
     case 'btnAddProducto': addProducto(); break;
     case 'btnAddColab': addColab(); break;
     case 'btnAddCompra': addCompra(); break;
+    case 'btnAddDonacion': addDonation(); break;
     case 'btnStartImport': importInitialWorkbook(); break;
     case 'btnClearImportStatus': document.getElementById('importStatus').classList.add('hidden'); document.getElementById('importStatus').textContent=''; break;
     case 'btnTogglePower':
@@ -1687,6 +1918,10 @@ function handleChange(e){
     if(isLocked()) return;
     updateBuyPreview();
   }
+  if(['donProducto','donUnidades','donTicket'].includes(e.target.id)){
+    if(isLocked()) return;
+    updateDonationPreview();
+  }
 }
 
 
@@ -1707,7 +1942,7 @@ async function exportSeedWorkbook(){
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.9 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v8.0 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -1818,21 +2053,18 @@ async function exportExcel(){
 
   const collabs = collabsForEvent();
   const compras = comprasForEvent();
+  const comprasSolo = compras.filter(x => !isDonationTicket(x.ticketDonacion));
+  const donacionesSolo = compras.filter(x => isDonationTicket(x.ticketDonacion));
   const budget = budgetSummary();
   const segRows = summaryBySegmento();
   const destRows = summaryByDestino();
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v7.9 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v8.0 - ©oltyLAB ’26';
   wb.created = new Date();
 
-  const border = {
-    top:{style:'thin', color:{argb:'FFDDE2EA'}},
-    left:{style:'thin', color:{argb:'FFDDE2EA'}},
-    bottom:{style:'thin', color:{argb:'FFDDE2EA'}},
-    right:{style:'thin', color:{argb:'FFDDE2EA'}}
-  };
+  const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
   const fills = { title:'FF111827', ok:'FFECFDF5', bad:'FFFEF2F2', warn:'FFFFF7ED', white:'FFFFFFFF' };
   const moneyFmt = '#,##0.00 [$€-C0A]';
   const numFmt = '0.00';
@@ -1851,7 +2083,6 @@ async function exportExcel(){
     }
   }
   function titleRow(ws, rowNum, headers){
-    const row = ws.getRow(rowNum);
     headers.forEach((h, i) => {
       const c = ws.getCell(rowNum, i+1);
       c.value = h;
@@ -1860,7 +2091,7 @@ async function exportExcel(){
       c.border = border;
       c.alignment = {vertical:'middle', horizontal:'center'};
     });
-    row.height = 20;
+    ws.getRow(rowNum).height = 20;
   }
   function putText(ws, r, c, v, fill='white'){
     const cell = ws.getCell(r,c);
@@ -1905,17 +2136,38 @@ async function exportExcel(){
     const id = wb.addImage({base64:dataUrl, extension:ext});
     ws.getRow(row).height = 60;
     paint(ws.getCell(row,col), 'white');
-    ws.addImage(id, {
-      tl: {col: col-1 + 0.08, row: row-1 + 0.08},
-      ext: {width: 115, height: 72}
+    ws.addImage(id, { tl: {col: col-1 + 0.08, row: row-1 + 0.08}, ext: {width: 115, height: 72} });
+  }
+  function makeChartDataUrl(){
+    const canvas = document.createElement('canvas');
+    canvas.width = 920; canvas.height = 420;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(70,340); ctx.lineTo(860,340); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(80,40); ctx.lineTo(80,350); ctx.stroke();
+    const labels = ['Ingresos dinero','Donación producto','Compras','Otros gastos'];
+    const values = [budget.socios.ingresado + budget.donantes.ingresado, budget.donantes.valorDonado, budget.compras.resueltas, budget.compras.gastosCorrientes];
+    const colors = ['#16a34a','#d97706','#2563eb','#dc2626'];
+    const maxVal = Math.max(1, ...values);
+    const pts = values.map((v,i)=>({x:120 + i*220, y:320 - (v/maxVal)*220, v, label:labels[i], color:colors[i]}));
+    ctx.strokeStyle = '#111827'; ctx.lineWidth = 4; ctx.beginPath();
+    pts.forEach((p,i)=>{ if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); }); ctx.stroke();
+    ctx.font = '14px Arial'; ctx.textAlign = 'center';
+    pts.forEach(p => {
+      ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x,p.y,7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#111827'; ctx.fillText(new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(p.v), p.x, p.y-14);
+      ctx.fillStyle = '#475569'; ctx.fillText(p.label, p.x, 370);
     });
+    ctx.textAlign = 'left';
+    return canvas.toDataURL('image/png');
   }
 
   // RESUMEN
   const wsRes = baseSheet('RESUMEN', [24, 44, 18, 12, 16, 16, 18, 20, 22]);
   let r = 1;
   mergeTitle(wsRes, r++, 'RESUMEN DEL EVENTO', 9);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v7.9 - ©oltyLAB ’26');
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v8.0 - ©oltyLAB ’26');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Evento'); putText(wsRes,r++,2,ev.titulo);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fechas'); putText(wsRes,r++,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Descripción'); putText(wsRes,r++,2,ev.descripcion || '');
@@ -1924,8 +2176,11 @@ async function exportExcel(){
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Total comprometido'); putMoney(wsRes,r++,2,budget.socios.saldo);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Ingresado total'); putMoney(wsRes,r++,2,budget.socios.ingresado + budget.donantes.ingresado);
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Pendiente total'); putMoney(wsRes,r++,2,budget.socios.pendiente + budget.donantes.pendiente,'warn');
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Valor estimado producto donado'); putMoney(wsRes,r++,2,budget.compras.valorDonado);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Saldo operativo'); putMoney(wsRes,r++,2,budget.compras.saldoOperativo, budget.compras.saldoOperativo >= 0 ? 'ok' : 'bad');
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Valor estimado producto donado'); putMoney(wsRes,r++,2,budget.donantes.valorDonado);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donado tienda'); putMoney(wsRes,r++,2,budget.donantes.donadoTienda);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donado socio'); putMoney(wsRes,r++,2,budget.donantes.donadoSocio);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donado otros'); putMoney(wsRes,r++,2,budget.donantes.donadoOtros);
+  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Saldo real'); putMoney(wsRes,r++,2,budget.compras.saldoReal, budget.compras.saldoReal >= 0 ? 'ok' : 'bad');
   wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fecha y hora emisión'); putText(wsRes,r++,2,new Date().toLocaleString('es-ES'));
 
   // INGRESOS
@@ -1940,19 +2195,17 @@ async function exportExcel(){
     putMoney(wsIng,r,4,item.base);
     putMoney(wsIng,r,5,item.donation);
     putMoney(wsIng,r,6,item.total);
-    if(item.situacion === 'Pendiente'){
-      for(let c=1;c<=6;c++) paint(wsIng.getCell(r,c),'bad');
-    }
+    if(item.situacion === 'Pendiente') for(let c=1;c<=6;c++) paint(wsIng.getCell(r,c),'bad');
     r++;
   });
   addTotalRow(wsIng, r, 5, 6, collabs.reduce((a,b)=>a+Number(b.total||0),0));
 
-  // COMPRAS
-  const wsCom = baseSheet('COMPRAS, DONAC Y OTROS GASTOS', [28, 16, 16, 10, 14, 14, 20, 20, 22]);
+  // COMPRAS Y OTROS GASTOS
+  const wsCom = baseSheet('COMPRAS Y OTROS GASTOS', [28, 16, 16, 10, 14, 14, 20, 24, 22]);
   r = 1;
-  mergeTitle(wsCom, r++, 'COMPRAS, DONAC Y OTROS GASTOS', 9);
+  mergeTitle(wsCom, r++, 'COMPRAS Y OTROS GASTOS', 9);
   titleRow(wsCom, r++, ['Producto','Segmento','Destino','ud','Precio','Importe','Tienda','Ticket/Donación/Otros Gastos','Responsable']);
-  compras.forEach(item => {
+  comprasSolo.forEach(item => {
     putText(wsCom,r,1,item.producto?.nombre || '');
     putText(wsCom,r,2,item.producto?.segmento || '');
     putText(wsCom,r,3,item.producto?.destino || '');
@@ -1962,15 +2215,32 @@ async function exportExcel(){
     putText(wsCom,r,7,item.tienda?.nombre || '');
     putText(wsCom,r,8,item.ticketDonacion || 'Pte.compra/donac/otros gastos');
     putText(wsCom,r,9,item.responsable?.nombre || '');
-    if(String(item.ticketDonacion || '').trim() === ''){
-      for(let c=1;c<=9;c++) paint(wsCom.getCell(r,c),'bad');
-    }
+    if(String(item.ticketDonacion || '').trim() === '') for(let c=1;c<=9;c++) paint(wsCom.getCell(r,c),'bad');
     r++;
   });
-  addTotalRow(wsCom, r, 5, 6, compras.reduce((a,b)=>a+Number(b.importe||0),0));
+  addTotalRow(wsCom, r, 5, 6, comprasSolo.reduce((a,b)=>a+Number(b.importe||0),0));
+
+  // DONACIONES DE PRODUCTO
+  const wsDon = baseSheet('DONACIONES DE PRODUCTO', [28, 16, 16, 10, 14, 14, 20, 24, 22]);
+  r = 1;
+  mergeTitle(wsDon, r++, 'DONACIONES DE PRODUCTO', 9);
+  titleRow(wsDon, r++, ['Producto','Segmento','Destino','ud','Precio','Valor','Tienda','Ticket/Donación/Otros Gastos','Responsable']);
+  donacionesSolo.forEach(item => {
+    putText(wsDon,r,1,item.producto?.nombre || '');
+    putText(wsDon,r,2,item.producto?.segmento || '');
+    putText(wsDon,r,3,item.producto?.destino || '');
+    putNum(wsDon,r,4,item.unidades);
+    putMoney(wsDon,r,5,item.producto?.precio || 0);
+    putMoney(wsDon,r,6,item.valor);
+    putText(wsDon,r,7,item.tienda?.nombre || '');
+    putText(wsDon,r,8,item.ticketDonacion || '');
+    putText(wsDon,r,9,item.responsable?.nombre || '');
+    r++;
+  });
+  addTotalRow(wsDon, r, 5, 6, donacionesSolo.reduce((a,b)=>a+Number(b.valor||0),0));
 
   // AGR. SEGMENTO
-  const wsSeg = baseSheet('AGR. SEGMENTO', [36, 18]);
+  const wsSeg = baseSheet('AGR. SEGMENTO', [40, 18]);
   r = 1;
   mergeTitle(wsSeg, r++, 'CÁLCULOS POR AGRUPACIÓN - SEGMENTO', 2);
   titleRow(wsSeg, r++, ['Segmento','Importe']);
@@ -1983,7 +2253,7 @@ async function exportExcel(){
   addTotalRow(wsSeg, r, 1, 2, segRows.reduce((a,b)=>a+Number(b.v||0),0));
 
   // AGR. DESTINO
-  const wsDest = baseSheet('AGR. DESTINO', [36, 18]);
+  const wsDest = baseSheet('AGR. DESTINO', [40, 18]);
   r = 1;
   mergeTitle(wsDest, r++, 'CÁLCULOS POR AGRUPACIÓN - DESTINO', 2);
   titleRow(wsDest, r++, ['Destino','Importe']);
@@ -1996,10 +2266,10 @@ async function exportExcel(){
   addTotalRow(wsDest, r, 1, 2, destRows.reduce((a,b)=>a+Number(b.v||0),0));
 
   // AGR. TIENDA-TICKET
-  const wsTT = baseSheet('AGR.TIENDA-TICKET', [40, 18, 20]);
+  const wsTT = baseSheet('AGR.TIENDA-TICKET', [44, 18, 20]);
   r = 1;
   mergeTitle(wsTT, r++, 'CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONACIÓN/OTROS GASTOS', 3);
-  titleRow(wsTT, r++, ['Tienda y ticket/donado','Importe','Ticket']);
+  titleRow(wsTT, r++, ['Tienda y Ticket/Donación/Otros Gastos','Importe','Ticket']);
   tiendaRows.forEach(item => {
     putText(wsTT,r,1,item.k);
     putMoney(wsTT,r,2,item.v);
@@ -2014,11 +2284,20 @@ async function exportExcel(){
   });
   addTotalRow(wsTT, r, 1, 2, tiendaRows.reduce((a,b)=>a+Number(b.v||0),0));
 
+  // GRAFICAS
+  const wsGraf = baseSheet('GRAFICAS', [24,24,24,24]);
+  mergeTitle(wsGraf, 1, 'GRÁFICAS DEL EVENTO', 4);
+  putText(wsGraf, 3, 1, 'Ingresos dinero'); putMoney(wsGraf, 3, 2, budget.socios.ingresado + budget.donantes.ingresado);
+  putText(wsGraf, 4, 1, 'Donación de producto'); putMoney(wsGraf, 4, 2, budget.donantes.valorDonado);
+  putText(wsGraf, 5, 1, 'Compras'); putMoney(wsGraf, 5, 2, budget.compras.resueltas);
+  putText(wsGraf, 6, 1, 'Otros gastos'); putMoney(wsGraf, 6, 2, budget.compras.gastosCorrientes);
+  addImageToCell(wsGraf, makeChartDataUrl(), 8, 1);
+
   const buffer = await wb.xlsx.writeBuffer();
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v7_9.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v8_0.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
