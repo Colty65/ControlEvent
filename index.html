@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ControlEvent v8.1</title>
+  <title>ControlEvent v8.2</title>
   <style>
     :root{
       --bg:#f3f5f7; --card:#fff; --text:#1f2937; --muted:#6b7280; --border:#dbe2ea;
@@ -120,6 +120,17 @@
 .chart-saldo{height:40px}
 .chart-center-value{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#111827;pointer-events:none}
 
+
+.summary-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.summary-bottom-grid{margin-top:14px}
+.chart-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.chart-stat{border:1px solid var(--border);background:#fff;border-radius:18px;padding:12px 14px;box-shadow:var(--shadow)}
+.chart-stat .k{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
+.chart-stat .v{font-size:20px;font-weight:900;color:#111827}
+.chart-seg[data-tip], .chart-track[data-tip]{cursor:help}
+@media (max-width: 900px){.summary-top-grid{grid-template-columns:1fr}.chart-grid{grid-template-columns:1fr 1fr}}
+@media (max-width: 640px){.chart-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -139,7 +150,7 @@
       </div>
       <div class="appname">
         <div class="appname-stack">
-          <span>ControlEvent v8.1</span>
+          <span>ControlEvent v8.2</span>
           <div id="headerDateTime" class="appclock"></div>
         </div>
         <button type="button" id="btnTogglePower" class="powerbtn on" title="Cambiar situación">⏻</button>
@@ -197,7 +208,7 @@
               <input id="collabNumero" type="number" min="0" step="1" value="1" />
             </div>
             <div class="field">
-              <label>Situación</label>
+              <label>Ingreso</label>
               <select id="collabSituacion"></select>
             </div>
             <div class="field">
@@ -245,7 +256,7 @@
                 <input id="buyImporte" class="soft-readonly" readonly />
               </div>
               <div class="field">
-                <label>Ticket/Donación/Otros Gastos</label>
+                <label>Ticket u Otros gastos</label>
                 <select id="buyTicket"></select>
               </div>
               <div class="field">
@@ -294,7 +305,7 @@
               <input id="donImporte" class="soft-readonly" readonly />
             </div>
             <div class="field">
-              <label>Ticket/Donación/Otros Gastos</label>
+              <label>Tipo de donación</label>
               <select id="donTicket"></select>
             </div>
             <div class="field">
@@ -347,9 +358,11 @@
                   <p>Importes por segmento, destino y por tienda y ticket/donación/otros gastos.</p>
                 </div>
               </div>
-              <div class="subgrid-3">
+              <div class="summary-top-grid">
                 <div class="summary-card"><strong>Por segmento</strong><div id="summarySegmento"></div></div>
                 <div class="summary-card"><strong>Por destino</strong><div id="summaryDestino"></div></div>
+              </div>
+              <div class="summary-bottom-grid">
                 <div class="summary-card"><strong>Por tienda y Ticket/Donación/Otros Gastos</strong><div id="summaryTiendaTicket"></div></div>
               </div>
             </div>
@@ -363,7 +376,7 @@
             <div class="icon-badge">📊</div>
             <div>
               <h2>Gráficas del evento</h2>
-              <p>Barras comparativas entre ingresos en dinero, gastos y saldo operativo.</p>
+              <p>Panel visual completo del evento con barras y resúmenes rápidos.</p>
             </div>
           </div>
           <div id="eventChartWrap"></div>
@@ -472,7 +485,7 @@
 <script>
 const STORAGE_KEY = 'controlevent_v6_4';
 const PERSONA_RANGOS = ['SOCIO','DONANTE'];
-const PAYMENT_OPTIONS = ['Efectivo','Bizum','ING. RURAL','Pendiente'];
+const PAYMENT_OPTIONS = ['Efectivo','Banco','Bizum','Pendiente'];
 const SEGMENT_OPTIONS = ['COMIDA','BEBIDA','INFRAESTRUCTURA'];
 const DESTINO_OPTIONS = ['APERITIVO','COMIDA','CENA','CUBATAS','INFRAESTRUCTURA'];
 const EVENT_SITUATIONS = ['En curso','Finalizado'];
@@ -489,6 +502,7 @@ function isDonationTicket(v){ return ['DONADO TIENDA','DONADO SOCIO','DONADO OTR
 function isCurrentExpenseTicket(v){ return String(v||'').trim() === 'GASTOS CORRIENTES'; }
 
 const state = loadState();
+(state.colaboradores||[]).forEach(c=>{ if(c.situacion==='Banco') c.situacion='Banco'; });
 if(!state.comprasSort) state.comprasSort = 'producto';
 if(!state.summaryTiendaSort) state.summaryTiendaSort = 'tienda';
 
@@ -699,7 +713,7 @@ async function importInitialWorkbook(){
         eventId: eventMap[eventCode],
         personaId: personMap[`${eventCode}|${personCode}`],
         numero: Number(pick(row, ['NUMERO'], 0)) || 0,
-        situacion: String(pick(row, ['SITUACION'], 'Pendiente')).trim(),
+        situacion: String(pick(row, ['INGRESO','SITUACION'], 'Pendiente')).trim().replace('ING. RURAL','Banco'),
         importe: parseEuroInput(pick(row, ['IMPORTE_VOLUNTARIO','IMPORTE'], 0))
       });
     });
@@ -714,7 +728,7 @@ async function importInitialWorkbook(){
         eventId: eventMap[eventCode],
         productoId: productMap[`${eventCode}|${productCode}`],
         unidades: Number(pick(row, ['UNIDADES','UD'], 0)) || 0,
-        ticketDonacion: String(pick(row, ['TICKET_DONACION','TICKET'], '')).trim(),
+        ticketDonacion: String(pick(row, ['TICKET_U_OTROS_GASTOS','TICKET_DONACION','TIPO_DE_DONACION','TICKET'], '')).trim(),
         responsableId: personMap[`${eventCode}|${respCode}`] || ''
       });
     });
@@ -728,7 +742,7 @@ async function importInitialWorkbook(){
     ticketsRows.forEach(row => {
       const eventCode = String(pick(row, ['EVENTO_CODIGO'])).trim();
       const tiendaCode = String(pick(row, ['TIENDA_CODIGO'])).trim();
-      const ticket = String(pick(row, ['TICKET_DONACION','TICKET'], '')).trim();
+      const ticket = String(pick(row, ['TICKET_U_OTROS_GASTOS','TICKET_DONACION','TIPO_DE_DONACION','TICKET'], '')).trim();
       const filename = String(pick(row, ['ARCHIVO_IMAGEN','ARCHIVO','FOTO'], '')).trim();
       const base64Image = String(pick(row, ['IMAGEN_BASE64'], '')).trim();
       if(!eventMap[eventCode] || !storeNameByCode[`${eventCode}|${tiendaCode}`] || !ticket) return;
@@ -842,7 +856,7 @@ function collabsForEvent(){
       return {...c, persona, base, donation, total};
     })
     .sort((a,b) => {
-      const order = {'Pendiente':0,'Efectivo':1,'Bizum':2,'ING. RURAL':3};
+      const order = {'Pendiente':0,'Efectivo':1,'Bizum':2,'Banco':3};
       const oa = order[a.situacion] ?? 9, ob = order[b.situacion] ?? 9;
       if(oa !== ob) return oa - ob;
       return (a.persona?.nombre || '').localeCompare((b.persona?.nombre || ''), 'es');
@@ -983,18 +997,25 @@ function summaryByTiendaTicket(){
   comprasForEvent().forEach(c => {
     const tienda = c.tienda?.nombre || 'Sin tienda';
     const rawTicket = String(c.ticketDonacion || '').trim();
-    const displayTicket = rawTicket || 'Pte.compra/donac/otros gastos';
+    const fallbackProduct = String(c.producto?.nombre || '').trim();
+    const displayTicket = c.valor === 0 && fallbackProduct ? fallbackProduct : (rawTicket || 'Pte.compra/donac/otros gastos');
     const key = `${tienda} | ${displayTicket}`;
     if(rawTicket === ''){
       pending[key] = (pending[key] || 0) + c.valor;
     } else {
       const donated = isDonationTicket(c.ticketDonacion);
-      if(!filled[key]) filled[key] = {v:0, donated:donated};
+      if(!filled[key]) filled[key] = {v:0, donated:donated, rawTicket, product:fallbackProduct};
       filled[key].v += c.valor;
       filled[key].donated = filled[key].donated || donated;
     }
   });
-  const rows = Object.entries(filled).map(([k,obj])=>({k,v:obj.v,pending:false,donated:obj.donated,image:(!obj.donated && state.ticketImages?.[ticketImageStateKey(k)]) ? state.ticketImages[ticketImageStateKey(k)] : ''}))
+  const rows = Object.entries(filled).map(([k,obj])=>({
+      k,
+      v:obj.v,
+      pending:false,
+      donated:obj.donated,
+      image:(!obj.donated && obj.v>0 && state.ticketImages?.[ticketImageStateKey(k)]) ? state.ticketImages[ticketImageStateKey(k)] : ''
+    }))
     .concat(Object.entries(pending).map(([k,v])=>({k,v,pending:true,donated:false,image:''})));
 
   const sortMode = state.summaryTiendaSort || 'tienda';
@@ -1213,7 +1234,7 @@ function renderColabs(){
           <input type="number" min="0" step="1" value="${Number(r.numero||0)}" data-action="edit-collab-numero" data-id="${r.id}" />
         </div>
         <div class="field">
-          <label>Situación</label>
+          <label>Ingreso</label>
           <select data-action="edit-collab-situacion" data-id="${r.id}">
             ${PAYMENT_OPTIONS.map(v => `<option value="${v}" ${v===r.situacion?'selected':''}>${v}</option>`).join('')}
           </select>
@@ -1338,7 +1359,7 @@ function renderCompras(){
           <input class="soft-readonly" readonly value="${money(r.importe)}" />
         </div>
         <div class="field">
-          <label>Ticket/Donación/Otros Gastos</label>
+          <label>Tipo de donación</label>
           <select data-action="edit-compra-ticket" data-id="${r.id}">
             ${PURCHASE_TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${v === '' ? '-- Pte.compra/donac/otros gastos --' : escapeHtml(v)}</option>`).join('')}
           </select>
@@ -1655,7 +1676,7 @@ function renderDonaciones(){
           <input class="soft-readonly" readonly value="${money(r.valor)}" />
         </div>
         <div class="field">
-          <label>Ticket/Donación/Otros Gastos</label>
+          <label>Ticket u Otros gastos</label>
           <select data-action="edit-compra-ticket" data-id="${r.id}">
             ${DONATION_TICKET_OPTIONS.map(v => `<option value="${v}" ${v===r.ticketDonacion?'selected':''}>${escapeHtml(v)}</option>`).join('')}
           </select>
@@ -1724,46 +1745,58 @@ function renderGraficas(){
   const compraMoney = Number(b.operativa.gastoCompras || 0);
   const orgMoney = Number(b.operativa.gastosOrganizacion || 0);
   const saldo = Number(b.operativa.saldoOperativo || 0);
+  const donacionProducto = Number(b.donacionProducto.valorDonado || 0);
 
   const ingresoTotal = socioMoney + donanteMoney;
   const gastoTotal = compraMoney + orgMoney;
-  const maxVal = Math.max(1, ingresoTotal, gastoTotal, Math.abs(saldo));
+  const maxVal = Math.max(1, ingresoTotal, gastoTotal, Math.abs(saldo), donacionProducto);
 
   const ingresoSocPct = (socioMoney / maxVal) * 100;
   const ingresoDonPct = (donanteMoney / maxVal) * 100;
   const gastoCompPct = (compraMoney / maxVal) * 100;
   const gastoOrgPct = (orgMoney / maxVal) * 100;
   const saldoPct = (Math.abs(saldo) / maxVal) * 100;
+  const donProdPct = (donacionProducto / maxVal) * 100;
 
   wrap.innerHTML = `
     <div class="chart-shell">
-      <div class="chart-kpi">
-        <div class="chart-chip">Donación de producto valorada: ${escapeHtml(money(b.donacionProducto.valorDonado))}</div>
+      <div class="chart-grid">
+        <div class="chart-stat"><div class="k">Ingreso dinero</div><div class="v">${escapeHtml(money(ingresoTotal))}</div></div>
+        <div class="chart-stat"><div class="k">Donación de producto</div><div class="v">${escapeHtml(money(donacionProducto))}</div></div>
+        <div class="chart-stat"><div class="k">Gasto total</div><div class="v">${escapeHtml(money(gastoTotal))}</div></div>
+        <div class="chart-stat"><div class="k">Saldo operativo</div><div class="v">${escapeHtml(money(saldo))}</div></div>
       </div>
       <div class="chart-bars">
         <div class="chart-row">
           <div class="chart-label">INGRESOS EN DINERO</div>
-          <div class="chart-track" title="Total ingresos en dinero: ${escapeHtml(money(ingresoTotal))}">
-            <div class="chart-seg" title="Socios: ${escapeHtml(money(socioMoney))}" style="width:${ingresoSocPct}%;background:#86efac;"></div><div class="chart-seg" title="Donantes: ${escapeHtml(money(donanteMoney))}" style="width:${ingresoDonPct}%;background:#16a34a;"></div>
+          <div class="chart-track" data-tip="Ingreso total: ${escapeHtml(money(ingresoTotal))}" title="Ingreso total: ${escapeHtml(money(ingresoTotal))}">
+            <div class="chart-seg" data-tip="Socios: ${escapeHtml(money(socioMoney))}" title="Socios: ${escapeHtml(money(socioMoney))}" style="width:${ingresoSocPct}%;background:#86efac;"></div><div class="chart-seg" data-tip="Donantes: ${escapeHtml(money(donanteMoney))}" title="Donantes: ${escapeHtml(money(donanteMoney))}" style="width:${ingresoDonPct}%;background:#16a34a;"></div>
             <div class="chart-center-value">${escapeHtml(money(ingresoTotal))}</div>
           </div>
         </div>
         <div class="chart-row">
+          <div class="chart-label">DONACIÓN DE PRODUCTO</div>
+          <div class="chart-track" data-tip="Valor producto donado: ${escapeHtml(money(donacionProducto))}" title="Valor producto donado: ${escapeHtml(money(donacionProducto))}">
+            <div class="chart-seg" data-tip="Tiendas: ${escapeHtml(money(b.donacionProducto.donadoTienda))}" title="Tiendas: ${escapeHtml(money(b.donacionProducto.donadoTienda))}" style="width:${(Number(b.donacionProducto.donadoTienda||0)/maxVal)*100}%;background:#fcd34d;"></div><div class="chart-seg" data-tip="Socios: ${escapeHtml(money(b.donacionProducto.donadoSocio))}" title="Socios: ${escapeHtml(money(b.donacionProducto.donadoSocio))}" style="width:${(Number(b.donacionProducto.donadoSocio||0)/maxVal)*100}%;background:#f59e0b;"></div><div class="chart-seg" data-tip="Otros: ${escapeHtml(money(b.donacionProducto.donadoOtros))}" title="Otros: ${escapeHtml(money(b.donacionProducto.donadoOtros))}" style="width:${(Number(b.donacionProducto.donadoOtros||0)/maxVal)*100}%;background:#b45309;"></div>
+            <div class="chart-center-value">${escapeHtml(money(donacionProducto))}</div>
+          </div>
+        </div>
+        <div class="chart-row">
           <div class="chart-label">GASTOS</div>
-          <div class="chart-track" title="Total gastos: ${escapeHtml(money(gastoTotal))}">
-            <div class="chart-seg" title="Gasto por compras: ${escapeHtml(money(compraMoney))}" style="width:${gastoCompPct}%;background:#fca5a5;"></div><div class="chart-seg" title="Gastos de organización: ${escapeHtml(money(orgMoney))}" style="width:${gastoOrgPct}%;background:#dc2626;"></div>
+          <div class="chart-track" data-tip="Gasto total: ${escapeHtml(money(gastoTotal))}" title="Gasto total: ${escapeHtml(money(gastoTotal))}">
+            <div class="chart-seg" data-tip="Gasto por compras: ${escapeHtml(money(compraMoney))}" title="Gasto por compras: ${escapeHtml(money(compraMoney))}" style="width:${gastoCompPct}%;background:#fca5a5;"></div><div class="chart-seg" data-tip="Gastos de organización: ${escapeHtml(money(orgMoney))}" title="Gastos de organización: ${escapeHtml(money(orgMoney))}" style="width:${gastoOrgPct}%;background:#dc2626;"></div>
             <div class="chart-center-value">${escapeHtml(money(gastoTotal))}</div>
           </div>
         </div>
         <div class="chart-row">
           <div class="chart-label">SALDO OPERATIVO</div>
-          <div class="chart-track chart-saldo" title="Saldo operativo: ${escapeHtml(money(saldo))}">
+          <div class="chart-track chart-saldo" data-tip="Saldo operativo: ${escapeHtml(money(saldo))}" title="Saldo operativo: ${escapeHtml(money(saldo))}">
             <div class="chart-seg" style="width:${saldoPct}%;background:${saldo >= 0 ? '#0f766e' : '#b91c1c'};"></div>
             <div class="chart-center-value">${escapeHtml(money(saldo))}</div>
           </div>
         </div>
       </div>
-      <div class="chart-note">Pasa el cursor por cada tramo para ver el detalle de su cifra.</div>
+      <div class="chart-note">Pasa el cursor por cada tramo para ver el detalle de la cifra correspondiente.</div>
     </div>`;
 }
 
@@ -2007,7 +2040,7 @@ async function exportSeedWorkbook(){
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v8.1 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v8.2 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -2063,11 +2096,11 @@ async function exportSeedWorkbook(){
     state.productos.map(p => [productCode[p.id], p.nombre || '', p.segmento || '', p.destino || '', Number(p.precio || 0), storeCode[p.tiendaId] || ''])
   );
   makeSheet('INGRESOS',
-    ['EVENTO_CODIGO','PERSONA_CODIGO','NUMERO','SITUACION','IMPORTE_VOLUNTARIO'],
+    ['EVENTO_CODIGO','PERSONA_CODIGO','NUMERO','INGRESO','IMPORTE_VOLUNTARIO'],
     state.colaboradores.map(c => [eventCode[c.eventId] || '', personCode[c.personaId] || '', Number(c.numero || 0), c.situacion || 'Pendiente', Number(c.importe || 0)])
   );
   makeSheet('COMPRAS',
-    ['EVENTO_CODIGO','PRODUCTO_CODIGO','UNIDADES','TICKET_DONACION','RESPONSABLE_PERSONA_CODIGO'],
+    ['EVENTO_CODIGO','PRODUCTO_CODIGO','UNIDADES','TICKET_U_OTROS_GASTOS','RESPONSABLE_PERSONA_CODIGO'],
     state.compras.map(c => [eventCode[c.eventId] || '', productCode[c.productoId] || '', Number(c.unidades || 0), c.ticketDonacion || '', personCode[c.responsableId] || ''])
   );
 
@@ -2126,7 +2159,7 @@ async function exportExcel(){
   const tiendaRows = summaryByTiendaTicket();
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'ControlEvent v8.1 - ©oltyLAB ’26';
+  wb.creator = 'ControlEvent v8.2 - ©oltyLAB ’26';
   wb.created = new Date();
 
   const border = {top:{style:'thin', color:{argb:'FFDDE2EA'}},left:{style:'thin', color:{argb:'FFDDE2EA'}},bottom:{style:'thin', color:{argb:'FFDDE2EA'}},right:{style:'thin', color:{argb:'FFDDE2EA'}}};
@@ -2205,7 +2238,7 @@ async function exportExcel(){
   }
   function makeChartDataUrl(){
     const canvas = document.createElement('canvas');
-    canvas.width = 980; canvas.height = 460;
+    canvas.width = 1180; canvas.height = 620;
     const ctx = canvas.getContext('2d');
     const budget = budgetSummary();
 
@@ -2214,100 +2247,92 @@ async function exportExcel(){
     const compraMoney = Number(budget.operativa.gastoCompras || 0);
     const orgMoney = Number(budget.operativa.gastosOrganizacion || 0);
     const saldo = Number(budget.operativa.saldoOperativo || 0);
-    const maxVal = Math.max(1, socioMoney + donanteMoney, compraMoney + orgMoney, Math.abs(saldo));
-
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#111827';
-    ctx.font = 'bold 24px Arial';
-    ctx.fillText('GRÁFICAS DEL EVENTO', 40, 40);
-
-    ctx.font = 'bold 16px Arial';
-    const left = 270, top = 110, width = 620, h = 42, gap = 90;
+    const donProd = Number(budget.donacionProducto.valorDonado || 0);
+    const maxVal = Math.max(1, socioMoney + donanteMoney, compraMoney + orgMoney, Math.abs(saldo), donProd);
 
     function fmt(v){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(v); }
+    function drawRoundRect(x,y,w,h,r,color){ ctx.fillStyle=color; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); ctx.fill(); }
     function drawTrack(y, label, segments, totalLabel){
-      ctx.fillStyle = '#111827';
-      ctx.fillText(label, 40, y + 28);
-      ctx.fillStyle = '#f3f4f6';
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.roundRect(left, y, width, h, 21);
-      ctx.fill();
-      ctx.stroke();
-      let x = left;
+      ctx.fillStyle = '#111827'; ctx.font = 'bold 20px Arial'; ctx.fillText(label, 40, y + 26);
+      drawRoundRect(310, y, 800, 42, 21, '#f3f4f6');
+      let x = 310;
       segments.forEach(seg => {
-        const w = Math.max(0, (Math.abs(seg.value) / maxVal) * width);
+        const w = Math.max(0, (Math.abs(seg.value) / maxVal) * 800);
         if(w <= 0) return;
-        ctx.fillStyle = seg.color;
-        ctx.beginPath();
-        ctx.roundRect(x, y, w, h, 21);
-        ctx.fill();
+        drawRoundRect(x, y, w, 42, 21, seg.color);
         x += w;
       });
-      ctx.fillStyle = '#111827';
-      ctx.font = 'bold 18px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(totalLabel, left + width/2, y + 27);
-      ctx.textAlign = 'left';
-      ctx.font = 'bold 16px Arial';
+      ctx.fillStyle = '#111827'; ctx.font = 'bold 18px Arial'; ctx.textAlign = 'center'; ctx.fillText(totalLabel, 710, y + 28); ctx.textAlign = 'left';
     }
 
-    drawTrack(top, 'INGRESOS EN DINERO', [
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#111827'; ctx.font = 'bold 28px Arial'; ctx.fillText('RESUMEN VISUAL DEL EVENTO', 40, 40);
+
+    const cards = [
+      ['Ingreso dinero', fmt(socioMoney + donanteMoney)],
+      ['Donación de producto', fmt(donProd)],
+      ['Gasto total', fmt(compraMoney + orgMoney)],
+      ['Saldo operativo', fmt(saldo)]
+    ];
+    cards.forEach((c,i)=>{
+      const x = 40 + i*280; const y = 70;
+      drawRoundRect(x,y,250,92,18,'#ffffff');
+      ctx.strokeStyle = '#dbe2ea'; ctx.lineWidth = 1; ctx.strokeRect(x,y,250,92);
+      ctx.fillStyle='#64748b'; ctx.font='bold 16px Arial'; ctx.fillText(c[0], x+16, y+28);
+      ctx.fillStyle='#111827'; ctx.font='bold 26px Arial'; ctx.fillText(c[1], x+16, y+62);
+    });
+
+    drawTrack(200, 'INGRESOS EN DINERO', [
       {value:socioMoney, color:'#86efac'},
       {value:donanteMoney, color:'#16a34a'}
     ], fmt(socioMoney + donanteMoney));
+    ctx.fillStyle = '#475569'; ctx.font = '15px Arial'; ctx.fillText('Socios: ' + fmt(socioMoney), 310, 255); ctx.fillText('Donantes: ' + fmt(donanteMoney), 580, 255);
 
-    ctx.fillStyle = '#475569';
-    ctx.font = '14px Arial';
-    ctx.fillText('Socios: ' + fmt(socioMoney), left, top + 62);
-    ctx.fillText('Donantes: ' + fmt(donanteMoney), left + 260, top + 62);
+    drawTrack(300, 'DONACIÓN DE PRODUCTO', [
+      {value:Number(budget.donacionProducto.donadoTienda||0), color:'#fcd34d'},
+      {value:Number(budget.donacionProducto.donadoSocio||0), color:'#f59e0b'},
+      {value:Number(budget.donacionProducto.donadoOtros||0), color:'#b45309'}
+    ], fmt(donProd));
+    ctx.fillStyle = '#475569'; ctx.fillText('Tiendas: ' + fmt(Number(budget.donacionProducto.donadoTienda||0)), 310, 355); ctx.fillText('Socios: ' + fmt(Number(budget.donacionProducto.donadoSocio||0)), 580, 355); ctx.fillText('Otros: ' + fmt(Number(budget.donacionProducto.donadoOtros||0)), 830, 355);
 
-    drawTrack(top + gap, 'GASTOS', [
+    drawTrack(400, 'GASTOS', [
       {value:compraMoney, color:'#fca5a5'},
       {value:orgMoney, color:'#dc2626'}
     ], fmt(compraMoney + orgMoney));
+    ctx.fillStyle = '#475569'; ctx.fillText('Compras: ' + fmt(compraMoney), 310, 455); ctx.fillText('Organización: ' + fmt(orgMoney), 620, 455);
 
-    ctx.fillStyle = '#475569';
-    ctx.fillText('Gasto por compras: ' + fmt(compraMoney), left, top + gap + 62);
-    ctx.fillText('Gastos de organización: ' + fmt(orgMoney), left + 300, top + gap + 62);
-
-    drawTrack(top + gap*2, 'SALDO OPERATIVO', [
+    drawTrack(500, 'SALDO OPERATIVO', [
       {value:Math.abs(saldo), color: saldo >= 0 ? '#0f766e' : '#b91c1c'}
     ], fmt(saldo));
-
-    ctx.fillStyle = '#475569';
-    ctx.fillText('Donación de producto valorada: ' + fmt(budget.donacionProducto.valorDonado), 40, top + gap*2 + 80);
 
     return canvas.toDataURL('image/png');
   }
 
   // RESUMEN
-  const wsRes = baseSheet('RESUMEN', [24, 44, 18, 12, 16, 16, 18, 20, 22]);
+  const wsRes = baseSheet('RESUMEN', [34, 26, 16, 16, 16, 16, 16, 16, 16]);
   let r = 1;
-  mergeTitle(wsRes, r++, 'RESUMEN DEL EVENTO', 9);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v8.1 - ©oltyLAB ’26');
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Evento'); putText(wsRes,r++,2,ev.titulo);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fechas'); putText(wsRes,r++,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Descripción'); putText(wsRes,r++,2,ev.descripcion || '');
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Situación'); putText(wsRes,r++,2,ev.situacion || 'En curso', (ev.situacion === 'Finalizado' ? 'bad' : 'ok'));
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Precio evento'); putMoney(wsRes,r++,2,ev.precio);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Ingreso dinero'); putMoney(wsRes,r++,2,budget.ingresosDinero.totalIngresado);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Gasto por compras'); putMoney(wsRes,r++,2,budget.operativa.gastoCompras);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Gastos de organización'); putMoney(wsRes,r++,2,budget.operativa.gastosOrganizacion);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Valor producto donado'); putMoney(wsRes,r++,2,budget.donacionProducto.valorDonado);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donación de producto tiendas'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoTienda);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donación de producto socios'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoSocio);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Donación de productos otros'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoOtros);
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Saldo operativo'); putMoney(wsRes,r++,2,budget.operativa.saldoOperativo, budget.operativa.saldoOperativo >= 0 ? 'ok' : 'bad');
-  wsRes.mergeCells(r,2,r,9); putText(wsRes,r,1,'Fecha y hora emisión'); putText(wsRes,r++,2,new Date().toLocaleString('es-ES'));
+  mergeTitle(wsRes, r++, 'RESUMEN DEL EVENTO', 4);
+  putText(wsRes,r,1,'Generado por'); putText(wsRes,r++,2,'ControlEvent v8.2 - ©oltyLAB ’26');
+  putText(wsRes,r,1,'Evento'); putText(wsRes,r++,2,ev.titulo);
+  putText(wsRes,r,1,'Fechas'); putText(wsRes,r++,2,`(del ${ev.fechaIni || ''} al ${ev.fechaFin || ''})`);
+  wsRes.mergeCells(r,2,r,6); putText(wsRes,r,1,'Descripción del evento'); putText(wsRes,r,2,ev.descripcion || ''); wsRes.getCell(r,2).alignment = {vertical:'middle', wrapText:true}; wsRes.getRow(r).height = Math.max(22, Math.min(120, 20 + Math.ceil(String(ev.descripcion||'').length / 55) * 16)); r++;
+  putText(wsRes,r,1,'Situación'); putText(wsRes,r++,2,ev.situacion || 'En curso', (ev.situacion === 'Finalizado' ? 'bad' : 'ok'));
+  putText(wsRes,r,1,'Precio evento'); putMoney(wsRes,r++,2,ev.precio);
+  putText(wsRes,r,1,'Ingreso dinero'); putMoney(wsRes,r++,2,budget.ingresosDinero.totalIngresado);
+  putText(wsRes,r,1,'Gasto por compras'); putMoney(wsRes,r++,2,budget.operativa.gastoCompras);
+  putText(wsRes,r,1,'Gastos de organización'); putMoney(wsRes,r++,2,budget.operativa.gastosOrganizacion);
+  putText(wsRes,r,1,'Valor producto donado'); putMoney(wsRes,r++,2,budget.donacionProducto.valorDonado);
+  putText(wsRes,r,1,'Donación de producto tiendas'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoTienda);
+  putText(wsRes,r,1,'Donación de producto socios'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoSocio);
+  putText(wsRes,r,1,'Donación de productos otros'); putMoney(wsRes,r++,2,budget.donacionProducto.donadoOtros);
+  putText(wsRes,r,1,'Saldo operativo'); putMoney(wsRes,r++,2,budget.operativa.saldoOperativo, budget.operativa.saldoOperativo >= 0 ? 'ok' : 'bad');
+  putText(wsRes,r,1,'Fecha y hora emisión'); putText(wsRes,r++,2,new Date().toLocaleString('es-ES'));
 
   // INGRESOS
   const wsIng = baseSheet('INGRESOS', [34, 9, 16, 18, 18, 18]);
   r = 1;
   mergeTitle(wsIng, r++, 'INGRESOS DE SOCIOS Y DONANTES', 6);
-  titleRow(wsIng, r++, ['Colaborador/a','Número','Situación','Importe obligatorio','Importe voluntario','Total compromiso']);
+  titleRow(wsIng, r++, ['Colaborador/a','Número','Ingreso','Importe obligatorio','Importe voluntario','Total compromiso']);
   collabs.forEach(item => {
     putText(wsIng,r,1,`${item.persona?.nombre || ''} (${item.persona?.rango || ''})`);
     putNum(wsIng,r,2,item.numero);
@@ -2324,7 +2349,7 @@ async function exportExcel(){
   const wsCom = baseSheet('COMPRAS Y OTROS GASTOS', [28, 16, 16, 10, 14, 14, 20, 24, 22]);
   r = 1;
   mergeTitle(wsCom, r++, 'COMPRAS Y OTROS GASTOS', 9);
-  titleRow(wsCom, r++, ['Producto','Segmento','Destino','ud','Precio','Importe','Tienda','Ticket/Donación/Otros Gastos','Responsable']);
+  titleRow(wsCom, r++, ['Producto','Segmento','Destino','ud','Precio','Importe','Tienda','Ticket u Otros gastos','Responsable']);
   comprasSolo.forEach(item => {
     putText(wsCom,r,1,item.producto?.nombre || '');
     putText(wsCom,r,2,item.producto?.segmento || '');
@@ -2344,7 +2369,7 @@ async function exportExcel(){
   const wsDon = baseSheet('DONACIONES DE PRODUCTO', [28, 16, 16, 10, 14, 14, 20, 24, 22]);
   r = 1;
   mergeTitle(wsDon, r++, 'DONACIONES DE PRODUCTO', 9);
-  titleRow(wsDon, r++, ['Producto','Segmento','Destino','ud','Precio','Valor','Tienda','Tipo de donación','Responsable']);
+  titleRow(wsDon, r++, ['Producto','Segmento','Destino','ud','Precio','Valor','Tienda o Donante','Tipo de donación','Responsable']);
   donacionesSolo.forEach(item => {
     putText(wsDon,r,1,item.producto?.nombre || '');
     putText(wsDon,r,2,item.producto?.segmento || '');
@@ -2389,15 +2414,16 @@ async function exportExcel(){
   const wsTT = baseSheet('AGR.TIENDA-TICKET', [44, 18, 20]);
   r = 1;
   mergeTitle(wsTT, r++, 'CÁLCULOS POR AGRUPACIÓN - TIENDA Y TICKET/DONACIÓN/OTROS GASTOS', 3);
-  titleRow(wsTT, r++, ['Tienda y Ticket/Donación/Otros Gastos','Importe','Ticket']);
+  titleRow(wsTT, r++, ['Tienda y Ticket u Otros gastos','Importe','Ticket']);
   tiendaRows.forEach(item => {
     putText(wsTT,r,1,item.k);
     putMoney(wsTT,r,2,item.v);
-    putText(wsTT,r,3,'');
+    putText(wsTT,r,3,'N/A');
     if(item.donated) wsTT.getCell(r,2).font = {strike:true};
     if(item.pending){
       for(let c=1;c<=3;c++) paint(wsTT.getCell(r,c),'bad');
-    } else if(!item.donated){
+    } else if(!item.donated && item.image){
+      putText(wsTT,r,3,'');
       addImageToCell(wsTT, item.image || '', r, 3);
     }
     r++;
@@ -2417,7 +2443,7 @@ async function exportExcel(){
   const blob = new Blob([buffer], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v8_1.xlsx`;
+  link.download = `${(ev.titulo || 'evento').replace(/\s+/g,'_')}_ControlEvent_v8_2.xlsx`;
   link.click();
   URL.revokeObjectURL(link.href);
 }
